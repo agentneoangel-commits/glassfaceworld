@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLASSFACE — Director, Editor, VFX</title>
+    <meta name="description" content="Portfolio of Glassface — Director, Editor, VFX Artist. 2B+ views, 100M+ streams.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loader">
+        <div class="loader-text">GLASSFACE</div>
+        <div class="loader-bar"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-header">
+            <a href="#" class="logo" data-hover>GLASSFACE</a>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        
+        <div class="nav-links">
+            <a href="#commercial" class="nav-link" data-hover>Commercial</a>
+            <a href="#music-video" class="nav-link" data-hover>Music Video</a>
+            <a href="#cover-artwork" class="nav-link" data-hover>Cover Artwork</a>
+            <a href="#narrative" class="nav-link" data-hover>Narrative</a>
+            <a href="#web3" class="nav-link" data-hover>Web3</a>
+            <a href="#graphic-design" class="nav-link" data-hover>Graphic Design</a>
+            <a href="#archive" class="nav-link" data-hover>Archive</a>
+        </div>
+        
+        <div class="nav-footer">
+            <a href="#about" class="nav-link small" data-hover>About</a>
+            <a href="#contact" class="nav-link small" data-hover>Contact</a>
+            <a href="https://face-brand.com" class="nav-link small" target="_blank" data-hover>Shop</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero Section -->
+        <section class="hero" id="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="line">Director</span>
+                    <span class="line">Editor</span>
+                    <span class="line">VFX</span>
+                </h1>
+                <p class="hero-stats">2B+ Views &nbsp;•&nbsp; 100M+ Streams</p>
+            </div>
+            <div class="hero-scroll">
+                <span>Scroll</span>
+                <div class="scroll-line"></div>
+            </div>
+        </section>
+
+        <!-- Commercial Section -->
+        <section class="section" id="commercial">
+            <div class="section-header">
+                <h2 class="section-title" data-reveal>Commercial</h2>
+            </div>
+            <div class="projects-grid" id="commercial-grid">
+                <!-- Projects injected via JS -->
+            </div>
+        </section>
+
+        <!-- Music Video Section -->
+        <section class="section" id="music-video">
+            <div class="section-header">
+                <h2 class="section-title" data-reveal>Music Video</h2>
+            </div>
+            <div class="projects-grid" id="music-video-grid"></div>
+        </section>
+
+        <!-- Cover Artwork Section -->
+        <section class="section" id="cover-artwork">
+            <div class="section-header">
+                <h2 class="section-title" data-reveal>Cover Artwork</h2>
+            </div>
+            <div class="projects-grid" id="cover-artwork-grid"></div>
+        </section>
+
+        <!-- Narrative Section -->
+        <section class="section" id="narrative">
+            <div class="section-header">
+                <h2 class="section-title" data-reveal>Narrative</h2>
+            </div>
+            <div class="projects-grid" id="narrative-grid"></div>
+        </section>
+
+        <!-- Web3 Section -->
+        <section class="section" id="web3">
+            <div class="section-header">
+                <h2 class="section-title" data-reveal>Web3</h2>
+            </div>
+            <div class="projects-grid" id="web3-grid"></div>
+        </section>
+
+        <!-- Graphic Design Section -->
+        <section class="section" id="graphic-design">
+            <div class="section-header">
+                <h2 class="section-title" data-reveal>Graphic Design</h2>
+            </div>
+            <div class="projects-grid" id="graphic-design-grid"></div>
+        </section>
+
+        <!-- Archive Section -->
+        <section class="section" id="archive">
+            <div class="section-header">
+                <h2 class="section-title" data-reveal>Archive</h2>
+            </div>
+            <div class="projects-grid" id="archive-grid"></div>
+        </section>
+
+        <!-- About Section -->
+        <section class="section about" id="about">
+            <div class="about-content">
+                <h2 class="section-title" data-reveal>About</h2>
+                <p class="about-text" data-reveal>
+                    Multi-hyphenate creative with a background in visuals, music, and technology. 
+                    Director, editor, VFX artist, and music producer with 100M+ streams and 2B+ views 
+                    across commercial, music video, and narrative work.
+                </p>
+                <div class="about-links" data-reveal>
+                    <a href="mailto:hello@glassfaceworld.com" class="link" data-hover>hello@glassfaceworld.com</a>
+                    <a href="https://instagram.com/glassface" class="link" data-hover>Instagram</a>
+                    <a href="https://vimeo.com/glassface" class="link" data-hover>Vimeo</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2026 Glassface. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <!-- Project Modal -->
+    <div class="modal" id="modal">
+        <button class="modal-close" aria-label="Close">
+            <span></span>
+            <span></span>
+        </button>
+        <div class="modal-content">
+            <div class="modal-media"></div>
+            <div class="modal-info">
+                <h3 class="modal-title"></h3>
+                <p class="modal-role"></p>
+                <p class="modal-description"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/projects.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
