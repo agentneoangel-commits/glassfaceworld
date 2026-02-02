@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLASSFACE — Career Timeline 2011-2025</title>
+    <meta name="description" content="Interactive career timeline of Glassface — Director, Editor, VFX Artist. 57+ projects from 2011-2025.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1a1a1a;
+            --text: #ffffff;
+            --text-secondary: #cccccc;
+            --text-tertiary: #999999;
+            --text-muted: #666666;
+            --border: #2a2a2a;
+            --border-light: #1f1f1f;
+            --accent: #ff3366;
+            --accent-glow: rgba(255, 51, 102, 0.3);
+            
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            
+            --nav-height: 72px;
+            --section-padding: clamp(60px, 8vw, 120px);
+            
+            /* Category Colors */
+            --color-commercial: #ff6b6b;
+            --color-musicVideo: #4ecdc4;
+            --color-coverArtwork: #ffe66d;
+            --color-narrative: #a8e6cf;
+            --color-web3: #c7ceea;
+            --color-graphicDesign: #ffd3b6;
+            --color-archive: #ff8b94;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ========================================
+           NAVIGATION
+           ======================================== */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            transition: background 0.4s ease;
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 clamp(20px, 4vw, 60px);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--text);
+            text-decoration: none;
+            transition: letter-spacing 0.3s ease;
+        }
+
+        .logo:hover {
+            letter-spacing: 0.15em;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: clamp(24px, 3vw, 40px);
+        }
+
+        .nav-link {
+            font-size: clamp(0.625rem, 0.6rem + 0.125vw, 0.75rem);
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: relative;
+            padding: 8px 0;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--text);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--text);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* ========================================
+           TIMELINE HEADER
+           ======================================== */
+        .timeline-header {
+            padding: calc(var(--nav-height) + 40px) clamp(20px, 5vw, 60px) 40px;
+            text-align: center;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .timeline-header h1 {
+            font-size: clamp(2rem, 1.75rem + 3.75vw, 5rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .timeline-stats {
+            font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        /* ========================================
+           CATEGORY LEGEND
+           ======================================== */
+        .category-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: clamp(12px, 2vw, 24px);
+            padding: 0 clamp(20px, 5vw, 60px) 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: clamp(0.625rem, 0.6rem + 0.125vw, 0.75rem);
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .legend-item:hover {
+            border-color: var(--border);
+            background: var(--bg-secondary);
+        }
+
+        .legend-item.inactive {
+            opacity: 0.4;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        .legend-dot.commercial { background: var(--color-commercial); }
+        .legend-dot.musicVideo { background: var(--color-musicVideo); }
+        .legend-dot.coverArtwork { background: var(--color-coverArtwork); }
+        .legend-dot.narrative { background: var(--color-narrative); }
+        .legend-dot.web3 { background: var(--color-web3); }
+        .legend-dot.graphicDesign { background: var(--color-graphicDesign); }
+        .legend-dot.archive { background: var(--color-archive); }
+
+        /* ========================================
+           TIMELINE CONTAINER
+           ======================================== */
+        .timeline-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - var(--nav-height) - 250px);
+            min-height: 500px;
+            overflow: hidden;
+            cursor: grab;
+            background: linear-gradient(to bottom, var(--bg) 0%, var(--bg-secondary) 50%, var(--bg) 100%);
+        }
+
+        .timeline-container.dragging {
+            cursor: grabbing;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            background: linear-gradient(to right, transparent 0%, var(--border) 10%, var(--border) 90%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* ========================================
+           TIMELINE CONTENT (Scrollable)
+           ======================================== */
+        .timeline-content {
+            position: absolute;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 50vw;
+            transform: translateX(0);
+            will-change: transform;
+        }
+
+        /* ========================================
+           YEAR MARKERS
+           ======================================== */
+        .year-marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: repeating-linear-gradient(
+                to bottom,
+                var(--border) 0,
+                var(--border) 4px,
+                transparent 4px,
+                transparent 12px
+            );
+            pointer-events: none;
+        }
+
+        .year-label {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+
+        /* ========================================
+           PROJECT CARDS
+           ======================================== */
+        .project-card {
+            position: absolute;
+            width: 140px;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            will-change: transform;
+            transition: z-index 0s;
+        }
+
+        .project-card:hover {
+            z-index: 100;
+        }
+
+        .project-thumb {
+            width: 100%;
+            aspect-ratio: 16/10;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .project-card:hover .project-thumb {
+            transform: scale(1.1);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .project-thumb.commercial { border-color: var(--color-commercial); }
+        .project-thumb.musicVideo { border-color: var(--color-musicVideo); }
+        .project-thumb.coverArtwork { border-color: var(--color-coverArtwork); }
+        .project-thumb.narrative { border-color: var(--color-narrative); }
+        .project-thumb.web3 { border-color: var(--color-web3); }
+        .project-thumb.graphicDesign { border-color: var(--color-graphicDesign); }
+        .project-thumb.archive { border-color: var(--color-archive); }
+
+        .project-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .project-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            background: var(--bg-tertiary);
+        }
+
+        .project-placeholder.commercial { color: var(--color-commercial); }
+        .project-placeholder.musicVideo { color: var(--color-musicVideo); }
+        .project-placeholder.coverArtwork { color: var(--color-coverArtwork); }
+        .project-placeholder.narrative { color: var(--color-narrative); }
+        .project-placeholder.web3 { color: var(--color-web3); }
+        .project-placeholder.graphicDesign { color: var(--color-graphicDesign); }
+        .project-placeholder.archive { color: var(--color-archive); }
+
+        .project-info {
+            margin-top: 12px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .project-card:hover .project-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .project-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .project-date {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        .project-views {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        /* ========================================
+           FLOATING PHYSICS ANIMATION
+           ======================================== */
+        @keyframes float {
+            0%, 100% {
+                transform: translate(-50%, -50%) translateY(0px);
+            }
+            50% {
+                transform: translate(-50%, -50%) translateY(var(--float-offset, -8px));
+            }
+        }
+
+        .project-card.floating {
+            animation: float var(--float-duration, 4s) ease-in-out infinite;
+            animation-delay: var(--float-delay, 0s);
+        }
+
+        /* ========================================
+           ZOOM CONTROLS
+           ======================================== */
+        .zoom-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .zoom-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--text-muted);
+            transform: scale(1.05);
+        }
+
+        /* ========================================
+           DRAG HINT
+           ======================================== */
+        .drag-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 12px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+            animation: fadeOut 0.5s ease 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        .drag-hint svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ========================================
+           MODAL (Reused from main site)
+           ======================================== */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-close {
+            position: fixed;
+            top: 24px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text);
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2001;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .modal-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 120px clamp(20px, 5vw, 60px) 80px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+        }
+
+        .modal.active .modal-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .modal-title {
+            font-size: clamp(1.5rem, 1.25rem + 1.25vw, 1.875rem);
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .modal-role {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .modal-media {
+            margin-bottom: 40px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-media iframe,
+        .modal-media img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border: none;
+            display: block;
+        }
+
+        .modal-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 4px;
+        }
+
+        .modal-description {
+            max-width: 700px;
+            margin: 0 auto 40px;
+            text-align: center;
+        }
+
+        .modal-text {
+            font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .modal-press {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .modal-press h3 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .press-quote {
+            padding: 24px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .press-quote p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text);
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .press-source {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 1024px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: var(--nav-height);
+                left: 0;
+                right: 0;
+                background: var(--bg);
+                border-bottom: 1px solid var(--border);
+                flex-direction: column;
+                padding: 24px 40px;
+                gap: 16px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .project-card {
+                width: 120px;
+            }
+
+            .timeline-container {
+                height: calc(100vh - var(--nav-height) - 200px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .category-legend {
+                gap: 8px;
+            }
+
+            .legend-item {
+                padding: 4px 8px;
+                font-size: 10px;
+            }
+
+            .project-card {
+                width: 100px;
+            }
+
+            .project-info {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .modal-close {
+                right: 20px;
+                top: 16px;
+                width: 44px;
+                height: 44px;
+            }
+
+            .drag-hint {
+                display: none;
+            }
+        }
+
+        /* ========================================
+           SCROLLBAR
+           ======================================== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">GLASSFACE</a>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html#commercial" class="nav-link">Commercial</a>
+                <a href="index.html#music-video" class="nav-link">Music Video</a>
+                <a href="index.html#cover-artwork" class="nav-link">Cover Artwork</a>
+                <a href="index.html#narrative" class="nav-link">Narrative</a>
+                <a href="index.html#web3" class="nav-link">Web3</a>
+                <a href="index.html#graphic-design" class="nav-link">Graphic Design</a>
+                <a href="index.html#archive" class="nav-link">Archive</a>
+                <a href="timeline-v3.html" class="nav-link active">Timeline</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="https://face-brand.com" target="_blank" class="nav-link">Shop</a>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Timeline Header -->
+    <header class="timeline-header">
+        <h1>Career Timeline</h1>
+        <p class="timeline-stats" id="timelineStats">Loading projects...</p>
+    </header>
+
+    <!-- Category Legend -->
+    <div class="category-legend" id="categoryLegend">
+        <div class="legend-item" data-category="commercial">
+            <div class="legend-dot commercial"></div>
+            <span>Commercial</span>
+        </div>
+        <div class="legend-item" data-category="musicVideo">
+            <div class="legend-dot musicVideo"></div>
+            <span>Music Video</span>
+        </div>
+        <div class="legend-item" data-category="coverArtwork">
+            <div class="legend-dot coverArtwork"></div>
+            <span>Cover Artwork</span>
+        </div>
+        <div class="legend-item" data-category="narrative">
+            <div class="legend-dot narrative"></div>
+            <span>Narrative</span>
+        </div>
+        <div class="legend-item" data-category="web3">
+            <div class="legend-dot web3"></div>
+            <span>Web3/NFT</span>
+        </div>
+        <div class="legend-item" data-category="graphicDesign">
+            <div class="legend-dot graphicDesign"></div>
+            <span>Graphic Design</span>
+        </div>
+        <div class="legend-item" data-category="archive">
+            <div class="legend-dot archive"></div>
+            <span>Archive</span>
+        </div>
+    </div>
+
+    <!-- Timeline Container -->
+    <div class="timeline-container" id="timelineContainer">
+        <div class="timeline-content" id="timelineContent">
+            <!-- Year markers and projects will be injected here -->
+        </div>
+    </div>
+
+    <!-- Drag Hint -->
+    <div class="drag-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+        <span>Drag to explore timeline</span>
+    </div>
+
+    <!-- Zoom Controls -->
+    <div class="zoom-controls">
+        <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">−</button>
+        <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">+</button>
+        <button class="zoom-btn" onclick="resetZoom()" title="Reset View">⟲</button>
+    </div>
+
+    <!-- Project Modal -->
+    <div class="modal" id="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <p class="modal-role" id="modalRole"></p>
+            </div>
+            
+            <div class="modal-media" id="modalMedia">
+                <!-- YouTube embed or image -->
+            </div>
+            
+            <div class="modal-stats" id="modalStats">
+                <!-- Play count, views, etc -->
+            </div>
+            
+            <div class="modal-description">
+                <p class="modal-text" id="modalText"></p>
+            </div>
+            
+            <div class="modal-press" id="modalPress">
+                <!-- Press quotes -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Load projects data -->
+    <script src="js/projects.js?v=1000"></script>
+    <script>
+        // ========================================
+        // TIMELINE CONFIGURATION
+        // ========================================
+        const CONFIG = {
+            yearStart: 2011,
+            yearEnd: 2025,
+            pxPerYear: 200, // Base pixels per year
+            minZoom: 0.5,
+            maxZoom: 2,
+            floating: {
+                enabled: true,
+                amplitude: 8, // px
+                durationMin: 3000, // ms
+                durationMax: 5000, // ms
+                stagger: 0.5 // seconds between starts
+            }
+        };
+
+        // State
+        let state = {
+            projects: [],
+            currentZoom: 1,
+            isDragging: false,
+            startX: 0,
+            scrollLeft: 0,
+            activeCategories: new Set(['commercial', 'musicVideo', 'coverArtwork', 'narrative', 'web3', 'graphicDesign', 'archive']),
+            totalWidth: 0
+        };
+
+        // Category icons for non-video projects
+        const CATEGORY_ICONS = {
+            commercial: '▶',
+            musicVideo: '♪',
+            coverArtwork: '🎨',
+            narrative: '🎬',
+            web3: '⬡',
+            graphicDesign: '✏',
+            archive: '📦'
+        };
+
+        // ========================================
+        // INITIALIZATION
+        // ========================================
+        function init() {
+            loadProjects();
+            setupEventListeners();
+            setupLegend();
+            setupNavigation();
+        }
+
+        function loadProjects() {
+            // Use getAllProjects() from projects.js
+            if (typeof getAllProjects === 'function') {
+                state.projects = getAllProjects();
+            } else if (typeof window.projects !== 'undefined') {
+                // Fallback: flatten projects manually
+                const flat = [];
+                Object.keys(window.projects).forEach(category => {
+                    window.projects[category].forEach(project => {
+                        flat.push({ ...project, category });
+                    });
+                });
+                state.projects = flat.sort((a, b) => {
+                    if (!a.releaseDate) return 1;
+                    if (!b.releaseDate) return -1;
+                    return new Date(a.releaseDate) - new Date(b.releaseDate);
+                });
+            } else {
+                console.error('Projects data not found');
+                return;
+            }
+
+            console.log(`Loaded ${state.projects.length} projects for timeline`);
+            updateStats();
+            renderTimeline();
+        }
+
+        function updateStats() {
+            const statsEl = document.getElementById('timelineStats');
+            if (statsEl) {
+                statsEl.textContent = `${state.projects.length} Projects • 2011-2025`;
+            }
+        }
+
+        // ========================================
+        // TIMELINE RENDERING
+        // ========================================
+        function renderTimeline() {
+            const container = document.getElementById('timelineContent');
+            if (!container) return;
+
+            // Clear existing content
+            container.innerHTML = '';
+
+            // Calculate total width
+            const yearSpan = CONFIG.yearEnd - CONFIG.yearStart + 1;
+            state.totalWidth = yearSpan * CONFIG.pxPerYear;
+
+            // Add year markers
+            for (let year = CONFIG.yearStart; year <= CONFIG.yearEnd; year++) {
+                const marker = document.createElement('div');
+                marker.className = 'year-marker';
+                marker.style.left = `${(year - CONFIG.yearStart) * CONFIG.pxPerYear}px`;
+                marker.innerHTML = `<span class="year-label">${year}</span>`;
+                container.appendChild(marker);
+            }
+
+            // Position projects
+            state.projects.forEach((project, index) => {
+                if (!project.releaseDate) return;
+
+                const card = createProjectCard(project, index);
+                if (card) {
+                    container.appendChild(card);
+                }
+            });
+
+            // Center the view initially on 2018
+            centerOnYear(2018);
+        }
+
+        function createProjectCard(project, index) {
+            const date = new Date(project.releaseDate);
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            
+            // Skip if outside range
+            if (year < CONFIG.yearStart || year > CONFIG.yearEnd) return null;
+
+            // Calculate X position based on year + month offset
+            const yearOffset = year - CONFIG.yearStart;
+            const monthFraction = month / 12;
+            const xPos = (yearOffset + monthFraction) * CONFIG.pxPerYear;
+
+            // Calculate Y position (distributed vertically with some randomness)
+            const verticalBands = 5;
+            const bandHeight = 100;
+            const baseBand = index % verticalBands;
+            const randomOffset = (Math.random() - 0.5) * 60;
+            const yPos = 50 + (baseBand * bandHeight) + randomOffset;
+
+            const card = document.createElement('div');
+            card.className = 'project-card floating';
+            card.dataset.category = project.category;
+            card.dataset.projectId = project.id;
+            
+            // Set floating animation properties
+            const duration = CONFIG.floating.durationMin + Math.random() * (CONFIG.floating.durationMax - CONFIG.floating.durationMin);
+            const delay = index * CONFIG.floating.stagger;
+            const amplitude = CONFIG.floating.amplitude * (0.8 + Math.random() * 0.4);
+            
+            card.style.left = `${xPos}px`;
+            card.style.top = `${yPos}%`;
+            card.style.setProperty('--float-duration', `${duration}ms`);
+            card.style.setProperty('--float-delay', `${delay}s`);
+            card.style.setProperty('--float-offset', `-${amplitude}px`);
+
+            // Build thumbnail
+            const hasYouTube = !!project.youtubeId;
+            const imgUrl = hasYouTube 
+                ? `https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`
+                : null;
+
+            const hasViews = project.playCount && project.playCount >= 1000000;
+            const viewsBadge = hasViews 
+                ? `<span class="project-views">${formatPlayCount(project.playCount)}</span>` 
+                : '';
+
+            const thumbnail = hasYouTube
+                ? `<img src="${imgUrl}" alt="${project.title}" class="project-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
+                : '';
+
+            const placeholder = `
+                <div class="project-placeholder ${project.category}" style="display: ${hasYouTube ? 'none' : 'flex'}">
+                    ${CATEGORY_ICONS[project.category] || '◆'}
+                </div>
+            `;
+
+            card.innerHTML = `
+                <div class="project-thumb ${project.category}">
+                    ${thumbnail}
+                    ${placeholder}
+                    ${viewsBadge}
+                </div>
+                <div class="project-info">
+                    <div class="project-title">${project.title}</div>
+                    <div class="project-date">${formatDate(project.releaseDate)}</div>
+                </div>
+            `;
+
+            // Click handler
+            card.addEventListener('click', () => openModal(project));
+
+            return card;
+        }
+
+        // ========================================
+        // DRAG & SCROLL
+        // ========================================
+        function setupEventListeners() {
+            const container = document.getElementById('timelineContainer');
+            const content = document.getElementById('timelineContent');
+            if (!container || !content) return;
+
+            // Mouse events
+            container.addEventListener('mousedown', handleDragStart);
+            container.addEventListener('mousemove', handleDragMove);
+            container.addEventListener('mouseup', handleDragEnd);
+            container.addEventListener('mouseleave', handleDragEnd);
+
+            // Touch events
+            container.addEventListener('touchstart', handleTouchStart, { passive: false });
+            container.addEventListener('touchmove', handleTouchMove, { passive: false });
+            container.addEventListener('touchend', handleDragEnd);
+
+            // Wheel for horizontal scroll
+            container.addEventListener('wheel', handleWheel, { passive: false });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', handleKeydown);
+        }
+
+        function handleDragStart(e) {
+            state.isDragging = true;
+            state.startX = e.pageX;
+            state.scrollLeft = getCurrentTranslateX();
+            
+            const container = document.getElementById('timelineContainer');
+            container.classList.add('dragging');
+        }
+
+        function handleDragMove(e) {
+            if (!state.isDragging) return;
+            e.preventDefault();
+            
+            const x = e.pageX;
+            const walk = (x - state.startX) * 1.5; // Speed multiplier
+            setTranslateX(state.scrollLeft + walk);
+        }
+
+        function handleDragEnd() {
+            state.isDragging = false;
+            const container = document.getElementById('timelineContainer');
+            container.classList.remove('dragging');
+        }
+
+        function handleTouchStart(e) {
+            state.isDragging = true;
+            state.startX = e.touches[0].pageX;
+            state.scrollLeft = getCurrentTranslateX();
+        }
+
+        function handleTouchMove(e) {
+            if (!state.isDragging) return;
+            e.preventDefault();
+            
+            const x = e.touches[0].pageX;
+            const walk = (x - state.startX) * 1.5;
+            setTranslateX(state.scrollLeft + walk);
+        }
+
+        function handleWheel(e) {
+            // Horizontal scroll with mouse wheel
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                return; // Let browser handle horizontal scroll
+            }
+            
+            e.preventDefault();
+            const currentX = getCurrentTranslateX();
+            setTranslateX(currentX - e.deltaY);
+        }
+
+        function handleKeydown(e) {
+            const step = 300;
+            const currentX = getCurrentTranslateX();
+            
+            switch(e.key) {
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    animateToX(currentX + step);
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    animateToX(currentX - step);
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    centerOnYear(CONFIG.yearStart);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    centerOnYear(CONFIG.yearEnd);
+                    break;
+            }
+        }
+
+        // ========================================
+        // TRANSFORM UTILITIES
+        // ========================================
+        function getCurrentTranslateX() {
+            const content = document.getElementById('timelineContent');
+            if (!content) return 0;
+            
+            const style = window.getComputedStyle(content);
+            const matrix = new WebKitCSSMatrix(style.transform);
+            return matrix.m41;
+        }
+
+        function setTranslateX(x) {
+            const content = document.getElementById('timelineContent');
+            if (!content) return;
+
+            // Bounds checking
+            const containerWidth = document.getElementById('timelineContainer').offsetWidth;
+            const maxScroll = -(state.totalWidth - containerWidth + 100);
+            const minScroll = containerWidth / 2;
+
+            x = Math.max(maxScroll, Math.min(minScroll, x));
+            
+            content.style.transform = `translateX(${x}px)`;
+        }
+
+        function animateToX(targetX) {
+            const content = document.getElementById('timelineContent');
+            if (!content) return;
+
+            content.style.transition = 'transform 0.3s ease-out';
+            setTranslateX(targetX);
+            
+            setTimeout(() => {
+                content.style.transition = '';
+            }, 300);
+        }
+
+        function centerOnYear(year) {
+            const container = document.getElementById('timelineContainer');
+            if (!container) return;
+
+            const containerWidth = container.offsetWidth;
+            const yearOffset = (year - CONFIG.yearStart) * CONFIG.pxPerYear;
+            const targetX = (containerWidth / 2) - yearOffset;
+
+            animateToX(targetX);
+        }
+
+        // ========================================
+        // ZOOM CONTROLS
+        // ========================================
+        function zoomIn() {
+            state.currentZoom = Math.min(state.currentZoom * 1.3, CONFIG.maxZoom);
+            applyZoom();
+        }
+
+        function zoomOut() {
+            state.currentZoom = Math.max(state.currentZoom / 1.3, CONFIG.minZoom);
+            applyZoom();
+        }
+
+        function resetZoom() {
+            state.currentZoom = 1;
+            applyZoom();
+            centerOnYear(2018);
+        }
+
+        function applyZoom() {
+            const content = document.getElementById('timelineContent');
+            if (!content) return;
+
+            // Update CSS custom property for scaling
+            content.style.setProperty('--zoom', state.currentZoom);
+            
+            // Adjust pxPerYear based on zoom
+            CONFIG.pxPerYear = 200 * state.currentZoom;
+            
+            // Re-render with new scale
+            renderTimeline();
+        }
+
+        // ========================================
+        // CATEGORY FILTER
+        // ========================================
+        function setupLegend() {
+            const legendItems = document.querySelectorAll('.legend-item');
+            
+            legendItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const category = item.dataset.category;
+                    
+                    if (state.activeCategories.has(category)) {
+                        state.activeCategories.delete(category);
+                        item.classList.add('inactive');
+                    } else {
+                        state.activeCategories.add(category);
+                        item.classList.remove('inactive');
+                    }
+                    
+                    filterProjects();
+                });
+            });
+        }
+
+        function filterProjects() {
+            const cards = document.querySelectorAll('.project-card');
+            
+            cards.forEach(card => {
+                const category = card.dataset.category;
+                if (state.activeCategories.has(category)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // ========================================
+        // NAVIGATION
+        // ========================================
+        function setupNavigation() {
+            const navToggle = document.getElementById('navToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            if (navToggle && navLinks) {
+                navToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                    navToggle.classList.toggle('active');
+                });
+            }
+        }
+
+        // ========================================
+        // MODAL
+        // ========================================
+        function openModal(project) {
+            const modal = document.getElementById('modal');
+            if (!modal) return;
+
+            // Populate modal
+            document.getElementById('modalTitle').textContent = project.title;
+            document.getElementById('modalRole').textContent = project.role;
+            document.getElementById('modalText').textContent = project.description || 'No description available.';
+
+            // Media
+            const mediaEl = document.getElementById('modalMedia');
+            if (project.youtubeId) {
+                mediaEl.innerHTML = `
+                    <iframe 
+                        src="https://www.youtube.com/embed/${project.youtubeId}?rel=0" 
+                        title="${project.title}"
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                `;
+            } else {
+                const icon = CATEGORY_ICONS[project.category] || '◆';
+                mediaEl.innerHTML = `
+                    <div style="background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; aspect-ratio: 16/9; font-size: 64px;">
+                        ${icon}
+                    </div>
+                `;
+            }
+
+            // Stats
+            const statsEl = document.getElementById('modalStats');
+            if (project.playCount && project.playCount >= 1000000) {
+                statsEl.innerHTML = `
+                    <div class="stat-item">
+                        <div class="stat-value">${formatPlayCount(project.playCount)}</div>
+                        <div class="stat-label">YouTube Views</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${new Date(project.releaseDate).getFullYear()}</div>
+                        <div class="stat-label">Year</div>
+                    </div>
+                `;
+                statsEl.style.display = 'flex';
+            } else {
+                statsEl.innerHTML = `
+                    <div class="stat-item">
+                        <div class="stat-value">${new Date(project.releaseDate).getFullYear()}</div>
+                        <div class="stat-label">Year</div>
+                    </div>
+                `;
+                statsEl.style.display = 'flex';
+            }
+
+            // Press
+            const pressEl = document.getElementById('modalPress');
+            if (project.press && project.press.length > 0) {
+                pressEl.innerHTML = `
+                    <h3>Press</h3>
+                    ${project.press.map(q => `
+                        <div class="press-quote">
+                            <p>"${q.quote}"</p>
+                            <span class="press-source">— ${q.source}</span>
+                        </div>
+                    `).join('')}
+                `;
+                pressEl.style.display = 'block';
+            } else {
+                pressEl.style.display = 'none';
+            }
+
+            // Show modal
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            if (!modal) return;
+
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+
+            // Stop video
+            const mediaEl = document.getElementById('modalMedia');
+            if (mediaEl) {
+                mediaEl.innerHTML = '';
+            }
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modal')?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                closeModal();
+            }
+        });
+
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // ========================================
+        // UTILITIES
+        // ========================================
+        function formatPlayCount(count) {
+            if (!count) return '';
+            if (count >= 1000000) {
+                return (count / 1000000).toFixed(1) + 'M';
+            } else if (count >= 1000) {
+                return (count / 1000).toFixed(1) + 'K';
+            }
+            return count.toString();
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Unknown';
+            const date = new Date(dateString);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+        // ========================================
+        // START
+        // ========================================
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
