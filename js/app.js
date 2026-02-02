@@ -554,8 +554,9 @@
                 }
             }
             
-            const hasGif = project.youtubeId;
-            const gifUrl = hasGif ? `images/cargo/${project.id}.gif` : null;
+            // Check if project has a local animated GIF (based on project.image ending in .gif)
+            const hasGif = project.image && project.image.endsWith('.gif');
+            const gifUrl = hasGif ? project.image : null;
             
             // Build onerror handler with chained fallbacks
             const buildOnError = (chain) => {
