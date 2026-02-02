@@ -131,21 +131,154 @@
         try {
             const project = JSON.parse(decodeURIComponent(projectData));
             
+            const modalContent = modal.querySelector('.modal-content');
             const modalTitle = modal.querySelector('.modal-title');
             const modalRole = modal.querySelector('.modal-role');
+            const modalDescription = modal.querySelector('.modal-description');
             const modalMedia = modal.querySelector('.modal-media');
             
             modalTitle.textContent = project.title;
-            modalRole.textContent = project.role;
-            modalMedia.innerHTML = `
-                <img src="${project.image}" alt="${project.title}">
-            `;
+            modalRole.textContent = project.role + (project.years ? ` • ${project.years}` : '');
+            
+            // Special handling for Google Creator Labs
+            if (project.title === "Google Creator Labs (Seasons 1-10)") {
+                modalContent.classList.add('creator-labs');
+                modalDescription.innerHTML = generateCreatorLabsDescription();
+                modalMedia.innerHTML = generateCreatorLabsMedia();
+            } else {
+                modalContent.classList.remove('creator-labs');
+                modalDescription.innerHTML = project.description || '';
+                modalMedia.innerHTML = `
+                    <img src="${project.image}" alt="${project.title}">
+                `;
+            }
             
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         } catch (e) {
             console.error('Error opening modal:', e);
         }
+    }
+
+    // === GOOGLE CREATOR LABS SPECIAL CONTENT ===
+    function generateCreatorLabsMedia() {
+        if (typeof creatorLabsProject === 'undefined') return '';
+        
+        // Generate video gallery for Ultradreamer series
+        const videosHtml = creatorLabsProject.ultradreamerSeries.map(video => `
+            <div class="video-item">
+                <iframe 
+                    src="https://www.youtube.com/embed/${video.youtubeId}" 
+                    title="${video.title}"
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+                <div class="video-info">
+                    <h4>${video.title}</h4>
+                    <p>${video.description}</p>
+                    ${video.views ? `<span class="video-views">${video.views} views</span>` : ''}
+                </div>
+            </div>
+        `).join('');
+        
+        return `
+            <div class="creator-labs-media">
+                <div class="hero-video">
+                    <iframe 
+                        src="https://www.youtube.com/embed/WPehLrjzX3o" 
+                        title="Ultradreamer Series"
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="video-gallery">
+                    <h3>Ultradreamer Series (4 Episodes)</h3>
+                    <div class="videos-grid">
+                        ${videosHtml}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    function generateCreatorLabsDescription() {
+        if (typeof creatorLabsProject === 'undefined') {
+            return `<p>A five-year collaboration with Google's visual arts incubator, participating in 10 seasons as both director and photographer, creating the acclaimed 'Ultradreamer' series exploring the intersection of mental health and creativity.</p>`;
+        }
+        
+        const seasonsHtml = creatorLabsProject.seasons.map(season => `
+            <div class="season-item">
+                <div class="season-header">
+                    <h4>Season ${season.number}: ${season.theme}</h4>
+                    <span class="season-year">${season.year}</span>
+                </div>
+                <div class="season-details">
+                    <p><strong>Role:</strong> ${season.role}</p>
+                    <p><strong>Device:</strong> ${season.device}</p>
+                    ${season.work ? `<p><strong>Work:</strong> ${season.work}</p>` : ''}
+                    ${season.description ? `<p>${season.description}</p>` : ''}
+                    ${season.quote ? `<blockquote>"${season.quote}"</blockquote>` : ''}
+                    ${season.press ? `<p class="season-press">Featured in: ${season.press.join(', ')}</p>` : ''}
+                </div>
+            </div>
+        `).join('');
+        
+        const pressHtml = creatorLabsProject.pressCoverage.map(press => `
+            <div class="press-item">
+                <a href="${press.url}" target="_blank" rel="noopener">
+                    <strong>${press.publication}</strong>
+                    <span>${press.title}</span>
+                    <em>${press.date}</em>
+                </a>
+                ${press.quote ? `<blockquote>"${press.quote}"</blockquote>` : ''}
+            </div>
+        `).join('');
+        
+        return `
+            <div class="creator-labs-description">
+                <p class="lead">A five-year collaboration with Google's visual arts incubator, participating in 10 seasons (2019-2025) as both director and photographer. Created the acclaimed 'Ultradreamer' documentary series exploring the intersection of mental health and creativity, shot entirely on Google Pixel devices.</p>
+                
+                <div class="stats-grid">
+                    <div class="stat">
+                        <span class="stat-number">10</span>
+                        <span class="stat-label">Seasons</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">5+</span>
+                        <span class="stat-label">Years</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">100K+</span>
+                        <span class="stat-label">Video Views</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Episodes</span>
+                    </div>
+                </div>
+                
+                <div class="seasons-section">
+                    <h3>Season-by-Season Breakdown</h3>
+                    <div class="seasons-list">
+                        ${seasonsHtml}
+                    </div>
+                </div>
+                
+                <div class="press-section">
+                    <h3>Press Coverage</h3>
+                    <div class="press-list">
+                        ${pressHtml}
+                    </div>
+                </div>
+                
+                <div class="devices-section">
+                    <h3>Devices Used</h3>
+                    <p>Pixel 4 → Pixel 5 → Pixel 6/6 Pro → Pixel 7 Pro → Pixel 8 Pro → Pixel 9</p>
+                </div>
+            </div>
+        `;
     }
 
     function closeModal() {
