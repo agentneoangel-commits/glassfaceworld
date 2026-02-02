@@ -349,7 +349,7 @@
     font-weight: 400;
     font-style: italic;
     margin-bottom: 24px;
-    color: #111;
+    color: #000 !important;
     position: relative;
     z-index: 1;
     display: block;

@@ -555,7 +555,8 @@
             }
             
             // Check if project has a local animated GIF (based on project.image ending in .gif)
-            const hasGif = project.image && project.image.endsWith('.gif');
+            // Only show GIF if no YouTube thumbnail is available
+            const hasGif = project.image && project.image.endsWith('.gif') && !project.youtubeId;
             const gifUrl = hasGif ? project.image : null;
             
             // Build onerror handler with chained fallbacks
