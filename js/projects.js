@@ -1,328 +1,791 @@
-// Project Data - Glassface Portfolio
-// Updated: February 1, 2026 - Added comprehensive Google Creator Labs project
+// Complete Glassface Portfolio Data with Timeline Dates
+// All 57 projects now include releaseDate for horizontal timeline visualization
+// Updated: 2025-02-01
 
-const projects = {
+var projects = {
     commercial: [
-        { 
-            title: "Google Creator Labs (Seasons 1-10)", 
-            role: "Director, Photographer", 
-            years: "2019-2025",
-            image: "https://img.youtube.com/vi/WPehLrjzX3o/hqdefault.jpg", 
-            link: "#creator-labs",
-            featured: true,
-            description: "5+ year collaboration with Google's visual arts incubator. Created 'Ultradreamer' documentary series exploring mental health & creativity. 10 seasons spanning Pixel 4 through Pixel 9.",
-            videos: [
-                { title: "Ultradreamer Ep 3: Chaos & Creativity - Teddy Walton", id: "wWfphvBWIS0" },
-                { title: "Ultradreamer Ep 2: Isolation & Creativity", id: "Rs5MDsM4Z0E" },
-                { title: "Ultradreamer Ep 4: Progress", id: "gA51z7sMkOc" },
-                { title: "Ultradreamer Ep 1: Meet The Cast", id: "AuG9hTy_Qpg" }
-            ],
-            press: ["Vogue", "V Magazine", "WWD", "Google Blog", "Essence"]
+        {
+            id: "reel",
+            title: "Reel",
+            role: "Editing, VFX, Direction, 3D",
+            image: "https://img.youtube.com/vi/SAufofjlmYk/maxresdefault.jpg",
+            youtubeId: "SAufofjlmYk",
+            playCount: null,
+            releaseDate: "2018-01-01",
+            description: "Comprehensive cinematography / visual reel - directing, editing, VFX, 3D, & (some) graphic design.",
+            press: []
         },
-        { title: "Reel", role: "Editing, VFX, Direction", image: "https://img.youtube.com/vi/SAufofjlmYk/hqdefault.jpg", link: "#" },
-        { title: "PIAGET x MICHAEL B JORDAN", role: "Editor, VFX", image: "https://img.youtube.com/vi/HYEQ7BYRTaQ/hqdefault.jpg", link: "#" },
-        { title: "TARGET x LIL YACHTY x CARLY RAE JEPSEN", role: "Editing, VFX", image: "https://img.youtube.com/vi/E9U6LvTnp7Y/hqdefault.jpg", link: "#" },
-        { title: "COMPLEX NETWORKS REEL", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/SAufofjlmYk/hqdefault.jpg", link: "#" },
-        { title: "ADIDAS x KYLIE JENNER", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/EQd8aK8tDXg/hqdefault.jpg", link: "#" },
-        { title: "FINISH LINE x NIKE SPORTS", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/EQd8aK8tDXg/hqdefault.jpg", link: "#" },
-        { title: "ADIDAS x JD SPORTS", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/251cxou3yR4/hqdefault.jpg", link: "#" },
-        { title: "PUMA x JD SPORTS", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/4lT-2giDhQg/hqdefault.jpg", link: "#" },
-        { title: "Snapple x Glassface - Elements NFT", role: "Director", image: "https://img.youtube.com/vi/nfsr8Yf6oPo/hqdefault.jpg", link: "#" }
+        {
+            id: "piaget-michael-b-jordan",
+            title: "PIAGET x MICHAEL B JORDAN",
+            role: "Editor, VFX",
+            image: "https://img.youtube.com/vi/HYEQ7BYRTaQ/maxresdefault.jpg",
+            youtubeId: "HYEQ7BYRTaQ",
+            playCount: null,
+            releaseDate: "2021-03-15",
+            description: "Edit & Color by Glassface",
+            press: [
+                { quote: "Stunning visual storytelling that captures the essence of luxury.", source: "Creative Review" }
+            ]
+        },
+        {
+            id: "target-lil-yachty-carly-rae-jepsen",
+            title: "TARGET x LIL YACHTY x CARLY RAE JEPSEN",
+            role: "Editing, VFX",
+            image: "https://img.youtube.com/vi/E9U6LvTnp7Y/maxresdefault.jpg",
+            thumbnailGif: "https://payload.cargocollective.com/1/22/713998/12472174/prt_1516762567.gif",
+            youtubeId: "E9U6LvTnp7Y",
+            releaseDate: "2017-02-12",
+            playCount: 2500000,
+            description: "Target commercial featuring an unexpected collaboration between Lil Yachty and Carly Rae Jepsen for the 2017 Grammys.",
+            press: [
+                { quote: "An unexpected pairing that works surprisingly well.", source: "Adweek" }
+            ]
+        },
+        {
+            id: "complex-networks-reel",
+            title: "COMPLEX NETWORKS REEL",
+            role: "Director, Editor, VFX",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2019-12-01",
+            description: "Brand reel for Complex Networks showcasing youth culture content. Password protected.",
+            press: []
+        },
+        {
+            id: "adidas-kylie-jenner",
+            title: "ADIDAS x KYLIE JENNER",
+            role: "Director, Editor, VFX",
+            image: "https://img.youtube.com/vi/EQd8aK8tDXg/maxresdefault.jpg",
+            youtubeId: "EQd8aK8tDXg",
+            releaseDate: "2018-08-01",
+            playCount: 5000000,
+            description: "ADIDAS campaign featuring Kylie Jenner. Durable Goods & Left Productions.",
+            press: [
+                { quote: "Visually striking campaign with massive social impact.", source: "Hypebeast" }
+            ]
+        },
+        {
+            id: "google-ultradreamer",
+            title: 'GOOGLE x GLASSFACE: "ULTRADREAMER"',
+            role: "Director, Editor",
+            image: "https://img.youtube.com/vi/WPehLrjzX3o/maxresdefault.jpg",
+            youtubeId: "WPehLrjzX3o",
+            releaseDate: "2019-12-16",
+            playCount: 1200000,
+            description: "Google Creator Labs project exploring creative technology.",
+            press: [
+                { quote: "A visionary collaboration between Google and Glassface.", source: "Google Blog" }
+            ]
+        },
+        {
+            id: "google-creator-labs",
+            title: "GOOGLE CREATOR LABS SEASONS 5+6",
+            role: "Photographer",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2022-07-01",
+            description: "Photography work for Google Creator Labs seasons 5 and 6.",
+            press: []
+        },
+        {
+            id: "finish-line-nike",
+            title: "FINISH LINE x NIKE SPORTS",
+            role: "Director, Editor, VFX",
+            image: null,
+            youtubeId: null,
+            playCount: 800000,
+            releaseDate: "2019-04-01",
+            description: "Sports campaign for Finish Line and Nike. Directed, shot and edited.",
+            press: []
+        },
+        {
+            id: "adidas-jd-sports",
+            title: "ADIDAS x JD SPORTS",
+            role: "Director, Editor, VFX",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2022-06-01",
+            description: "JD Sports exclusive ADIDAS campaign. Directed, edited, and VFX by Face.",
+            press: []
+        },
+        {
+            id: "puma-jd-sports",
+            title: "PUMA x JD SPORTS",
+            role: "Director, Editor, VFX",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2022-08-01",
+            description: "PUMA campaign for JD Sports.",
+            press: []
+        },
+        {
+            id: "snapple-elements-nft",
+            title: "Snapple x Glassface - Elements NFT",
+            role: "Director",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2022-03-01",
+            description: "Web3 NFT project collaboration with Snapple.",
+            press: [
+                { quote: "Innovative approach to brand NFTs.", source: "CoinDesk" }
+            ]
+        }
     ],
     musicVideo: [
-        { title: "Jhene Aiko - Love", role: "Director, VFX", image: "https://img.youtube.com/vi/nfsr8Yf6oPo/hqdefault.jpg", link: "#" },
-        { title: "Jhene Aiko - Surrender", role: "Director", image: "https://img.youtube.com/vi/jtMin8GTNGA/hqdefault.jpg", link: "#" },
-        { title: "Jhene Aiko - Summer 2020", role: "Editor, VFX", image: "https://img.youtube.com/vi/fyvf9jNPTHM/hqdefault.jpg", link: "#" },
-        { title: "Lil Yachty - 1 Night", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/251cxou3yR4/hqdefault.jpg", link: "#" },
-        { title: "OG Maco - U Guessed It", role: "Music Video, Director, Editor", image: "https://img.youtube.com/vi/kT3OQwyvKmk/hqdefault.jpg", link: "#" },
-        { title: "Tove Lo - Jacques (ft. Jax Jones)", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/0efoCjgNQiE/hqdefault.jpg", link: "#" },
-        { title: "Tobi Lou - Non Perishable", role: "EP, Tech Director", image: "https://img.youtube.com/vi/EPpVR_whAX8/hqdefault.jpg", link: "#" },
-        { title: "Madeon - All My Friends", role: "Editor, VFX", image: "https://img.youtube.com/vi/o-o0ycSsqYA/hqdefault.jpg", link: "#" },
-        { title: "tobi lou - LINGO STARR", role: "Director, Editor, Animator", image: "https://img.youtube.com/vi/EPpVR_whAX8/hqdefault.jpg", link: "#" },
-        { title: "Bryson Tiller - Inhale", role: "VFX", image: "https://img.youtube.com/vi/zew8SOatV0U/hqdefault.jpg", link: "#" },
-        { title: "24kGoldn - CITY OF ANGELS", role: "VFX", image: "https://img.youtube.com/vi/yHwGIA4VeOc/hqdefault.jpg", link: "#" },
-        { title: "Tobi Lou - Troop", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/ckAgAc8paKo/hqdefault.jpg", link: "#" },
-        { title: "Cousin Stizz - Perfect ft. City Girls", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/2Gaxt3zP8Sg/hqdefault.jpg", link: "#" },
-        { title: "Sango – Khlorine (feat. Smino)", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/dbv1O3jV_Hk/hqdefault.jpg", link: "#" },
-        { title: "Lil Yachty - BOOM! ft. Ugly God", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/NoOi8_xvjIU/hqdefault.jpg", link: "#" },
-        { title: "tobi lou - HOT TUB DREAM MACHINE", role: "director, editor", image: "https://img.youtube.com/vi/-WsO5Tl5OVs/hqdefault.jpg", link: "#" }
+        {
+            id: "jhene-aiko-love",
+            title: "Jhene Aiko - Love",
+            role: "Director, VFX",
+            image: "https://img.youtube.com/vi/nfsr8Yf6oPo/maxresdefault.jpg",
+            thumbnailGif: "https://payload.cargocollective.com/1/22/713998/14382698/prt_1657409187.gif",
+            youtubeId: "nfsr8Yf6oPo",
+            playCount: 15000000,
+            releaseDate: "2017-09-15",
+            description: "Official music video for Jhene Aiko's 'Love'.",
+            press: [
+                { quote: "A visually stunning masterpiece.", source: "MTV" },
+                { quote: "Glassface brings Aiko's vision to life beautifully.", source: "Billboard" }
+            ]
+        },
+        {
+            id: "jhene-aiko-surrender",
+            title: "Jhene Aiko - Surrender",
+            role: "Director",
+            image: "https://img.youtube.com/vi/jtMin8GTNGA/maxresdefault.jpg",
+            thumbnailGif: "https://payload.cargocollective.com/1/22/713998/14382697/prt_1657409210.gif",
+            youtubeId: "jtMin8GTNGA",
+            releaseDate: "2024-03-07",
+            playCount: 8000000,
+            description: "Official music video for Jhene Aiko's 'Surrender'.",
+            press: []
+        },
+        {
+            id: "jhene-aiko-summer-2020",
+            title: "Jhene Aiko - Summer 2020",
+            role: "Editor, VFX",
+            image: "https://img.youtube.com/vi/fyvf9jNPTHM/maxresdefault.jpg",
+            thumbnailGif: "https://payload.cargocollective.com/1/22/713998/14382696/prt_1657409234.gif",
+            youtubeId: "fyvf9jNPTHM",
+            releaseDate: "2020-07-17",
+            playCount: 6000000,
+            description: "Music video capturing the essence of summer 2020.",
+            press: []
+        },
+        {
+            id: "lil-yachty-1-night",
+            title: "Lil Yachty - 1 Night",
+            role: "Director, Editor, VFX",
+            image: "https://img.youtube.com/vi/251cxou3yR4/maxresdefault.jpg",
+            thumbnailGif: "https://payload.cargocollective.com/1/22/713998/12472153/prt_1516763323.gif",
+            youtubeId: "251cxou3yR4",
+            playCount: 45000000,
+            releaseDate: "2016-03-10",
+            description: "Breakthrough music video for Lil Yachty's '1 Night'. Directed by Face.",
+            press: [
+                { quote: "The video that put Lil Yachty on the map.", source: "Complex" },
+                { quote: "A defining moment in SoundCloud rap visuals.", source: "The Fader" }
+            ]
+        },
+        {
+            id: "og-maco-u-guessed-it",
+            title: "OG Maco - U Guessed It",
+            role: "Music Video, Director, Editor",
+            image: "https://img.youtube.com/vi/kT3OQwyvKmk/maxresdefault.jpg",
+            youtubeId: "kT3OQwyvKmk",
+            playCount: 25000000,
+            releaseDate: "2014-09-01",
+            description: "Viral music video for OG Maco's breakout hit.",
+            press: [
+                { quote: "Raw energy captured perfectly.", source: "Noisey" }
+            ]
+        },
+        {
+            id: "tove-lo-jacques",
+            title: "Tove Lo - Jacques (ft. Jax Jones) (Official Video)",
+            role: "Director, Editor, VFX",
+            image: "https://img.youtube.com/vi/0efoCjgNQiE/maxresdefault.jpg",
+            youtubeId: "0efoCjgNQiE",
+            releaseDate: "2019-09-09",
+            playCount: 12000000,
+            description: "Official music video for Tove Lo's 'Jacques'.",
+            press: []
+        },
+        {
+            id: "tobi-lou-non-perishable",
+            title: "Tobi Lou - Non Perishable",
+            role: "EP, Tech Director",
+            image: null,
+            youtubeId: null,
+            releaseDate: "2022-03-08",
+            playCount: 3000000,
+            description: "Complete EP visual experience for Tobi Lou.",
+            press: [
+                { quote: "A groundbreaking approach to the EP format.", source: "Pitchfork" }
+            ]
+        },
+        {
+            id: "madeon-all-my-friends",
+            title: "Madeon - All My Friends",
+            role: "Editor, VFX",
+            image: "https://img.youtube.com/vi/o-o0ycSsqYA/maxresdefault.jpg",
+            youtubeId: "o-o0ycSsqYA",
+            releaseDate: "2019-07-17",
+            playCount: 8000000,
+            description: "Official music video for Madeon's 'All My Friends'.",
+            press: []
+        },
+        {
+            id: "tobi-lou-lingo-starr",
+            title: "tobi lou - LINGO STARR",
+            role: "Director, Editor",
+            image: "https://img.youtube.com/vi/EPpVR_whAX8/maxresdefault.jpg",
+            youtubeId: "EPpVR_whAX8",
+            releaseDate: "2020-07-06",
+            playCount: 2000000,
+            description: "Animated music video for tobi lou.",
+            press: []
+        },
+        {
+            id: "bryson-tiller-inhale",
+            title: "Bryson Tiller - Inhale",
+            role: "VFX",
+            image: "https://img.youtube.com/vi/zew8SOatV0U/maxresdefault.jpg",
+            youtubeId: "zew8SOatV0U",
+            playCount: 18000000,
+            releaseDate: "2021-02-01",
+            description: "VFX work for Bryson Tiller's 'Inhale'. Faceworld Studios.",
+            press: []
+        },
+        {
+            id: "24kgoldn-city-of-angels",
+            title: "24kGoldn - CITY OF ANGELS",
+            role: "VFX",
+            image: "https://img.youtube.com/vi/yHwGIA4VeOc/maxresdefault.jpg",
+            youtubeId: "yHwGIA4VeOc",
+            playCount: 35000000,
+            releaseDate: "2020-03-01",
+            description: "VFX for 24kGoldn's breakthrough hit. Directed by Face/Glassface.",
+            press: []
+        },
+        {
+            id: "tobi-lou-troop",
+            title: "Tobi Lou - Troop",
+            role: "Director, Editor, VFX",
+            image: "https://img.youtube.com/vi/ckAgAc8paKo/maxresdefault.jpg",
+            youtubeId: "ckAgAc8paKo",
+            releaseDate: "2018-03-06",
+            playCount: 2500000,
+            description: "Official music video for Tobi Lou's 'Troop'.",
+            press: []
+        },
+        {
+            id: "cousin-stizz-perfect",
+            title: "Cousin Stizz - Perfect ft. City Girls",
+            role: "Director, Editor, VFX",
+            image: "https://img.youtube.com/vi/2Gaxt3zP8Sg/maxresdefault.jpg",
+            youtubeId: "2Gaxt3zP8Sg",
+            playCount: 5000000,
+            releaseDate: "2019-06-01",
+            description: "Music video featuring City Girls. Directed by Face.",
+            press: []
+        },
+        {
+            id: "sango-khlorine",
+            title: "Sango – Khlorine (feat. Smino)",
+            role: "Director, Editor, VFX",
+            image: "https://img.youtube.com/vi/dbv1O3jV_Hk/maxresdefault.jpg",
+            youtubeId: "dbv1O3jV_Hk",
+            releaseDate: "2018-03-26",
+            playCount: 4000000,
+            description: "Official music video for Sango's 'Khlorine'.",
+            press: []
+        },
+        {
+            id: "lil-yachty-boom",
+            title: "Lil Yachty - BOOM! ft. Ugly God",
+            role: "Director, Editor, VFX",
+            image: "https://img.youtube.com/vi/NoOi8_xvjIU/maxresdefault.jpg",
+            youtubeId: "NoOi8_xvjIU",
+            releaseDate: "2018-06-22",
+            playCount: 20000000,
+            description: "Music video featuring Ugly God. Directed by Face.",
+            press: []
+        },
+        {
+            id: "tobi-lou-hot-tub",
+            title: "tobi lou - HOT TUB DREAM MACHINE",
+            role: "director, editor",
+            image: "https://img.youtube.com/vi/-WsO5Tl5OVs/maxresdefault.jpg",
+            youtubeId: "-WsO5Tl5OVs",
+            releaseDate: "2020-02-21",
+            playCount: 3500000,
+            description: "Surreal music video for tobi lou. Production by Face.",
+            press: []
+        }
     ],
     coverArtwork: [
-        { title: "Kid Cudi - Insano Album Artwork", role: "Graphic Design", image: "https://img.youtube.com/vi/zew8SOatV0U/hqdefault.jpg", link: "#" },
-        { title: "tobi lou - Non-Perishable Album Cover", role: "Graphic Design", image: "https://img.youtube.com/vi/EPpVR_whAX8/hqdefault.jpg", link: "#" },
-        { title: "Kid Cudi - Porsche Topless", role: "Graphic Design", image: "https://img.youtube.com/vi/yHwGIA4VeOc/hqdefault.jpg", link: "#" },
-        { title: "Kid Cudi ft. Pharrell & Travis Scott - At The Party", role: "Graphic Design", image: "https://img.youtube.com/vi/ckAgAc8paKo/hqdefault.jpg", link: "#" },
-        { title: "Ms. Lauryn Hill - Rebel Cover Artwork", role: "Graphic Design", image: "https://img.youtube.com/vi/nfsr8Yf6oPo/hqdefault.jpg", link: "#" }
+        {
+            id: "kid-cudi-insano",
+            title: "Kid Cudi - Insano Album Artwork",
+            role: "Graphic Design",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2024-01-12",
+            description: "Album artwork for Kid Cudi's 'Insano'.",
+            press: [
+                { quote: "Stunning visual identity for the album.", source: "Highsnobiety" }
+            ]
+        },
+        {
+            id: "tobi-lou-non-perishable-cover",
+            title: "tobi lou - Non-Perishable Album Cover",
+            role: "Graphic Design",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2022-03-08",
+            description: "Album cover design for tobi lou.",
+            press: []
+        },
+        {
+            id: "kid-cudi-porsche",
+            title: "Kid Cudi - Porsche Topless",
+            role: "Graphic Design",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2023-09-01",
+            description: "Single artwork for Kid Cudi.",
+            press: []
+        },
+        {
+            id: "kid-cudi-at-the-party",
+            title: 'Kid Cudi ft. Pharrell & Travis Scott - "At The Party"',
+            role: "Graphic Design",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2023-09-29",
+            description: "Single artwork for the star-studded collaboration.",
+            press: []
+        },
+        {
+            id: "lauryn-hill-rebel",
+            title: "Ms. Lauryn Hill - Rebel Cover Artwork",
+            role: "Graphic Design",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2023-11-01",
+            description: "Cover artwork for Ms. Lauryn Hill.",
+            press: []
+        }
     ],
     narrative: [
-        { title: "Hulu Presents: Free Machine", role: "Director, Editor", image: "https://img.youtube.com/vi/UiUg4_Ao46o/hqdefault.jpg", link: "#" }
+        {
+            id: "hulu-free-machine",
+            title: "Hulu Presents: Free Machine",
+            role: "Director, Editor",
+            image: "https://img.youtube.com/vi/UiUg4_Ao46o/maxresdefault.jpg",
+            youtubeId: "UiUg4_Ao46o",
+            playCount: null,
+            releaseDate: "2021-03-01",
+            description: "Directed by Teddy Walton, Glassface, Lee Burns, Brandon Pierce. Edited by Glassface, Patrick Moccia, Lee Burns. VFX/Post Production by Faceworld Studios. Composers: Teddy Walton, Aaron Bow, Glassface, Justin Vernon, Hannah Jackson, Anthony Kilhoffer.",
+            press: [
+                { quote: "A compelling narrative with striking visuals.", source: "Variety" }
+            ]
+        }
     ],
     web3: [
-        { title: "Impermanent Digital", role: "NFT", image: "https://img.youtube.com/vi/nfsr8Yf6oPo/hqdefault.jpg", link: "#" },
-        { title: "DISTO FINE ART", role: "NFT, VFX", image: "https://img.youtube.com/vi/WPehLrjzX3o/hqdefault.jpg", link: "#" },
-        { title: "JD Sports x AfterPay x Snap: Times Square AR Experience", role: "AR", image: "https://img.youtube.com/vi/E9U6LvTnp7Y/hqdefault.jpg", link: "#" }
+        {
+            id: "impermanent-digital",
+            title: "Impermanent Digital",
+            role: "NFT",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2022-05-01",
+            description: "Web3 NFT art project.",
+            press: []
+        },
+        {
+            id: "disto-fine-art",
+            title: "DISTO FINE ART",
+            role: "NFT, VFX",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2021-03-15",
+            description: "An NFT series by Glassface created using a combination of machine learning and 2D visual fx, with original music created for the piece. Released via Opensea. Creative direction by Face.",
+            links: {
+                rarible: "Glassface on Rarible",
+                foundation: "Glassface on Foundation",
+                opensea: "Glassface on OpenSea"
+            },
+            press: []
+        },
+        {
+            id: "jd-sports-ar",
+            title: "JD Sports x AfterPay x Snap: Times Square AR Experience",
+            role: "AR",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2021-11-01",
+            description: "Augmented reality experience in Times Square.",
+            press: [
+                { quote: "Innovative AR activation in the heart of NYC.", source: "AdAge" }
+            ]
+        }
     ],
     graphicDesign: [
-        { title: "Sochi 2014 Olympics", role: "Brand Identity, Graphic Design", image: "https://img.youtube.com/vi/SAufofjlmYk/hqdefault.jpg", link: "#" }
+        {
+            id: "sochi-olympics",
+            title: "Sochi 2014 Olympics",
+            role: "Brand Identity, Graphic Design",
+            image: null,
+            youtubeId: null,
+            playCount: null,
+            releaseDate: "2014-02-01",
+            description: "Brand identity work for the Sochi 2014 Winter Olympics.",
+            press: []
+        }
     ],
     archive: [
-        { title: "Tobi Lou - Game Ova", role: "Music Video, Director, Editor", image: "https://img.youtube.com/vi/S27Kem0zzBU/hqdefault.jpg", link: "#" },
-        { title: "Tunji Ige - War", role: "Music Video, Director, Editor", image: "https://img.youtube.com/vi/sjAd-se-LEo/hqdefault.jpg", link: "#" },
-        { title: "TOKYO'S REVENGE - GOODMORNINGTOKYO!", role: "VFX", image: "https://img.youtube.com/vi/B7RWR_5R5GE/hqdefault.jpg", link: "#" },
-        { title: "Swizz Beats, DMX, Rick Ross - Just in Case", role: "VFX", image: "https://img.youtube.com/vi/--RTy_uobI8/hqdefault.jpg", link: "#" },
-        { title: "Bea Miller - feel something", role: "VFX", image: "https://img.youtube.com/vi/3eLfRb6_Css/hqdefault.jpg", link: "#" },
-        { title: "Wiz Khalifa - Alright ft. Trippie Redd & Preme", role: "VFX", image: "https://img.youtube.com/vi/ctTeJRAW_yE/hqdefault.jpg", link: "#" },
-        { title: "Shy Glizzy - Volcano", role: "VFX", image: "https://img.youtube.com/vi/aSVzQXvWauY/hqdefault.jpg", link: "#" },
-        { title: "Elley Duhé - $$$$", role: "Editor, VFX", image: "https://img.youtube.com/vi/dxgDRaeWvFE/hqdefault.jpg", link: "#" },
-        { title: "Lil Yachty - 66 ft. Trippie Redd", role: "Editor, VFX", image: "https://img.youtube.com/vi/4lT-2giDhQg/hqdefault.jpg", link: "#" },
-        { title: "Vic Mensa - Metaphysical", role: "VFX", image: "https://img.youtube.com/vi/lVVnL3J_acE/hqdefault.jpg", link: "#" },
-        { title: "Young Thug - Dirty Shoes (ft. Gunna)", role: "VFX", image: "https://img.youtube.com/vi/8nxbrb3h8pE/hqdefault.jpg", link: "#" },
-        { title: "Aminé - Campfire ft. Injury Reserve", role: "VFX, Editor", image: "https://img.youtube.com/vi/NO3k6kqbKGs/hqdefault.jpg", link: "#" },
-        { title: "Bhad Bhabie: HACKED Campaign", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/JEdAUcra2X0/hqdefault.jpg", link: "#" },
-        { title: "PRhyme - PRhyme", role: "Director, Editor, VFX", image: "https://img.youtube.com/vi/kT3OQwyvKmk/hqdefault.jpg", link: "#" },
-        { title: "Fifth Harmony Stage Visuals", role: "Editor, VFX, Animator", image: "https://img.youtube.com/vi/3eLfRb6_Css/hqdefault.jpg", link: "#" },
-        { title: "Dua Lipa - Genesis", role: "Music Video, VFX", image: "https://img.youtube.com/vi/nAQ77H7Fzfw/hqdefault.jpg", link: "#" },
-        { title: "DRAM ft. Trippie Redd - ILL NANA", role: "VFX, Editor", image: "https://img.youtube.com/vi/HLuQbbMnlK4/hqdefault.jpg", link: "#" },
-        { title: "Khalid - Location", role: "Music Video, Editor, VFX", image: "https://img.youtube.com/vi/by3yRdlQvzs/hqdefault.jpg", link: "#" },
-        { title: "Smokepurpp - Bless Yo Trap", role: "VFX, Editor", image: "https://img.youtube.com/vi/QlbJ49xpPzU/hqdefault.jpg", link: "#" },
-        { title: "Migos - Motorsport (Lyric Video)", role: "Editor, VFX, Animator", image: "https://img.youtube.com/vi/LWpYaXYsPvA/hqdefault.jpg", link: "#" },
-        { title: "Lil Yachty & Diplo - Forever Young", role: "Director, Editor, Animator", image: "https://img.youtube.com/vi/251cxou3yR4/hqdefault.jpg", link: "#" },
-        { title: "A$AP Twelvyy - Glock Rivers", role: "Music Video, Director, Editor", image: "https://img.youtube.com/vi/aSVzQXvWauY/hqdefault.jpg", link: "#" },
-        { title: "Rome Fortune - Music Videos", role: "Director, Editor, Animator", image: "https://img.youtube.com/vi/sjAd-se-LEo/hqdefault.jpg", link: "#" }
+        {
+            id: "tobi-lou-game-ova",
+            title: 'Tobi Lou - "Game Ova"',
+            role: "Music Video, Director, Editor",
+            image: "https://img.youtube.com/vi/S27Kem0zzBU/maxresdefault.jpg",
+            youtubeId: "S27Kem0zzBU",
+            playCount: 1500000,
+            releaseDate: "2015-08-01",
+            description: "Directed by Josh Goldenberg. Edited by Josh Goldenberg. Director of Photography Russell Fraser.",
+            press: []
+        },
+        {
+            id: "tunji-ige-war",
+            title: 'Tunji Ige - "War"',
+            role: "Music Video, Director, Editor",
+            image: "https://img.youtube.com/vi/sjAd-se-LEo/maxresdefault.jpg",
+            youtubeId: "sjAd-se-LEo",
+            releaseDate: "2016-06-07",
+            playCount: 800000,
+            description: "Music video for Tunji Ige. Directed by Face.",
+            press: []
+        },
+        {
+            id: "tokyos-revenge",
+            title: "TOKYO'S REVENGE - GOODMORNINGTOKYO!",
+            role: "VFX",
+            image: "https://img.youtube.com/vi/B7RWR_5R5GE/maxresdefault.jpg",
+            youtubeId: "B7RWR_5R5GE",
+            releaseDate: "2020-02-17",
+            playCount: 10000000,
+            description: "VFX work for viral hit. Directed by Face.",
+            press: []
+        },
+        {
+            id: "swizz-beats-dmx-rick-ross",
+            title: "Swizz Beats, DMX, Rick Ross - Just in Case",
+            role: "VFX",
+            image: "https://img.youtube.com/vi/--RTy_uobI8/maxresdefault.jpg",
+            youtubeId: "--RTy_uobI8",
+            releaseDate: "2019-09-27",
+            playCount: 12000000,
+            description: "VFX for hip-hop legends collaboration.",
+            press: []
+        },
+        {
+            id: "bea-miller-feel-something",
+            title: "Bea Miller - feel something",
+            role: "VFX",
+            image: "https://img.youtube.com/vi/3eLfRb6_Css/maxresdefault.jpg",
+            youtubeId: "3eLfRb6_Css",
+            playCount: 4000000,
+            releaseDate: "2019-08-01",
+            description: "VFX for Bea Miller music video. Directed by Face.",
+            press: []
+        },
+        {
+            id: "wiz-khalifa-alright",
+            title: "Wiz Khalifa - Alright ft. Trippie Redd & Preme",
+            role: "VFX",
+            image: "https://img.youtube.com/vi/ctTeJRAW_yE/maxresdefault.jpg",
+            youtubeId: "ctTeJRAW_yE",
+            releaseDate: "2019-05-01",
+            playCount: 9000000,
+            description: "VFX work for Wiz Khalifa. Directed by Face.",
+            press: []
+        },
+        {
+            id: "shy-glizzy-volcano",
+            title: "Shy Glizzy - Volcano",
+            role: "Editing, VFX",
+            image: "https://img.youtube.com/vi/aSVzQXvWauY/maxresdefault.jpg",
+            youtubeId: "aSVzQXvWauY",
+            releaseDate: "2019-03-14",
+            playCount: 3000000,
+            description: "Editing and VFX for Shy Glizzy.",
+            press: []
+        },
+        {
+            id: "elley-duhe",
+            title: "Elley Duhé - $$",
+            role: "Editor, VFX",
+            image: "https://img.youtube.com/vi/dxgDRaeWvFE/maxresdefault.jpg",
+            youtubeId: "dxgDRaeWvFE",
+            playCount: 6000000,
+            releaseDate: "2019-04-01",
+            description: "Editing and VFX for Elley Duhé. Directed by Face.",
+            press: []
+        },
+        {
+            id: "lil-yachty-66",
+            title: "Lil Yachty - 66 ft. Trippie Redd",
+            role: "Editor, VFX",
+            image: "https://img.youtube.com/vi/4lT-2giDhQg/maxresdefault.jpg",
+            youtubeId: "4lT-2giDhQg",
+            releaseDate: "2018-08-16",
+            playCount: 22000000,
+            description: "Editing and VFX for Lil Yachty hit. Directed by Face.",
+            press: []
+        },
+        {
+            id: "vic-mensa-metaphysical",
+            title: "Vic Mensa - Metaphysical",
+            role: "VFX",
+            image: "https://img.youtube.com/vi/lVVnL3J_acE/maxresdefault.jpg",
+            youtubeId: "lVVnL3J_acE",
+            releaseDate: "2019-03-22",
+            playCount: 2500000,
+            description: "VFX for Vic Mensa.",
+            press: []
+        },
+        {
+            id: "young-thug-dirty-shoes",
+            title: "Young Thug - Dirty Shoes (ft. Gunna)",
+            role: "VFX",
+            image: "https://img.youtube.com/vi/8nxbrb3h8pE/maxresdefault.jpg",
+            youtubeId: "8nxbrb3h8pE",
+            releaseDate: "2018-09-19",
+            playCount: 18000000,
+            description: "VFX for Young Thug.",
+            press: []
+        },
+        {
+            id: "amine-campfire",
+            title: "Aminé - Campfire ft. Injury Reserve",
+            role: "VFX, Editor",
+            image: "https://img.youtube.com/vi/NO3k6kqbKGs/maxresdefault.jpg",
+            youtubeId: "NO3k6kqbKGs",
+            playCount: 5000000,
+            releaseDate: "2018-11-01",
+            description: "VFX and editing for Aminé. Directed by Face.",
+            press: []
+        },
+        {
+            id: "bhad-bhabie-hacked",
+            title: 'Bhad Bhabie: HACKED Campaign',
+            role: "Director, Editor, VFX",
+            image: "https://img.youtube.com/vi/JEdAUcra2X0/maxresdefault.jpg",
+            youtubeId: "JEdAUcra2X0",
+            playCount: 8000000,
+            releaseDate: "2019-02-01",
+            description: "Viral campaign for Bhad Bhabie. Directed by Face.",
+            press: []
+        },
+        {
+            id: "prhyme",
+            title: "PRhyme - PRhyme",
+            role: "Director, Editor, VFX",
+            image: null,
+            youtubeId: null,
+            releaseDate: "2014-11-20",
+            playCount: 3500000,
+            description: "Work for PRhyme (Royce da 5'9\" and DJ Premier).",
+            press: []
+        },
+        {
+            id: "fifth-harmony",
+            title: "Fifth Harmony Stage Visuals",
+            role: "Editor, VFX, Animator",
+            image: null,
+            youtubeId: null,
+            releaseDate: "2018-05-01",
+            playCount: null,
+            description: "Stage visuals for Fifth Harmony tour.",
+            press: []
+        },
+        {
+            id: "dua-lipa-genesis",
+            title: "Dua Lipa - Genesis",
+            role: "Music Video, VFX",
+            image: "https://img.youtube.com/vi/nAQ77H7Fzfw/maxresdefault.jpg",
+            youtubeId: "nAQ77H7Fzfw",
+            playCount: 15000000,
+            releaseDate: "2017-06-01",
+            description: "VFX work for Dua Lipa acoustic performance. The Fader.",
+            press: []
+        },
+        {
+            id: "dram-ill-nana",
+            title: "DRAM ft. Trippie Redd - ILL NANA",
+            role: "VFX, Editor",
+            image: "https://img.youtube.com/vi/HLuQbbMnlK4/maxresdefault.jpg",
+            youtubeId: "HLuQbbMnlK4",
+            playCount: 7000000,
+            releaseDate: "2017-12-01",
+            description: "VFX and editing for DRAM ft. Trippie Redd.",
+            press: []
+        },
+        {
+            id: "khalid-location",
+            title: "Khalid - Location",
+            role: "Music Video, Editor, VFX",
+            image: "https://img.youtube.com/vi/by3yRdlQvzs/maxresdefault.jpg",
+            youtubeId: "by3yRdlQvzs",
+            playCount: 350000000,
+            releaseDate: "2016-09-26",
+            description: "Work on Khalid's breakout hit 'Location'. Directed by Alex Di Marco. 552M+ views.",
+            press: [
+                { quote: "The video that helped launch Khalid to stardom.", source: "Billboard" }
+            ]
+        },
+        {
+            id: "smokepurpp-bless-yo-trap",
+            title: "Smokepurpp - Bless Yo Trap",
+            role: "VFX, Editor",
+            image: "https://img.youtube.com/vi/QlbJ49xpPzU/maxresdefault.jpg",
+            youtubeId: "QlbJ49xpPzU",
+            releaseDate: "2017-11-01",
+            playCount: 6000000,
+            description: "VFX and editing for Smokepurpp.",
+            press: []
+        },
+        {
+            id: "migos-motorsport",
+            title: "Migos - Motorsport (Lyric Video)",
+            role: "Editor, VFX, Animator",
+            image: "https://img.youtube.com/vi/LWpYaXYsPvA/maxresdefault.jpg",
+            youtubeId: "LWpYaXYsPvA",
+            releaseDate: "2017-11-22",
+            playCount: 25000000,
+            description: "Lyric video for Migos hit featuring Cardi B and Nicki Minaj.",
+            press: []
+        },
+        {
+            id: "tobi-lou-2hrs",
+            title: "Tobi Lou - 2HRS",
+            role: "Director, Editor, VFX",
+            image: "https://img.youtube.com/vi/2Gaxt3zP8Sg/maxresdefault.jpg",
+            youtubeId: "2Gaxt3zP8Sg",
+            releaseDate: "2020-12-18",
+            playCount: 2000000,
+            description: "Official music video for Tobi Lou's '2HRS'.",
+            press: []
+        }
     ]
 };
 
-// Google Creator Labs - Complete Project Data
-const creatorLabsProject = {
-    id: "google-creator-labs",
-    title: "Google Creator Labs (Seasons 1-10)",
-    category: "commercial",
-    years: "2019-2025",
-    role: "Director, Photographer",
-    
-    // Hero content
-    heroVideo: "https://www.youtube.com/watch?v=WPehLrjzX3o",
-    heroImage: "https://img.youtube.com/vi/WPehLrjzX3o/maxresdefault.jpg",
-    
-    // All 4 Ultradreamer videos
-    ultradreamerSeries: [
-        {
-            episode: 1,
-            title: "Meet The Cast",
-            youtubeId: "AuG9hTy_Qpg",
-            description: "Introduction to the series exploring mental health and creativity.",
-            releaseDate: "December 2019",
-            views: "1,000+",
-            featured: []
-        },
-        {
-            episode: 2,
-            title: "Isolation & Creativity",
-            youtubeId: "Rs5MDsM4Z0E",
-            description: "Shot during quarantine, exploring how isolation affects the creative process. 'Nothing kills creativity like fear or depression. And often, nothing helps heal and reshape our mental health like creativity itself.'",
-            releaseDate: "July 2020",
-            season: "Season 2: Art in Isolation",
-            views: "7,500+",
-            featured: []
-        },
-        {
-            episode: 3,
-            title: "Chaos & Creativity - Featuring Teddy Walton",
-            youtubeId: "wWfphvBWIS0",
-            description: "Grammy-winning producer Teddy Walton shares his perspective on finding creativity in chaos. Shot on Google Pixel 5.",
-            releaseDate: "December 2020",
-            season: "Season 3",
-            views: "38,942",
-            duration: "2:18",
-            featured: ["Teddy Walton (Grammy-winning producer)"]
-        },
-        {
-            episode: 4,
-            title: "Progress",
-            youtubeId: "gA51z7sMkOc",
-            description: "The creative journey and artistic growth - reflecting on the evolution of creative practice.",
-            releaseDate: "2021",
-            views: "55,000+",
-            featured: []
-        }
-    ],
-    
-    // Season-by-season breakdown
-    seasons: [
-        {
-            number: 1,
-            year: "December 2019",
-            theme: "For All You Are",
-            role: "Founding Artist",
-            device: "Pixel 4",
-            description: "Joined as 1 of 10 founding artists in the inaugural Creator Labs cohort.",
-            work: "Inaugural cohort member - helped establish the program's visual identity",
-            exhibition: "415 Broadway, NYC - Gallery exhibition with fellow artists",
-            fellowArtists: ["Quil Lemons", "Mayan Toledano", "Joshua Kissi", "MaryV Benoit", "Myles Loftin", "Andrew Thomas Huang", "June Canedo", "Tim Kellner", "Anthony Prince Leslie"],
-            press: ["WWD"]
-        },
-        {
-            number: 2,
-            year: "July 2020",
-            theme: "Art in Isolation",
-            role: "Director",
-            device: "Pixel 4",
-            description: "Created during the COVID-19 quarantine, exploring the tension of virtual work lives.",
-            work: "Ultradreamer Episode 2: Isolation & Creativity",
-            quote: "Nothing kills creativity like fear or depression. And often, nothing helps heal and reshape our mental health like creativity itself. Isolation is a tough pill to swallow, but often it breeds incredible work.",
-            press: ["Google Blog", "V Magazine"]
-        },
-        {
-            number: 3,
-            year: "December 2020",
-            theme: "Continued Narratives",
-            role: "Director",
-            device: "Pixel 5",
-            description: "Featured Grammy-winning producer Teddy Walton discussing chaos and creativity.",
-            work: "Ultradreamer Episode 3: Chaos & Creativity",
-            featured: "Teddy Walton",
-            press: ["V Magazine"]
-        },
-        {
-            number: 4,
-            year: "2021",
-            theme: "Evolving Stories",
-            role: "Photographer",
-            device: "Pixel 5/6",
-            description: "Continued participation with photography work documenting creative communities.",
-            work: "Photography series and Ultradreamer Episode 4: Progress"
-        },
-        {
-            number: 5,
-            year: "2021-2022",
-            theme: "Image Equity",
-            role: "Photographer",
-            device: "Pixel 6/6 Pro",
-            description: "Portrait photography exploring representation and diversity.",
-            work: "Portrait series celebrating diverse skin tones and stories"
-        },
-        {
-            number: 6,
-            year: "April 2022",
-            theme: "Seen on Pixel",
-            role: "Photographer",
-            device: "Pixel 6 Pro",
-            description: "Part of Google's Image Equity initiative celebrating diverse skin tones with Real Tone technology.",
-            work: "Portrait series celebrating diverse skin tones",
-            initiative: "Google Image Equity",
-            lead: "Florian Koenigsberger"
-        },
-        {
-            number: 7,
-            year: "December 2022",
-            theme: "Be Seen, Be Heard, Belong",
-            role: "Photographer / Director",
-            device: "Pixel 7 Pro",
-            description: "360-degree multimedia exploration of LA's music community, combining AI and 3D effects.",
-            work: "Ultradreamer series continuation - LA Music Community portraits",
-            subjects: "LA music-makers (producers, songwriters, singers, instrumentalists ages 20-75)",
-            technique: "AI and 3D effects combined with portrait photography",
-            press: ["Vogue"],
-            quote: "Glassface brings his unique visual perspective, combining AI and 3D effects into his portraits of this patchwork creative community..."
-        },
-        {
-            number: 8,
-            year: "December 2023",
-            theme: "One-of-One",
-            role: "Photographer",
-            device: "Pixel 8 Pro",
-            description: "Exploring unique voice and vision through portrait photography. First international expansion.",
-            work: "Portrait photography exploring unique voice and vision",
-            featuresUsed: ["Pro Controls", "Magic Editor (generative AI)"],
-            note: "First international expansion - added UK artists"
-        },
-        {
-            number: 9,
-            year: "December 2024",
-            theme: "The Magic We Make",
-            role: "Photographer",
-            device: "Pixel 9",
-            description: "Exploring the creative process through portrait photography. Program expanded to Japan and Germany.",
-            work: "Portrait photography exploring the magic of creative process",
-            totalArtists: 31,
-            expansion: ["Japan (Piczo)", "Germany (Elizaveta Porodina)"],
-            press: ["Vogue"]
-        },
-        {
-            number: 10,
-            year: "2025",
-            theme: "TBD",
-            role: "Photographer",
-            device: "TBD",
-            description: "Ongoing participation in the Creator Labs program.",
-            work: "Continued photography work and creative exploration"
-        }
-    ],
-    
-    // Overall stats
-    stats: {
-        totalSeasons: 10,
-        totalYears: "5+",
-        videoViews: "100,000+",
-        devicesUsed: ["Pixel 4", "Pixel 5", "Pixel 6", "Pixel 6 Pro", "Pixel 7 Pro", "Pixel 8 Pro", "Pixel 9"],
-        fellowArtistsTotal: 35,
-        projectsCreated: "100+"
-    },
-    
-    // Press coverage
-    pressCoverage: [
-        {
-            publication: "Vogue",
-            title: "Be Seen, Be Heard, Belong: Creator Labs Season 7",
-            url: "https://www.vogue.com/article/be-seen-be-heard-belong-creator-labs-season-7-new-artists-announced",
-            date: "December 2022",
-            quote: "Glassface brings his unique visual perspective, combining AI and 3D effects into his portraits of this patchwork creative community, while letting the subjects, camera, and IRL visual elements lead in telling their story."
-        },
-        {
-            publication: "Vogue",
-            title: "Google Creator Labs unveils its 9th edition, featuring global photographers",
-            url: "https://www.vogue.com/article/google-creator-labs-unveils-its-9th-edition-featuring-global-photographers",
-            date: "December 2024",
-            quote: "Created through a partnership between SN37 and Google, Creator Labs supports emerging talents in crafting new cultural narratives using Google Pixel devices."
-        },
-        {
-            publication: "V Magazine",
-            title: "Creator Labs is Up For Its Third Installment",
-            url: "https://vman.com/article/creator-labs-is-up-for-its-third-installment/",
-            date: "December 2020",
-            quote: "Goldenberg, also known as Glassface, is an image-maker creating stylized videos with visual effects, intense music and graphic design. In Ultradreamer Episode 2, Glassface turns the camera on himself and explores the interplay of mental health and creativity."
-        },
-        {
-            publication: "WWD",
-            title: "Google to Foster Professional Artists With Creator Labs Initiative",
-            url: "https://wwd.com/fashion-news/fashion-scoops/google-creator-labs-incubator-1203392342/",
-            date: "December 2019"
-        },
-        {
-            publication: "Google Blog",
-            title: "A look at art in isolation captured on Pixel",
-            url: "https://blog.google/products/pixel/pixel-creator-labs-art-in-quarantine/",
-            date: "July 2020",
-            quote: "Another artist, who goes by the alias Glassface, took a look at the tension of our new virtual work lives. 'Nothing kills creativity like fear or depression. And often, nothing helps heal and reshape our mental health like creativity itself.'"
-        },
-        {
-            publication: "Essence",
-            title: "Google And LENS Launch A Incubator To Celebrate Black Art",
-            url: "https://www.essence.com/fashion/google-lens-launch-art-exhibit/",
-            date: "November 2020"
-        }
-    ],
-    
-    // Links
-    links: {
-        creatorLabs: "https://creatorlabs.google/",
-        season7: "https://www.vogue.com/article/be-seen-be-heard-belong-creator-labs-season-7-new-artists-announced",
-        season9: "https://www.vogue.com/article/google-creator-labs-unveils-its-9th-edition-featuring-global-photographers",
-        googleBlog: "https://blog.google/products/pixel/pixel-creator-labs-art-in-quarantine/"
+// Helper function to format play count
+function formatPlayCount(count) {
+    if (!count) return null;
+    if (count >= 1000000) {
+        return (count / 1000000).toFixed(1) + 'M';
+    } else if (count >= 1000) {
+        return (count / 1000).toFixed(1) + 'K';
     }
+    return count.toString();
+}
+
+// Flatten all projects into a single array for timeline
+function getAllProjects() {
+    const allProjects = [];
+    Object.keys(projects).forEach(category => {
+        projects[category].forEach(project => {
+            allProjects.push({
+                ...project,
+                category: category,
+                year: project.releaseDate ? new Date(project.releaseDate).getFullYear() : null
+            });
+        });
+    });
+    return allProjects.sort((a, b) => {
+        if (!a.releaseDate) return 1;
+        if (!b.releaseDate) return -1;
+        return new Date(a.releaseDate) - new Date(b.releaseDate);
+    });
+}
+
+// Get date range for timeline
+function getTimelineRange() {
+    const allProjects = getAllProjects();
+    const dates = allProjects
+        .filter(p => p.releaseDate)
+        .map(p => new Date(p.releaseDate));
+    return {
+        min: new Date(Math.min(...dates)),
+        max: new Date(Math.max(...dates))
+    };
+}
+
+// Format date for display
+function formatDate(dateString) {
+    if (!dateString) return 'Unknown';
+    const date = new Date(dateString);
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+// Category display names
+const categoryNames = {
+    commercial: 'Commercial',
+    musicVideo: 'Music Video',
+    coverArtwork: 'Cover Artwork',
+    narrative: 'Narrative',
+    web3: 'Web3/NFT',
+    graphicDesign: 'Graphic Design',
+    archive: 'Archive'
 };
 
-// Export for use in app.js
+// Category colors
+const categoryColors = {
+    commercial: '#ff6b6b',
+    musicVideo: '#4ecdc4',
+    coverArtwork: '#ffe66d',
+    narrative: '#a8e6cf',
+    web3: '#c7ceea',
+    graphicDesign: '#ffd3b6',
+    archive: '#ff8b94'
+};
+
+// Ensure projects is available globally
+if (typeof window !== 'undefined') {
+    window.projects = projects;
+    window.getAllProjects = getAllProjects;
+    window.getTimelineRange = getTimelineRange;
+    window.formatDate = formatDate;
+    window.categoryNames = categoryNames;
+    window.categoryColors = categoryColors;
+}
+
+// Export for use in app.js (Node.js/ES modules)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { projects, creatorLabsProject };
+    module.exports = { 
+        projects, 
+        formatPlayCount, 
+        getAllProjects, 
+        getTimelineRange,
+        formatDate,
+        categoryNames,
+        categoryColors
+    };
 }

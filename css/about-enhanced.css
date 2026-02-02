@@ -169,9 +169,9 @@
     align-items: center;
     justify-content: center;
     height: 50px;
-    opacity: 0.85;
+    opacity: 0.7;
     transition: all 0.3s ease;
-    color: #000;
+    filter: grayscale(100%);
 }
 
 .publication-logo:hover {
@@ -187,12 +187,10 @@
 }
 
 .publication-logo img {
-    max-height: 40px;
+    max-height: 100%;
     max-width: 140px;
     width: auto;
-    height: auto;
     object-fit: contain;
-    display: block;
 }
 
 /* Client Logos Section - NEW */
@@ -270,7 +268,6 @@
     padding: 20px;
     border: 1px solid #222;
     transition: all 0.3s ease;
-    min-height: 80px;
 }
 
 .brand-logo-item:hover {
@@ -280,14 +277,24 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.brand-logo-item img {
-    width: 80%;
-    height: auto;
-    max-height: 40px;
-    object-fit: contain;
+.brand-logo-item svg {
+    max-width: 100%;
+    max-height: 35px;
+    width: auto;
+    opacity: 0.9;
+}
+
+.brand-logo-item:hover svg {
     opacity: 1;
-    display: block;
-    filter: invert(1);
+}
+
+.brand-logo-item img {
+    max-width: 100%;
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
 }
 
 .brand-logo-item:hover img {
@@ -315,15 +322,14 @@
     padding: 50px;
     background: #fff;
     border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.06);
     position: relative;
     transition: all 0.3s ease;
-    border: 1px solid #e5e5e5;
 }
 
 .press-quote:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.1);
 }
 
 .press-quote::before {
@@ -332,7 +338,7 @@
     top: 20px;
     left: 30px;
     font-size: 80px;
-    color: #ddd;
+    color: #eee;
     font-family: Georgia, serif;
     line-height: 1;
 }
@@ -340,18 +346,17 @@
 .press-quote-text {
     font-size: 22px;
     line-height: 1.6;
-    font-weight: 500;
+    font-weight: 400;
     font-style: italic;
     margin-bottom: 24px;
-    color: #000000;
+    color: #000;
     position: relative;
     z-index: 1;
 }
 
 .press-quote-source {
     font-size: 14px;
-    color: #555;
-    font-weight: 400;
+    color: #666;
 }
 
 .press-quote-source strong {
@@ -386,8 +391,6 @@
     opacity: 0.5;
     filter: grayscale(100%);
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
 }
 
 .also-featured-logos .pub-logo:hover {
@@ -395,11 +398,9 @@
     filter: grayscale(0%);
 }
 
-.also-featured-logos .pub-logo svg,
-.also-featured-logos .pub-logo img {
+.also-featured-logos .pub-logo svg {
     height: 100%;
     width: auto;
-    object-fit: contain;
 }
 
 /* Web3 Section */
