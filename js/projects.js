@@ -596,7 +596,7 @@ var projects = {
             id: "prhyme",
             title: "PRhyme - PRhyme",
             role: "Director, Editor, VFX",
-            image: "images/cargo/prhyme.gif",
+            image: "images/cargo/prhyme.png",
             youtubeId: "ZS6--6jL5r8",
             releaseDate: "2014-11-20",
             playCount: 3500000,
