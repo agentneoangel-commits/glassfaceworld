@@ -161,7 +161,7 @@ var projects = {
             id: "jhene-aiko-summer-2020",
             title: "Jhene Aiko - Summer 2020",
             role: "Editor, VFX",
-            image: "images/cargo/jhene-aiko-summer-2020.gif",
+            image: "images/cargo/jhene-aiko-summer-2020.png",
             youtubeId: "fyvf9jNPTHM",
             releaseDate: "2020-07-17",
             playCount: 6000000,
