@@ -409,7 +409,7 @@ var projects = {
             id: "disto-fine-art",
             title: "DISTO FINE ART",
             role: "NFT, VFX",
-            image: "images/cargo/impermanent-digital.jpeg",
+            image: "images/cargo/disto-fine-art.gif",
             youtubeId: null,
             playCount: null,
             releaseDate: "2021-03-15",
