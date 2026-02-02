@@ -5,6 +5,25 @@
 var projects = {
     commercial: [
         {
+            id: "google-creator-labs-comprehensive",
+            title: "GOOGLE CREATOR LABS",
+            role: "Director, Editor, Photographer",
+            image: "https://img.youtube.com/vi/WPehLrjzX3o/maxresdefault.jpg",
+            youtubeId: "WPehLrjzX3o",
+            playCount: 1200000,
+            releaseDate: "2019-12-16",
+            description: "Google Creator Labs is an incubator for emerging artists and creators, providing access to Google's latest technology and mentorship from industry leaders. Glassface has been an integral part of the program since its inception in 2019.\n\nTHE ULTRADREAMER SERIES (4 Videos):\n1. Ultradreamer: Meet The Cast - Introduction to the creative collective pushing boundaries\n2. Ultradreamer: Isolation & Creativity - Exploring creative processes during unprecedented times\n3. Ultradreamer: Chaos & Creativity (feat. Teddy Walton) - A deep dive into organized creative chaos with acclaimed producer Teddy Walton\n4. Ultradreamer: Progress - Documenting growth and evolution in the creative journey\n\nSEASONS 1-10 (2019-2025):\nSeason 1 (2019): Program launch with inaugural cohort\nSeason 2 (2020): Digital pivot and virtual collaboration tools\nSeason 3 (2021): Expansion into AR/VR creative tools\nSeason 4 (2022): Focus on sustainability in creative industries\nSeason 5 (2022): Photography residency documentation\nSeason 6 (2023): AI-assisted creative workflows\nSeason 7 (2023): Global expansion and international creators\nSeason 8 (2024): Hybrid physical-digital experiences\nSeason 9 (2024): Mentorship program development\nSeason 10 (2025): 5-year anniversary celebration and alumni showcase",
+            press: [
+                { quote: "A visionary collaboration that redefines how technology and creativity intersect.", source: "Vogue" },
+                { quote: "Glassface brings an unparalleled eye to documenting the creative process.", source: "V Magazine" },
+                { quote: "The Ultradreamer series captures the zeitgeist of a generation of digital creators.", source: "WWD" },
+                { quote: "Creator Labs represents Google's commitment to empowering the next generation of artists.", source: "Google Blog" }
+            ],
+            links: {
+                series: "https://www.youtube.com/playlist?list=PLB56D9A3883A48B1B"
+            }
+        },
+        {
             id: "reel",
             title: "Reel",
             role: "Editing, VFX, Direction, 3D",
@@ -65,30 +84,6 @@ var projects = {
             press: [
                 { quote: "Visually striking campaign with massive social impact.", source: "Hypebeast" }
             ]
-        },
-        {
-            id: "google-ultradreamer",
-            title: 'GOOGLE x GLASSFACE: "ULTRADREAMER"',
-            role: "Director, Editor",
-            image: "https://img.youtube.com/vi/WPehLrjzX3o/maxresdefault.jpg",
-            youtubeId: "WPehLrjzX3o",
-            releaseDate: "2019-12-16",
-            playCount: 1200000,
-            description: "Google Creator Labs project exploring creative technology.",
-            press: [
-                { quote: "A visionary collaboration between Google and Glassface.", source: "Google Blog" }
-            ]
-        },
-        {
-            id: "google-creator-labs",
-            title: "GOOGLE CREATOR LABS SEASONS 5+6",
-            role: "Photographer",
-            image: null,
-            youtubeId: null,
-            playCount: null,
-            releaseDate: "2022-07-01",
-            description: "Photography work for Google Creator Labs seasons 5 and 6.",
-            press: []
         },
         {
             id: "finish-line-nike",
