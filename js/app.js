@@ -555,7 +555,7 @@
             }
             
             const hasGif = project.youtubeId;
-            const gifUrl = hasGif ? `gifs/${project.id}.gif` : null;
+            const gifUrl = hasGif ? `images/cargo/${project.id}.gif` : null;
             
             // Build onerror handler with chained fallbacks
             const buildOnError = (chain) => {
