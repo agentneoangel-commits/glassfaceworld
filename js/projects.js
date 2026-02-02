@@ -597,7 +597,7 @@ var projects = {
             title: "PRhyme - PRhyme",
             role: "Director, Editor, VFX",
             image: "images/cargo/prhyme.gif",
-            youtubeId: null,
+            youtubeId: "ZS6--6jL5r8",
             releaseDate: "2014-11-20",
             playCount: 3500000,
             description: "Work for PRhyme (Royce da 5'9\" and DJ Premier).",
