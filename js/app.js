@@ -526,18 +526,32 @@
             const svgPlaceholder = this.svgPlaceholders[sectionKey] || this.svgPlaceholders.archive;
             
             if (project.youtubeId) {
-                // Primary: YouTube thumbnail (most reliable)
-                imageUrl = `https://img.youtube.com/vi/${project.youtubeId}/maxresdefault.jpg`;
-                // Fallback chain: hqdefault → Cargo image → SVG placeholder
+                // Primary: hqdefault (480x360) - most reliable, works on all videos
+                // maxresdefault often fails for older or unpopular videos
+                imageUrl = `https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`;
+                // Fallback chain: mqdefault → default → SVG placeholder
                 fallbackChain = [
-                    `https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`,
+                    `https://img.youtube.com/vi/${project.youtubeId}/mqdefault.jpg`,
+                    `https://img.youtube.com/vi/${project.youtubeId}/default.jpg`,
                     project.image,
                     svgPlaceholder
                 ].filter(Boolean);
             } else {
-                // No YouTube ID: Try Cargo image first, fallback to SVG placeholder
+                // No YouTube ID: Use project.image (could be local placeholder or external)
+                // If project.image is null or missing, use the SVG data URI
                 imageUrl = project.image || svgPlaceholder;
-                fallbackChain = [svgPlaceholder];
+                // Build proper fallback chain based on image type
+                if (project.image && project.image.includes('placeholders')) {
+                    // Local placeholder image - fallback to SVG data URI
+                    fallbackChain = [svgPlaceholder];
+                } else if (project.image) {
+                    // External image (Cargo, etc.) - fallback to local placeholder then SVG
+                    const localPlaceholder = `images/placeholders/${sectionKey}-placeholder.svg`;
+                    fallbackChain = [localPlaceholder, svgPlaceholder];
+                } else {
+                    // No image at all - just use SVG
+                    fallbackChain = [svgPlaceholder];
+                }
             }
             
             const hasGif = project.youtubeId;
