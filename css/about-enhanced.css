@@ -349,18 +349,23 @@
     font-weight: 400;
     font-style: italic;
     margin-bottom: 24px;
-    color: #000;
+    color: #111;
     position: relative;
     z-index: 1;
+    display: block;
+    visibility: visible;
 }
 
 .press-quote-source {
     font-size: 14px;
-    color: #666;
+    color: #444;
+    display: block;
+    visibility: visible;
+    margin-top: 16px;
 }
 
 .press-quote-source strong {
-    color: #000;
+    color: #111;
     font-weight: 600;
 }
 
@@ -401,6 +406,12 @@
 .also-featured-logos .pub-logo svg {
     height: 100%;
     width: auto;
+}
+
+.also-featured-logos .pub-logo img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
 }
 
 /* Web3 Section */
