@@ -2694,7 +2694,63 @@
                 }
             });
 
-            centerOnYear(2018);
+            // Fit all projects in view
+            fitAllProjects();
+        }
+
+        function fitAllProjects() {
+            const container = document.getElementById('timelineContainer');
+            if (!container) return;
+
+            const containerWidth = container.offsetWidth;
+            const totalWidth = state.totalWidth;
+            
+            // Calculate zoom to fit all projects
+            const targetZoom = (containerWidth - 100) / totalWidth;
+            state.currentZoom = Math.max(CONFIG.minZoom, Math.min(targetZoom, CONFIG.maxZoom));
+            
+            // Apply zoom
+            CONFIG.pxPerYear = 200 * state.currentZoom;
+            
+            // Re-render with new scale
+            renderTimelineWithZoom();
+            
+            // Center on middle
+            const content = document.getElementById('timelineContent');
+            if (content) {
+                const midX = (containerWidth / 2) - (totalWidth * state.currentZoom / 2);
+                content.style.transform = `translateX(${midX}px)`;
+            }
+        }
+
+        function renderTimelineWithZoom() {
+            // Update the pxPerYear and re-render
+            const yearSpan = CONFIG.yearEnd - CONFIG.yearStart + 1;
+            state.totalWidth = yearSpan * CONFIG.pxPerYear;
+            
+            // Just update positions without clearing
+            const cards = document.querySelectorAll('.project-card');
+            cards.forEach((card, index) => {
+                const project = state.projects[index];
+                if (!project || !project.publishedAt) return;
+                
+                const date = new Date(project.publishedAt);
+                const year = date.getFullYear();
+                const yearOffset = year - CONFIG.yearStart;
+                
+                const idHash = project._id.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+                const spreadOffset = (idHash % 10) / 10 * (CONFIG.pxPerYear * 0.8); 
+                const xPos = (yearOffset * CONFIG.pxPerYear) + spreadOffset;
+                
+                card.style.left = `${xPos}px`;
+            });
+            
+            // Update year markers
+            const markers = document.querySelectorAll('.year-marker');
+            markers.forEach((marker, index) => {
+                const year = CONFIG.yearStart + index;
+                marker.style.left = `${(year - CONFIG.yearStart) * CONFIG.pxPerYear}px`;
+            });
         }
 
         function createProjectCard(project, index) {
@@ -2934,7 +2990,7 @@
         function resetZoom() {
             state.currentZoom = 1;
             applyZoom();
-            centerOnYear(2018);
+            fitAllProjects();
         }
 
         function applyZoom() {
