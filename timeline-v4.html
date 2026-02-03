@@ -2851,7 +2851,7 @@
         }
 
         // ========================================
-        // 3D CLOUD HOVER EFFECT - DISTANCE-BASED FALLOFF
+        // 3D CLOUD HOVER EFFECT - SPATIAL INTELLIGENCE + Z-ROTATION
         // ========================================
         function setup3DCloudHover() {
             const content = document.getElementById('timelineContent');
@@ -2866,9 +2866,9 @@
                 const hoveredCenterX = hoveredRect.left + hoveredRect.width / 2;
                 const hoveredCenterY = hoveredRect.top + hoveredRect.height / 2;
 
-                // Mark hovered card
+                // Mark hovered card - POP FORWARD
                 hoveredCard.classList.add('hovered');
-                hoveredCard.style.transform = 'translate(-50%, -50%) scale(1.4) translateZ(80px)';
+                hoveredCard.style.transform = 'translate(-50%, -50%) scale(1.5) translateZ(100px)';
                 hoveredCard.style.opacity = '1';
                 hoveredCard.style.filter = 'none';
                 hoveredCard.style.zIndex = '100';
@@ -2886,36 +2886,61 @@
                     const distanceY = cardCenterY - hoveredCenterY;
                     const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-                    // Normalize distance (0 = closest to hovered, larger = further away)
-                    // Typical card width is ~100px, so normalize by that
-                    const normalizedDistance = distance / 150;
+                    // TIGHTER RADIUS - Only affect cards within 250px (about 2-3 card widths)
+                    const effectRadius = 250;
+                    
+                    if (distance > effectRadius) {
+                        // Far cards - fade to background
+                        card.style.transform = 'translate(-50%, -50%) scale(0.7) translateZ(-100px)';
+                        card.style.opacity = '0.2';
+                        card.style.filter = 'brightness(0.4) grayscale(60%)';
+                        card.style.zIndex = '1';
+                        return;
+                    }
 
-                    // Distance-based falloff parameters
-                    const maxDistance = 6; // Distance at which cards are smallest/most faded
-                    const clampedDistance = Math.min(normalizedDistance, maxDistance);
-                    const distanceFactor = clampedDistance / maxDistance; // 0 to 1
+                    // Normalize distance within effect radius (0 = at center, 1 = at edge)
+                    const distanceFactor = distance / effectRadius;
+                    
+                    // INVERSE CURVE - closer cards get MORE effect
+                    // Use ease-out curve for more dramatic near-hover effect
+                    const effectStrength = Math.pow(1 - distanceFactor, 1.5);
 
-                    // Scale: 1.2 (closest) -> 0.85 (mid) -> 0.6 (farthest)
-                    const scale = 1.2 - (distanceFactor * 0.6);
+                    // Scale: 1.3 (very close) -> 1.0 (mid) -> 0.8 (edge of radius)
+                    const scale = 0.8 + (effectStrength * 0.5);
 
-                    // Opacity: 0.9 (closest) -> 0.6 (mid) -> 0.25 (farthest)
-                    const opacity = 0.9 - (distanceFactor * 0.65);
+                    // Opacity: 1.0 (very close) -> 0.7 (mid) -> 0.4 (edge)
+                    const opacity = 0.4 + (effectStrength * 0.6);
 
-                    // Z-depth: push further back with distance
-                    const translateZ = -distanceFactor * 60;
+                    // Z-depth: closer = more forward, further = pushed back
+                    const translateZ = (effectStrength * 40) - 30;
 
-                    // Slight rotation based on horizontal position relative to hovered
-                    const rotateY = (distanceX / 300) * 15; // -15° to +15°
+                    // Y-rotation (horizontal turn) - face toward/away from hover
+                    const rotateY = (distanceX / effectRadius) * 25 * (distanceFactor > 0.5 ? 1 : -0.5);
 
-                    // Push cards slightly away from center
-                    const pushX = (distanceX / distance) * (distanceFactor * 20) || 0;
-                    const pushY = (distanceY / distance) * (distanceFactor * 10) || 0;
+                    // Z-ROTATION (tilt/roll) - MORE with distance, up to 15°
+                    // Creates that "scattered cards" effect
+                    const rotateZ = (distanceX / effectRadius) * 15 * distanceFactor;
 
-                    // Apply transform
-                    card.style.transform = `translate(calc(-50% + ${pushX}px), calc(-50% + ${pushY}px)) scale(${scale}) translateZ(${translateZ}px) rotateY(${rotateY}deg)`;
+                    // X-rotation (pitch) - slight vertical tilt
+                    const rotateX = (distanceY / effectRadius) * 10 * distanceFactor;
+
+                    // Push cards away from center - stronger push for closer cards
+                    const pushDistance = 30 * effectStrength;
+                    const pushX = (distanceX / (distance + 0.1)) * pushDistance;
+                    const pushY = (distanceY / (distance + 0.1)) * pushDistance * 0.5;
+
+                    // Apply combined 3D transform
+                    card.style.transform = `
+                        translate(calc(-50% + ${pushX}px), calc(-50% + ${pushY}px)) 
+                        scale(${scale}) 
+                        translateZ(${translateZ}px) 
+                        rotateY(${rotateY}deg)
+                        rotateX(${rotateX}deg)
+                        rotateZ(${rotateZ}deg)
+                    `;
                     card.style.opacity = opacity;
-                    card.style.filter = `brightness(${0.8 - distanceFactor * 0.4})`;
-                    card.style.zIndex = Math.floor(100 - clampedDistance * 10);
+                    card.style.filter = `brightness(${0.6 + effectStrength * 0.4})`;
+                    card.style.zIndex = Math.floor(50 + effectStrength * 50);
                 });
             });
 
@@ -2926,7 +2951,7 @@
                 // Check if we're actually leaving the card (not entering a child)
                 if (hoveredCard.contains(e.relatedTarget)) return;
 
-                // Reset all cards smoothly
+                // Reset all cards smoothly with transition
                 const allCards = content.querySelectorAll('.project-card');
                 allCards.forEach(card => {
                     card.classList.remove('hovered');
