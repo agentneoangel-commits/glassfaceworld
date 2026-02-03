@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLASSFACE — Career Timeline 2011-2025</title>
+    <title>GLASSFACE — Legacy Map 2011-2025</title>
     <meta name="description" content="Interactive career timeline of Glassface — Director, Editor, VFX Artist, Music Producer. 75+ projects from 2011-2025.">
     <script>
         // Mobile detection - redirect to mobile-optimized version
@@ -17,7 +17,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #0a0a0a;
@@ -161,7 +161,7 @@
         }
 
         /* ========================================
-           TIMELINE HEADER
+           TIMELINE HEADER - VARIABLE FONT STYLING
            ======================================== */
         .timeline-header {
             padding: calc(var(--nav-height) + 40px) clamp(20px, 5vw, 60px) 40px;
@@ -171,14 +171,48 @@
         }
 
         .timeline-header h1 {
-            font-size: clamp(2rem, 1.75rem + 3.75vw, 5rem);
-            font-weight: 800;
-            letter-spacing: -0.02em;
+            font-size: clamp(2.5rem, 2rem + 4vw, 6rem);
+            font-weight: 100;
+            font-variation-settings: 'wght' 100, 'slnt' 0;
+            letter-spacing: -0.03em;
             margin-bottom: 16px;
             background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: variableFontPulse 8s ease-in-out infinite;
+            text-transform: uppercase;
+        }
+
+        @keyframes variableFontPulse {
+            0%, 100% {
+                font-weight: 100;
+                font-variation-settings: 'wght' 100, 'slnt' 0;
+                letter-spacing: -0.03em;
+            }
+            25% {
+                font-weight: 600;
+                font-variation-settings: 'wght' 600, 'slnt' -5;
+                letter-spacing: -0.02em;
+            }
+            50% {
+                font-weight: 900;
+                font-variation-settings: 'wght' 900, 'slnt' -8;
+                letter-spacing: -0.04em;
+            }
+            75% {
+                font-weight: 400;
+                font-variation-settings: 'wght' 400, 'slnt' -3;
+                letter-spacing: -0.02em;
+            }
+        }
+
+        .timeline-header h1:hover {
+            animation-play-state: paused;
+            font-weight: 900;
+            font-variation-settings: 'wght' 900, 'slnt' -10;
+            letter-spacing: -0.05em;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         .timeline-stats {
@@ -714,7 +748,7 @@
 
     <!-- Timeline Header -->
     <header class="timeline-header">
-        <h1>Career Timeline</h1>
+        <h1>Glassface Legacy Map</h1>
         <p class="timeline-stats" id="timelineStats">Loading...</p>
     </header>
 
