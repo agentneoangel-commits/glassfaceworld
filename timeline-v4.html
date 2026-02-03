@@ -304,38 +304,52 @@
         }
 
         /* ========================================
-           PROJECT CARDS
+           PROJECT CARDS - REDESIGNED FOR LESS OVERLAP
            ======================================== */
         .project-card {
             position: absolute;
-            width: 140px;
+            width: 100px; /* REDUCED: from 140px */
             cursor: pointer;
-            transform: translate(-50%, -50%);
-            will-change: transform;
-            transition: z-index 0s;
+            transform: translate(-50%, -50%) scale(0.9); /* Start slightly smaller */
+            will-change: transform, opacity;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        z-index 0s, 
+                        opacity 0.3s ease;
+            opacity: 0.85; /* Slightly dim by default */
         }
 
         .project-card:hover {
             z-index: 100;
+            transform: translate(-50%, -50%) scale(1.5); /* Scale up on hover */
+            opacity: 1;
+        }
+
+        /* Dim nearby cards when one is hovered */
+        .timeline-content:has(.project-card:hover) .project-card:not(:hover) {
+            opacity: 0.4;
+            filter: grayscale(30%);
+        }
+
+        /* But keep the hovered card bright */
+        .timeline-content:has(.project-card:hover) .project-card:hover {
+            opacity: 1;
+            filter: none;
         }
 
         .project-thumb {
             width: 100%;
             aspect-ratio: 16/10;
-            border-radius: 8px;
+            border-radius: 6px; /* Slightly smaller radius */
             overflow: hidden;
             position: relative;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            /* REMOVED: border properties */
         }
 
         .project-card:hover .project-thumb {
-            transform: scale(2); /* CHANGED: from 1.1 to 2 */
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 12px 50px rgba(0, 0, 0, 0.6), 
+                        0 0 30px var(--accent-glow); /* Add glow effect */
         }
-
-        /* REMOVED: Color border styles */
 
         .project-image {
             width: 100%;
@@ -350,22 +364,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 24px; /* Smaller icon */
             background: var(--bg-tertiary);
             color: var(--text-muted);
         }
 
         .project-info {
-            margin-top: 12px;
+            margin-top: 8px;
             text-align: center;
             opacity: 0;
-            transform: translateY(-10px);
+            transform: translateY(-10px) scale(0.8);
             transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
         }
 
         .project-card:hover .project-info {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         .project-title {
@@ -2736,20 +2751,22 @@
             if (year < CONFIG.yearStart || year > CONFIG.yearEnd) return null;
 
             const yearOffset = year - CONFIG.yearStart;
-            const monthFraction = month / 12;
             
-            // Spread projects horizontally within the year based on index
-            // Use a hash of the project ID to get consistent positioning
+            // BETTER DISTRIBUTION: Use project hash + category for consistent positioning
             const idHash = project._id.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-            const spreadOffset = (idHash % 10) / 10 * (CONFIG.pxPerYear * 0.8); 
-            const xPos = (yearOffset * CONFIG.pxPerYear) + spreadOffset;
+            const categoryHash = (project.category || '').split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+            
+            // Spread horizontally with more space between projects
+            // Use both ID hash and category to create distinct "lanes"
+            const spreadOffset = ((idHash + categoryHash) % 100) / 100 * (CONFIG.pxPerYear * 0.7);
+            const xPos = (yearOffset * CONFIG.pxPerYear) + 40 + spreadOffset; // Add 40px padding
 
-            // Distribute vertically within container (0-100%)
-            const verticalBands = 6;
-            const bandHeight = 12; // percentage per band
-            const baseBand = index % verticalBands;
-            const randomOffset = ((idHash % 10) - 5) / 2; // -2.5 to 2.5%
-            const yPos = 15 + (baseBand * bandHeight) + randomOffset;
+            // Better vertical distribution - more bands for less overlap
+            const verticalBands = 8; // INCREASED from 6
+            const bandHeight = 10; // percentage per band (was 12%)
+            const baseBand = (index + idHash) % verticalBands;
+            const randomOffset = ((idHash % 20) - 10) / 5; // -2% to 2% random
+            const yPos = 10 + (baseBand * bandHeight) + randomOffset;
 
             const card = document.createElement('div');
             card.className = 'project-card floating';
