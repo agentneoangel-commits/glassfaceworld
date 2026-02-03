@@ -2851,7 +2851,7 @@
         }
 
         // ========================================
-        // 3D CLOUD HOVER EFFECT (iTunes Cover Flow inspired)
+        // 3D CLOUD HOVER EFFECT - DISTANCE-BASED FALLOFF
         // ========================================
         function setup3DCloudHover() {
             const content = document.getElementById('timelineContent');
@@ -2862,41 +2862,60 @@
                 if (!hoveredCard) return;
 
                 const allCards = Array.from(content.querySelectorAll('.project-card'));
-                const hoveredIndex = allCards.indexOf(hoveredCard);
-                
+                const hoveredRect = hoveredCard.getBoundingClientRect();
+                const hoveredCenterX = hoveredRect.left + hoveredRect.width / 2;
+                const hoveredCenterY = hoveredRect.top + hoveredRect.height / 2;
+
                 // Mark hovered card
                 hoveredCard.classList.add('hovered');
-                hoveredCard.classList.remove('fan-left', 'fan-right');
+                hoveredCard.style.transform = 'translate(-50%, -50%) scale(1.4) translateZ(80px)';
+                hoveredCard.style.opacity = '1';
+                hoveredCard.style.filter = 'none';
+                hoveredCard.style.zIndex = '100';
 
-                // Fan out nearby cards
-                allCards.forEach((card, index) => {
+                // Calculate distance from hovered card for each card
+                allCards.forEach((card) => {
                     if (card === hoveredCard) return;
 
-                    const distance = index - hoveredIndex;
-                    const absDistance = Math.abs(distance);
-                    
-                    // Only affect cards within fan range (5 cards each side)
-                    if (absDistance <= 5) {
-                        const direction = distance < 0 ? -1 : 1;
-                        const fanAngle = direction * (15 + absDistance * 8); // 15° to 55° rotation
-                        const fanOffsetX = direction * (absDistance * 30); // Push sideways
-                        const fanOffsetZ = -absDistance * 40; // Push back in Z space
-                        const fanScale = Math.max(0.6, 0.85 - absDistance * 0.08); // Smaller as they fan out
-                        const fanOpacity = Math.max(0.3, 0.8 - absDistance * 0.15); // Fade out
+                    const cardRect = card.getBoundingClientRect();
+                    const cardCenterX = cardRect.left + cardRect.width / 2;
+                    const cardCenterY = cardRect.top + cardRect.height / 2;
 
-                        // Apply 3D transform
-                        card.style.transform = `translate(-50%, -50%) scale(${fanScale}) translateX(${fanOffsetX}px) translateZ(${fanOffsetZ}px) rotateY(${fanAngle}deg)`;
-                        card.style.opacity = fanOpacity;
-                        card.style.filter = `brightness(${0.6 + absDistance * 0.1})`;
-                        
-                        card.classList.add(direction < 0 ? 'fan-left' : 'fan-right');
-                    } else {
-                        // Far cards fade way back
-                        card.style.transform = 'translate(-50%, -50%) scale(0.5) translateZ(-200px)';
-                        card.style.opacity = '0.2';
-                        card.style.filter = 'brightness(0.4) grayscale(50%)';
-                        card.classList.remove('fan-left', 'fan-right');
-                    }
+                    // Calculate Euclidean distance
+                    const distanceX = cardCenterX - hoveredCenterX;
+                    const distanceY = cardCenterY - hoveredCenterY;
+                    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+                    // Normalize distance (0 = closest to hovered, larger = further away)
+                    // Typical card width is ~100px, so normalize by that
+                    const normalizedDistance = distance / 150;
+
+                    // Distance-based falloff parameters
+                    const maxDistance = 6; // Distance at which cards are smallest/most faded
+                    const clampedDistance = Math.min(normalizedDistance, maxDistance);
+                    const distanceFactor = clampedDistance / maxDistance; // 0 to 1
+
+                    // Scale: 1.2 (closest) -> 0.85 (mid) -> 0.6 (farthest)
+                    const scale = 1.2 - (distanceFactor * 0.6);
+
+                    // Opacity: 0.9 (closest) -> 0.6 (mid) -> 0.25 (farthest)
+                    const opacity = 0.9 - (distanceFactor * 0.65);
+
+                    // Z-depth: push further back with distance
+                    const translateZ = -distanceFactor * 60;
+
+                    // Slight rotation based on horizontal position relative to hovered
+                    const rotateY = (distanceX / 300) * 15; // -15° to +15°
+
+                    // Push cards slightly away from center
+                    const pushX = (distanceX / distance) * (distanceFactor * 20) || 0;
+                    const pushY = (distanceY / distance) * (distanceFactor * 10) || 0;
+
+                    // Apply transform
+                    card.style.transform = `translate(calc(-50% + ${pushX}px), calc(-50% + ${pushY}px)) scale(${scale}) translateZ(${translateZ}px) rotateY(${rotateY}deg)`;
+                    card.style.opacity = opacity;
+                    card.style.filter = `brightness(${0.8 - distanceFactor * 0.4})`;
+                    card.style.zIndex = Math.floor(100 - clampedDistance * 10);
                 });
             });
 
@@ -2907,13 +2926,14 @@
                 // Check if we're actually leaving the card (not entering a child)
                 if (hoveredCard.contains(e.relatedTarget)) return;
 
-                // Reset all cards
+                // Reset all cards smoothly
                 const allCards = content.querySelectorAll('.project-card');
                 allCards.forEach(card => {
-                    card.classList.remove('hovered', 'fan-left', 'fan-right');
+                    card.classList.remove('hovered');
                     card.style.transform = 'translate(-50%, -50%) scale(0.85)';
                     card.style.opacity = '0.8';
                     card.style.filter = 'none';
+                    card.style.zIndex = '';
                 });
             });
         }
