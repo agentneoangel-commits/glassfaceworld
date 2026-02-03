@@ -2180,7 +2180,7 @@
         const CONFIG = {
             yearStart: 2011,
             yearEnd: 2026,
-            pxPerYear: 200,
+            pxPerYear: 300,
             floating: {
                 amplitude: 15,
                 durationMin: 3000,
@@ -2279,13 +2279,19 @@
 
             const yearOffset = year - CONFIG.yearStart;
             const monthFraction = month / 12;
-            const xPos = (yearOffset + monthFraction) * CONFIG.pxPerYear;
+            
+            // Spread projects horizontally within the year based on index
+            // Use a hash of the project ID to get consistent positioning
+            const idHash = project._id.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+            const spreadOffset = (idHash % 10) / 10 * (CONFIG.pxPerYear * 0.8); 
+            const xPos = (yearOffset * CONFIG.pxPerYear) + spreadOffset;
 
-            const verticalBands = 5;
-            const bandHeight = 100;
+            // More vertical bands for better distribution
+            const verticalBands = 8;
+            const bandHeight = 70;
             const baseBand = index % verticalBands;
-            const randomOffset = (Math.random() - 0.5) * 60;
-            const yPos = 50 + (baseBand * bandHeight) + randomOffset;
+            const randomOffset = (idHash % 20) - 10;
+            const yPos = 15 + (baseBand * bandHeight) + randomOffset;
 
             const card = document.createElement('div');
             card.className = 'project-card floating';
