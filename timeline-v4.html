@@ -688,7 +688,7 @@
     <!-- Timeline Header -->
     <header class="timeline-header">
         <h1>Career Timeline</h1>
-        <p class="timeline-stats" id="timelineStats">132 Projects • 2011-2025</p>
+        <p class="timeline-stats" id="timelineStats">Loading...</p>
     </header>
 
     <!-- Category Legend -->
@@ -2622,7 +2622,27 @@
             commercial: '◆',
             'music-video': '♪',
             'music-production': '♫',
-            design: '◎'
+            design: '◎',
+            'graphic-design': '◎',
+            archive: '◆',
+            web3: '◎',
+            narrative: '◆',
+            'cover-artwork': '◎',
+            'product-design': '◎'
+        };
+
+        // Map actual categories to legend categories for filtering
+        const CATEGORY_MAP = {
+            commercial: 'commercial',
+            'music-video': 'music-video',
+            'music-production': 'music-production',
+            'graphic-design': 'design',
+            design: 'design',
+            archive: 'commercial',
+            web3: 'design',
+            narrative: 'commercial',
+            'cover-artwork': 'design',
+            'product-design': 'design'
         };
 
         // ========================================
@@ -2642,6 +2662,7 @@
         // INITIALIZATION
         // ========================================
         function init() {
+            initActiveCategories();
             loadProjects();
             setupEventListeners();
             setupLegend();
@@ -2661,7 +2682,7 @@
         function updateStats() {
             const statsEl = document.getElementById('timelineStats');
             if (statsEl) {
-                statsEl.textContent = `${state.projects.length} Projects • 2011-2025`;
+                statsEl.textContent = `${CAREER_DATABASE.length} Projects • 2011-2025`;
             }
         }
 
@@ -2694,18 +2715,8 @@
                 }
             });
 
-            // Show more projects by starting zoomed out
-            state.currentZoom = 0.35;
-            applyZoom();
-            
-            // Center on middle years
-            const timelineContainer = document.getElementById('timelineContainer');
-            const content = document.getElementById('timelineContent');
-            if (timelineContainer && content) {
-                const containerWidth = timelineContainer.offsetWidth;
-                const midX = (containerWidth / 2) - (state.totalWidth / 2);
-                content.style.transform = `translateX(${midX}px)`;
-            }
+            // Fit all projects on initial load
+            fitAllProjects();
         }
 
         function createProjectCard(project, index) {
@@ -2724,16 +2735,16 @@
             const spreadOffset = (idHash % 10) / 10 * (CONFIG.pxPerYear * 0.8); 
             const xPos = (yearOffset * CONFIG.pxPerYear) + spreadOffset;
 
-            // More vertical bands for better distribution
-            const verticalBands = 8;
-            const bandHeight = 70;
+            // Distribute vertically within container (0-100%)
+            const verticalBands = 6;
+            const bandHeight = 12; // percentage per band
             const baseBand = index % verticalBands;
-            const randomOffset = (idHash % 20) - 10;
+            const randomOffset = ((idHash % 10) - 5) / 2; // -2.5 to 2.5%
             const yPos = 15 + (baseBand * bandHeight) + randomOffset;
 
             const card = document.createElement('div');
             card.className = 'project-card floating';
-            card.dataset.category = project.category;
+            card.dataset.category = CATEGORY_MAP[project.category] || project.category;
             card.dataset.projectId = project._id;
             
             const duration = CONFIG.floating.durationMin + Math.random() * (CONFIG.floating.durationMax - CONFIG.floating.durationMin);
@@ -2943,9 +2954,33 @@
         }
 
         function resetZoom() {
-            state.currentZoom = 1;
+            state.currentZoom = 0.4;
             applyZoom();
             fitAllProjects();
+        }
+
+        function fitAllProjects() {
+            // Calculate zoom level to fit all projects
+            const container = document.getElementById('timelineContainer');
+            if (!container) return;
+            
+            const containerWidth = container.offsetWidth;
+            const yearSpan = CONFIG.yearEnd - CONFIG.yearStart + 1;
+            
+            // Add padding years on each side
+            const targetWidth = containerWidth * 0.9;
+            const zoomLevel = targetWidth / (yearSpan * 200);
+            
+            state.currentZoom = Math.max(0.25, Math.min(zoomLevel, 1));
+            applyZoom();
+            
+            // Center the timeline
+            const content = document.getElementById('timelineContent');
+            if (content) {
+                const totalWidth = yearSpan * CONFIG.pxPerYear;
+                const startX = (containerWidth - totalWidth) / 2;
+                content.style.transform = `translateX(${startX}px)`;
+            }
         }
 
         function applyZoom() {
@@ -2994,6 +3029,11 @@
             });
         }
 
+        // Initialize with all categories active
+        function initActiveCategories() {
+            state.activeCategories = new Set(['commercial', 'music-video', 'music-production', 'design']);
+        }
+
         // ========================================
         // NAVIGATION
         // ========================================
@@ -3032,7 +3072,8 @@
                     </iframe>
                 `;
             } else {
-                const icon = CATEGORY_ICONS[project.category] || '◆';
+                const mappedCategory = CATEGORY_MAP[project.category] || project.category;
+            const icon = CATEGORY_ICONS[mappedCategory] || CATEGORY_ICONS[project.category] || '◆';
                 mediaEl.innerHTML = `
                     <div style="background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; aspect-ratio: 16/9; font-size: 64px;">
                         ${icon}
