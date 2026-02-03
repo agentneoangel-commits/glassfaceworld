@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLASSFACE — Legacy Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg-elevated: #141414;
+            --text: #ffffff;
+            --text-muted: #666666;
+            --accent: #ff3366;
+            --row-1-scale: 0.7;
+            --row-2-scale: 0.85;
+            --row-3-scale: 1.0;  /* Center row - largest */
+            --row-4-scale: 0.85;
+            --row-5-scale: 0.7;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* ========================================
+           HEADER - MadeInHaus Style Variable Font
+           ======================================== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 2rem 4rem;
+            background: linear-gradient(to bottom, var(--bg) 60%, transparent);
+            pointer-events: none;
+        }
+
+        .header-content {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        /* Variable font title - MadeInHaus style */
+        .title {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 200;  /* Light weight */
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+            color: var(--text);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.1em;
+        }
+
+        .title-word {
+            display: inline-block;
+            font-variation-settings: 'wght' 200;
+            transition: font-variation-settings 0.3s ease;
+        }
+
+        .title-word:hover {
+            font-variation-settings: 'wght' 700;
+        }
+
+        .title-accent {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* ========================================
+           TIMELINE CONTAINER
+           ======================================== */
+        .timeline-wrapper {
+            margin-top: 35vh;
+            padding-bottom: 50vh;
+            position: relative;
+        }
+
+        /* Year markers */
+        .year-track {
+            position: sticky;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 2px;
+            background: linear-gradient(to right, 
+                transparent 0%,
+                var(--text-muted) 5%,
+                var(--text-muted) 95%,
+                transparent 100%
+            );
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .years-container {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10vw;
+            pointer-events: none;
+        }
+
+        .year-marker {
+            font-size: 0.75rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            letter-spacing: 0.2em;
+            position: relative;
+        }
+
+        .year-marker::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 40px;
+            background: var(--text-muted);
+            opacity: 0.3;
+        }
+
+        /* ========================================
+           3D GALLERY - Multi Row
+           ======================================== */
+        .gallery-container {
+            position: relative;
+            height: 80vh;
+            perspective: 2000px;
+            perspective-origin: center center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0 5vw;
+        }
+
+        .gallery-row {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        /* Row sizing - center row largest */
+        .gallery-row:nth-child(1) { transform: scale(var(--row-1-scale)) translateZ(-200px); opacity: 0.6; }
+        .gallery-row:nth-child(2) { transform: scale(var(--row-2-scale)) translateZ(-100px); opacity: 0.8; }
+        .gallery-row:nth-child(3) { transform: scale(var(--row-3-scale)) translateZ(0px); opacity: 1; }
+        .gallery-row:nth-child(4) { transform: scale(var(--row-4-scale)) translateZ(-100px); opacity: 0.8; }
+        .gallery-row:nth-child(5) { transform: scale(var(--row-5-scale)) translateZ(-200px); opacity: 0.6; }
+
+        /* ========================================
+           PROJECT CARDS - 3D Style
+           ======================================== */
+        .project-card {
+            width: 280px;
+            height: 180px;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            box-shadow: 
+                0 10px 40px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(255,255,255,0.05);
+        }
+
+        .project-card:hover {
+            transform: translateZ(100px) scale(1.15) rotateY(5deg);
+            box-shadow: 
+                0 30px 60px rgba(0,0,0,0.6),
+                0 0 0 1px rgba(255,255,255,0.1),
+                0 0 40px rgba(255,51,102,0.2);
+            z-index: 100;
+        }
+
+        .project-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .project-card:hover .project-thumbnail {
+            transform: scale(1.1);
+        }
+
+        .project-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover .project-info {
+            transform: translateY(0);
+        }
+
+        .project-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .project-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Category colors */
+        .category-music-video { border-left: 3px solid #4ecdc4; }
+        .category-commercial { border-left: 3px solid #ff6b6b; }
+        .category-music-production { border-left: 3px solid #ffe66d; }
+        .category-design { border-left: 3px solid #c7ceea; }
+
+        /* Music note fallback */
+        .music-note {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--text-muted);
+            background: linear-gradient(135deg, var(--bg-elevated) 0%, #1a1a1a 100%);
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-muted);
+        }
+
+        /* Scroll indicator */
+        .scroll-hint {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            animation: bounce 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="title">
+                <span class="title-word">Glassface</span>
+                <span class="title-word title-accent">Legacy</span>
+                <span class="title-word">Map</span>
+            </h1>
+            <p class="subtitle">132 Projects • 2011-2025 • Interactive 3D Timeline</p>
+        </div>
+    </header>
+
+    <!-- Timeline -->
+    <div class="timeline-wrapper">
+        <div class="year-track"></div>
+        <div class="years-container" id="years"></div>
+        
+        <div class="gallery-container" id="gallery">
+            <div class="loading">Loading projects...</div>
+        </div>
+    </div>
+
+    <div class="scroll-hint">Scroll to explore ↓</div>
+
+    <script>
+        // ========================================
+        // CONFIGURATION
+        // ========================================
+        const CONFIG = {
+            yearStart: 2011,
+            yearEnd: 2026,
+            rows: 5,
+            projectsPerRow: 6
+        };
+
+        // ========================================
+        // COVER ART MAPPING (Unique only)
+        // ========================================
+        const COVER_ART_MAPPING = {
+            "music-tobi-lou-new-bish": "images/covers/music-tobi-lou-new-bish.jpg",
+            "music-tobi-lou-cult-classic": "images/covers/music-tobi-lou-cult-classic.jpg",
+            "music-tobi-lou-lounar": "images/covers/music-tobi-lou-lounar.jpg",
+            "music-tobi-lou-solange": "images/covers/music-tobi-lou-solange.jpg",
+            "music-tobi-lou-the-fun": "images/covers/music-tobi-lou-the-fun.jpg",
+            "music-tobi-lou-uncle-iroh": "images/covers/music-tobi-lou-uncle-iroh.jpg",
+            "music-tobi-lou-live-on-ice": "images/covers/music-tobi-lou-live-on-ice.jpg",
+            "music-glassface-press": "images/covers/music-glassface-press.jpg",
+            "music-glassface-wavelength": "images/covers/music-glassface-wavelength.jpg",
+            "music-glassface-spiral": "images/covers/music-facer-spiral.jpg",
+            "music-glassface-already": "images/covers/music-glassface-already.jpg",
+            "music-glassface-foundation": "images/covers/music-glassface-foundation.jpg",
+            "music-glassface-oblivion": "images/covers/music-glassface-oblivion.jpg",
+            "music-glassface-summers-over": "images/covers/music-glassface-summers-over.jpg",
+            "music-glassface-endless-color": "images/covers/music-glassface-endless-color.jpg",
+            "music-glassface-theres-no-other-one": "images/covers/music-glassface-theres-no-other-one.jpg",
+            "music-glassface-whatever": "images/covers/music-glassface-whatever.jpg",
+            "music-sl-100-thoughts": "images/covers/music-sl-100-thoughts.jpg",
+            "music-chief-keef-forecast": "images/covers/music-chief-keef-forecast.jpg",
+            "music-young-thug-cobra": "images/covers/music-young-thug-cobra.jpg"
+        };
+
+        // ========================================
+        // LOAD PROJECTS
+        // ========================================
+        async function loadProjects() {
+            try {
+                const response = await fetch('career-database-enriched.json');
+                const projects = await response.json();
+                renderGallery(projects);
+                animateTitle();
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                document.getElementById('gallery').innerHTML = 
+                    '<div class="loading">Error loading projects. Please refresh.</div>';
+            }
+        }
+
+        // ========================================
+        // RENDER GALLERY - Multi Row 3D
+        // ========================================
+        function renderGallery(projects) {
+            const gallery = document.getElementById('gallery');
+            const yearsContainer = document.getElementById('years');
+            
+            // Render year markers
+            for (let year = CONFIG.yearStart; year <= CONFIG.yearEnd; year++) {
+                const marker = document.createElement('div');
+                marker.className = 'year-marker';
+                marker.textContent = year;
+                yearsContainer.appendChild(marker);
+            }
+
+            // Sort projects by date
+            const sortedProjects = projects.sort((a, b) => 
+                new Date(a.publishedAt) - new Date(b.publishedAt)
+            );
+
+            // Create 5 rows
+            const rows = [[], [], [], [], []];
+            sortedProjects.forEach((project, index) => {
+                const rowIndex = index % 5;
+                rows[rowIndex].push(project);
+            });
+
+            // Clear gallery
+            gallery.innerHTML = '';
+
+            // Render rows
+            rows.forEach((rowProjects, rowIndex) => {
+                const row = document.createElement('div');
+                row.className = 'gallery-row';
+                
+                rowProjects.slice(0, CONFIG.projectsPerRow).forEach(project => {
+                    const card = createProjectCard(project);
+                    row.appendChild(card);
+                });
+                
+                gallery.appendChild(row);
+            });
+
+            // Initialize GSAP animations
+            initAnimations();
+        }
+
+        // ========================================
+        // CREATE PROJECT CARD
+        // ========================================
+        function createProjectCard(project) {
+            const card = document.createElement('div');
+            card.className = `project-card category-${project.category}`;
+            
+            // Get thumbnail
+            let thumbnail = getProjectThumbnail(project);
+            
+            if (thumbnail) {
+                const img = document.createElement('img');
+                img.className = 'project-thumbnail';
+                img.src = thumbnail;
+                img.alt = project.title;
+                img.loading = 'lazy';
+                card.appendChild(img);
+            } else {
+                const note = document.createElement('div');
+                note.className = 'music-note';
+                note.textContent = '♪';
+                card.appendChild(note);
+            }
+
+            // Info overlay
+            const info = document.createElement('div');
+            info.className = 'project-info';
+            info.innerHTML = `
+                <div class="project-title">${project.title}</div>
+                <div class="project-meta">${project.publishedAt.substring(0, 4)} • ${project.category.replace('-', ' ')}</div>
+            `;
+            card.appendChild(info);
+
+            // Click handler
+            card.addEventListener('click', () => openProject(project));
+
+            return card;
+        }
+
+        // ========================================
+        // GET THUMBNAIL
+        // ========================================
+        function getProjectThumbnail(project) {
+            // Check cover art mapping
+            if (COVER_ART_MAPPING[project._id]) {
+                return COVER_ART_MAPPING[project._id];
+            }
+            
+            // Check YouTube thumbnail
+            if (project.videoId) {
+                return `https://img.youtube.com/vi/${project.videoId}/mqdefault.jpg`;
+            }
+            
+            return null;
+        }
+
+        // ========================================
+        // GSAP ANIMATIONS
+        // ========================================
+        function initAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Animate rows on scroll
+            document.querySelectorAll('.gallery-row').forEach((row, index) => {
+                gsap.from(row, {
+                    scrollTrigger: {
+                        trigger: row,
+                        start: 'top 80%',
+                        end: 'bottom 20%',
+                        toggleActions: 'play none none reverse'
+                    },
+                    opacity: 0,
+                    y: 50,
+                    duration: 0.8,
+                    delay: index * 0.1,
+                    ease: 'power2.out'
+                });
+            });
+
+            // Parallax effect on scroll
+            document.querySelectorAll('.gallery-row').forEach((row, index) => {
+                const offset = (index - 2) * 30; // Center row stays, others move
+                gsap.to(row, {
+                    scrollTrigger: {
+                        trigger: '.timeline-wrapper',
+                        start: 'top bottom',
+                        end: 'bottom top',
+                        scrub: 1
+                    },
+                    x: offset,
+                    ease: 'none'
+                });
+            });
+        }
+
+        // ========================================
+        // TITLE ANIMATION - Variable Font
+        // ========================================
+        function animateTitle() {
+            const words = document.querySelectorAll('.title-word');
+            
+            gsap.from(words, {
+                fontVariationSettings: "'wght' 100",
+                opacity: 0,
+                y: 50,
+                duration: 1.2,
+                stagger: 0.15,
+                ease: 'power3.out'
+            });
+        }
+
+        // ========================================
+        // OPEN PROJECT
+        // ========================================
+        function openProject(project) {
+            console.log('Opening project:', project);
+            // TODO: Implement modal or navigation
+        }
+
+        // Start
+        loadProjects();
+    </script>
+</body>
+</html>
