@@ -175,7 +175,9 @@
         </div>
     </div>
 
-    <!-- Load projects data first (critical) -->
+    <!-- Load projects from Sanity CMS (fetches from API, falls back to static) -->
+    <script src="js/sanity-loader.js?v=1"></script>
+    <!-- Fallback static data (loaded but may be overridden by Sanity) -->
     <script src="js/projects.js?v=1003"></script>
     <!-- Load enhanced descriptions -->
     <script src="js/project-details-enhanced.js?v=2"></script>
