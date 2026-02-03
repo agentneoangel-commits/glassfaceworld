@@ -668,6 +668,19 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: var(--grid-gap);
+    justify-content: start;
+}
+
+/* Prevent single items from stretching full width */
+.projects-grid:has(> :only-child) {
+    grid-template-columns: minmax(350px, min(100%, 800px));
+}
+
+/* Alternative fallback for browsers without :has support */
+@supports not (selector(:has(*))) {
+    .projects-grid > *:only-child {
+        max-width: 800px;
+    }
 }
 
 /* Staggered card animations */
