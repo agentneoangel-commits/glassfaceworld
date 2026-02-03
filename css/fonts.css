@@ -1,0 +1,72 @@
+/* Zalando Sans Font Face Declarations */
+@font-face {
+    font-family: 'Zalando Sans';
+    src: url('../fonts/zalando-sans/ZalandoSans-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Zalando Sans';
+    src: url('../fonts/zalando-sans/ZalandoSans-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Zalando Sans';
+    src: url('../fonts/zalando-sans/ZalandoSans-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Pixelify Sans from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap');
+
+/* Font Variables */
+:root {
+    --font-primary: 'Zalando Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-body: 'Zalando Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-accent: 'Pixelify Sans', cursive;
+    
+    /* Font weights */
+    --font-weight-light: 300;
+    --font-weight-regular: 400;
+    --font-weight-semibold: 600;
+}
+
+/* Apply fonts to elements */
+body {
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-light);
+}
+
+h1, h2, h3, h4, h5, h6,
+.logo,
+.section-title,
+.modal-title {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Third level hierarchy - accents */
+.accent-text,
+.stat-label,
+.client-category,
+.publications-title,
+.clients-title,
+.web3-year {
+    font-family: var(--font-accent);
+    font-weight: 500;
+}
+
+.nav-link,
+.project-role,
+.press-quote-source,
+.about-section-title {
+    font-family: var(--font-accent);
+    font-weight: 400;
+}
