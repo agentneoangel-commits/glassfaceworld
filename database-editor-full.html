@@ -1,0 +1,2644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassface Database Editor</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1a1a1a;
+            --bg-hover: #222;
+            --text: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #888;
+            --border: #333;
+            --border-light: #444;
+            --accent: #ff3366;
+            --accent-hover: #e62958;
+            --success: #4ecdc4;
+            --warning: #ffe66d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .project-count {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-light);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #000;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+
+        /* Search & Filter */
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .category-filter {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--border-light);
+        }
+
+        .filter-chip.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        /* Project List */
+        .container {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Project Card */
+        .project-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .project-card:hover {
+            border-color: var(--border-light);
+        }
+
+        .project-card.editing {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            cursor: pointer;
+            background: var(--bg-secondary);
+            transition: background 0.2s ease;
+        }
+
+        .project-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .project-thumbnail {
+            width: 60px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: var(--bg-tertiary);
+            flex-shrink: 0;
+        }
+
+        .project-thumbnail.placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .project-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .project-title {
+            font-weight: 500;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 4px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .project-category {
+            padding: 2px 10px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text);
+        }
+
+        .icon-btn.delete:hover {
+            background: rgba(255, 51, 102, 0.1);
+            color: var(--accent);
+        }
+
+        /* Edit Form */
+        .project-edit {
+            display: none;
+            padding: 20px;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+        }
+
+        .project-card.editing .project-edit {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 10px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-group input[type="checkbox"] {
+            width: auto;
+            align-self: flex-start;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state h3 {
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .project-header {
+                padding: 12px 15px;
+            }
+
+            .project-thumbnail {
+                width: 50px;
+                height: 35px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-top">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <h1>🎬 Database Editor</h1>
+                <span class="project-count" id="projectCount">0 projects</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="copyToClipboard()">
+                    📋 Copy to Clipboard
+                </button>
+                <button class="btn btn-success" onclick="downloadJSON()">
+                    💾 Download JSON
+                </button>
+                <button class="btn btn-primary" onclick="addNewProject()">
+                    ➕ Add Project
+                </button>
+            </div>
+        </div>
+        <div class="filter-bar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search projects by title, artist, or description..." oninput="filterProjects()">
+            </div>
+            <div class="category-filter" id="categoryFilter">
+                <span class="filter-chip active" data-category="all" onclick="filterByCategory('all')">All</span>
+                <span class="filter-chip" data-category="music-video" onclick="filterByCategory('music-video')">Music Video</span>
+                <span class="filter-chip" data-category="music-production" onclick="filterByCategory('music-production')">Music Production</span>
+                <span class="filter-chip" data-category="commercial" onclick="filterByCategory('commercial')">Commercial</span>
+                <span class="filter-chip" data-category="design" onclick="filterByCategory('design')">Design</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="project-list" id="projectList">
+            <!-- Projects will be rendered here -->
+        </div>
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <h3>No projects found</h3>
+            <p>Try adjusting your search or filters</p>
+        </div>
+    </main>
+
+    <div class="toast" id="toast">
+        <span class="toast-icon">✓</span>
+        <span id="toastMessage">Operation successful</span>
+    </div>
+
+    <script>
+        // ========================================
+        // FULL CAREER DATABASE - ALL 132 PROJECTS
+        // ========================================
+        const CAREER_DATABASE = [
+        {
+            _id: "sochi-olympics",
+            title: "Sochi 2014 Olympics",
+            category: "graphic-design",
+            description: "Brand Identity, Graphic Design",
+            publishedAt: "2014-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/12496335/prt_1486942010_2x.gif",
+            videoId: "",
+            viewCount: "",
+            roles: ["Brand Identity", "Graphic Design"]
+        },
+        {
+            _id: "archive-early-works",
+            title: "Early Works Archive",
+            category: "archive",
+            description: "Selected early projects and experiments",
+            publishedAt: "2014-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/12698830/prt_1516762765.gif",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director", "Editor"]
+        },
+        {
+            _id: "prhyme",
+            title: "PRhyme - PRhyme",
+            category: "archive",
+            description: "",
+            publishedAt: "2014-11-20",
+            featured: false,
+            externalUrl: "",
+            artist: "PRhyme",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "3500000",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "prhyme-prhyme",
+            title: "PRhyme - PRhyme",
+            category: "music-video",
+            description: "Director, Editor, VFX",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13212761/prt_1528245635_2x.gif",
+            videoId: "ZS6--6jL5r8",
+            viewCount: "4.8M",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "lil-yachty-1-night",
+            title: "Lil Yachty - 1 Night",
+            category: "music-video",
+            description: "",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=251cxou3yR4",
+            artist: "Lil Yachty",
+            thumbnail: "",
+            videoId: "251cxou3yR4",
+            viewCount: "45000000",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "impermanent-digital",
+            title: "Impermanent Digital",
+            category: "web3",
+            description: "",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["NFT"]
+        },
+        {
+            _id: "forever-young",
+            title: "Forever Young - Lil Yachty",
+            category: "music-video",
+            description: "Animated lyric video referenced in The Verge interview",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director/Editor"]
+        },
+        {
+            _id: "i-was-sad-last-night-i-m-ok-now",
+            title: "I Was Sad Last Night I'm OK Now - tobi lou",
+            category: "music-video",
+            description: "One of 20+ videos directed for tobi lou since 2007",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director"]
+        },
+        {
+            _id: "looped-up",
+            title: "Looped Up - tobi lou ft. Vernon",
+            category: "music-video",
+            description: "From Live on Ice era",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director"]
+        },
+        {
+            _id: "lounar",
+            title: "Lounar - tobi lou",
+            category: "music-video",
+            description: "Features Glassface vocals on outro",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director"]
+        },
+        {
+            _id: "solange",
+            title: "Solange - tobi lou",
+            category: "music-video",
+            description: "Features Facer (Glassface) outro vocals",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director"]
+        },
+        {
+            _id: "uncle-iroh",
+            title: "Uncle Iroh - tobi lou",
+            category: "music-video",
+            description: "Music video for tobi lou",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director"]
+        },
+        {
+            _id: "mama-don-t-worry-still-ain-t-dirty-",
+            title: "Mama Don't Worry (Still Ain't Dirty) - Bhad Bhabie",
+            category: "music-video",
+            description: "Music video for Bhad Bhabie",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director"]
+        },
+        {
+            _id: "100-thoughts",
+            title: "100 Thoughts - SL",
+            category: "music-video",
+            description: "Music video for SL",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director"]
+        },
+        {
+            _id: "act-up",
+            title: "Act Up - Thouxanbanfauni",
+            category: "music-video",
+            description: "Music video for Thouxanbanfauni",
+            publishedAt: "2015-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director"]
+        },
+        {
+            _id: "lil-yachty-one-night",
+            title: "Lil Yachty - 1 Night",
+            category: "music-video",
+            description: "Directed by Josh Goldenberg (Glassface) & Rahil Ashruff. Editing & VFX by Josh Goldenberg. This visual took an unorthodox approach toward the medium of 'music video' - seizing on elements of the cultural/internet zeitgeist into a piece that truly defies expectation. At nearly 100M views - '1 Night' has been certified platinum, solidifying Lil Yachty as one of the most talked about artists of 2016.",
+            publishedAt: "2016-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/12472153/prt_1516763323_2x.gif",
+            videoId: "251cxou3yR4",
+            viewCount: "97M",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "og-maco-u-guessed-it",
+            title: "OG Maco - U Guessed It",
+            category: "music-video",
+            description: "Music Video, Director, Editor",
+            publishedAt: "2016-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=kT3OQwyvKmk",
+            artist: "OG Maco",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/12586358/prt_1488857202.gif",
+            videoId: "kT3OQwyvKmk",
+            viewCount: "78M",
+            roles: ["Director", "Editor"]
+        },
+        {
+            _id: "one-night",
+            title: "One Night - Lil Yachty",
+            category: "music-video",
+            description: "Breakthrough marketing campaign for Lil Yachty; Glassface received platinum plaque from RIAA",
+            publishedAt: "2016-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "251cxou3yR4",
+            viewCount: "",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "music-tobi-lou-new-bish",
+            title: "New Bish",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2016-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-press",
+            title: "Press",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2016-01-01",
+            featured: true,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "tunji-ige-war",
+            title: "Tunji Ige - War",
+            category: "music-video",
+            description: "Music Video, Director, Editor",
+            publishedAt: "2016-06-07",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=sjAd-se-LEo",
+            artist: "Tunji Ige",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/12472468/prt_1516764314_2x.gif",
+            videoId: "9QCgXehnM04",
+            viewCount: "800000",
+            roles: ["Director", "Editor"]
+        },
+        {
+            _id: "dua-lipa-genesis",
+            title: "Dua Lipa - Genesis",
+            category: "music-video",
+            description: "Music Video, VFX",
+            publishedAt: "2017-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=nAQ77H7Fzfw",
+            artist: "Dua Lipa",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13322810/prt_1516134161.gif",
+            videoId: "nAQ77H7Fzfw",
+            viewCount: "41M",
+            roles: ["VFX"]
+        },
+        {
+            _id: "dram-ill-nana",
+            title: "DRAM ft. Trippie Redd - ILL NANA",
+            category: "music-video",
+            description: "VFX, Editor",
+            publishedAt: "2017-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=HLuQbbMnlK4",
+            artist: "DRAM",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13065896/prt_1516134660.gif",
+            videoId: "HLuQbbMnlK4",
+            viewCount: "7000000",
+            roles: ["VFX", "Editor"]
+        },
+        {
+            _id: "khalid-location",
+            title: "Khalid - Location",
+            category: "music-video",
+            description: "Music Video, Editor, VFX",
+            publishedAt: "2017-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=by3yRdlQvzs",
+            artist: "Khalid",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13321051/prt_1516121871.gif",
+            videoId: "by3yRdlQvzs",
+            viewCount: "12M",
+            roles: ["Editor", "VFX"]
+        },
+        {
+            _id: "lil-yachty-forever-young",
+            title: "Lil Yachty & Diplo - Forever Young",
+            category: "music-video",
+            description: "Director, Editor, Animator",
+            publishedAt: "2017-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13049603/prt_1516763052.gif",
+            videoId: "IiEMQ7M4LxU",
+            viewCount: "9.3M",
+            roles: ["Director", "Editor", "Animator"]
+        },
+        {
+            _id: "why-don-t-you",
+            title: "Why Don't You - Tunji Ige",
+            category: "music-video",
+            description: "IMDb: tt8089284",
+            publishedAt: "2017-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director"]
+        },
+        {
+            _id: "music-glassface-wavelength",
+            title: "Wavelength",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2017-01-01",
+            featured: true,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "target-lil-yachty-carly-rae-jepsen",
+            title: "TARGET x LIL YACHTY x CARLY RAE JEPSEN",
+            category: "commercial",
+            description: "",
+            publishedAt: "2017-02-12",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=x_YT2abZUX0",
+            artist: "Target",
+            thumbnail: "",
+            videoId: "x_YT2abZUX0",
+            viewCount: "2500000",
+            roles: ["Editing", "VFX"]
+        },
+        {
+            _id: "smokepurpp-bless-yo-trap",
+            title: "Smokepurpp - Bless Yo Trap",
+            category: "music-video",
+            description: "VFX, Editor",
+            publishedAt: "2017-11-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=QlbJ49xpPzU",
+            artist: "Smokepurpp",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13322830/prt_1516121327.gif",
+            videoId: "QlbJ49xpPzU",
+            viewCount: "2.1M",
+            roles: ["VFX", "Editor"]
+        },
+        {
+            _id: "migos-motorsport",
+            title: "Migos - Motorsport (Lyric Video)",
+            category: "archive",
+            description: "",
+            publishedAt: "2017-11-22",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=LWpYaXYsPvA",
+            artist: "Migos",
+            thumbnail: "",
+            videoId: "LWpYaXYsPvA",
+            viewCount: "25000000",
+            roles: ["Editor", "VFX", "Animator"]
+        },
+        {
+            _id: "target-lil-yachty-carly",
+            title: "TARGET x LIL YACHTY x CARLY RAE JEPSEN",
+            category: "commercial",
+            description: "Editing, VFX",
+            publishedAt: "2018-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/12472174/prt_1516762567.gif",
+            videoId: "UPIuzNv-TyI",
+            viewCount: "",
+            roles: ["Editing", "VFX"]
+        },
+        {
+            _id: "finish-line-nike",
+            title: "FINISH LINE x NIKE SPORTS",
+            category: "commercial",
+            description: "Director, Editor, VFX",
+            publishedAt: "2018-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Finish Line",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13212760/prt_1554157828.gif",
+            videoId: "lO1lOBqzl4w",
+            viewCount: "800000",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "bhad-bhabie-hacked",
+            title: "Bhad Bhabie: HACKED Campaign",
+            category: "music-video",
+            description: "Director, Editor, VFX",
+            publishedAt: "2018-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=JEdAUcra2X0",
+            artist: "Bhad Bhabie",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13831557/prt_1554157001_2x.gif",
+            videoId: "JEdAUcra2X0",
+            viewCount: "22M",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "fifth-harmony-visuals",
+            title: "Fifth Harmony Stage Visuals",
+            category: "music-video",
+            description: "Editor, VFX, Animator",
+            publishedAt: "2018-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13049621/prt_1516134361.gif",
+            videoId: "",
+            viewCount: "",
+            roles: ["Editor", "VFX", "Animator"]
+        },
+        {
+            _id: "a-ap-twelvyy-glock-rivers",
+            title: "A$AP Twelvyy - Glock Rivers",
+            category: "music-video",
+            description: "Music Video, Director, Editor",
+            publishedAt: "2018-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/12586421/prt_1516816947_2x.gif",
+            videoId: "XY7WFUq4EKU",
+            viewCount: "",
+            roles: ["Director", "Editor"]
+        },
+        {
+            _id: "rome-fortune",
+            title: "Rome Fortune - Music Videos",
+            category: "music-video",
+            description: "Director, Editor, Animator",
+            publishedAt: "2018-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/12698921/prt_1518733085_2x.gif",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director", "Editor", "Animator"]
+        },
+        {
+            _id: "fifth-harmony",
+            title: "Fifth Harmony Stage Visuals",
+            category: "archive",
+            description: "",
+            publishedAt: "2018-01-01",
+            featured: false,
+            externalUrl: "https://vimeo.com/glassface",
+            artist: "Fifth Harmony",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Editor", "VFX", "Animator"]
+        },
+        {
+            _id: "music-tobi-lou-the-fun",
+            title: "The Fun",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2018-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-cult-classic",
+            title: "The Name of My First Album is \"Cult Classic\"",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2018-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-lounar",
+            title: "Lounar",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2018-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-solange",
+            title: "Solange",
+            category: "music-production",
+            description: "Production for tobi lou ft. Glassface.",
+            publishedAt: "2018-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "tobi-lou-troop",
+            title: "Tobi Lou - Troop",
+            category: "music-video",
+            description: "Director, Editor, VFX",
+            publishedAt: "2018-03-06",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=ckAgAc8paKo",
+            artist: "Tobi Lou",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13322823/prt_1520719349_2x.gif",
+            videoId: "ckAgAc8paKo",
+            viewCount: "2500000",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "sango-khlorine",
+            title: "Sango – Khlorine (feat. Smino)",
+            category: "music-video",
+            description: "Director, Editor, VFX",
+            publishedAt: "2018-03-26",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=dbv1O3jV_Hk",
+            artist: "Sango",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13455800/prt_1522440218_2x.gif",
+            videoId: "dbv1O3jV_Hk",
+            viewCount: "4000000",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "lil-yachty-boom",
+            title: "Lil Yachty - BOOM! ft. Ugly God",
+            category: "music-video",
+            description: "Director, Editor, VFX",
+            publishedAt: "2018-06-22",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=NoOi8_xvjIU",
+            artist: "Lil Yachty",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/12472415/prt_1486444310.gif",
+            videoId: "7L0Xn2nu2xU",
+            viewCount: "20000000",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "adidas-kylie-jenner",
+            title: "ADIDAS x KYLIE JENNER",
+            category: "commercial",
+            description: "Director, Editor, VFX",
+            publishedAt: "2018-08-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=iM-cgpbkh7s",
+            artist: "Adidas",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13730584/prt_1544040165_2x.gif",
+            videoId: "iM-cgpbkh7s",
+            viewCount: "5000000",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "lil-yachty-66",
+            title: "Lil Yachty - 66 ft. Trippie Redd",
+            category: "music-video",
+            description: "Editor, VFX",
+            publishedAt: "2018-08-16",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=4lT-2giDhQg",
+            artist: "Lil Yachty",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13831551/prt_1554155778.gif",
+            videoId: "4lT-2giDhQg",
+            viewCount: "22000000",
+            roles: ["Editor", "VFX"]
+        },
+        {
+            _id: "young-thug-dirty-shoes",
+            title: "Young Thug - Dirty Shoes (ft. Gunna)",
+            category: "music-video",
+            description: "VFX",
+            publishedAt: "2018-09-19",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=8nxbrb3h8pE",
+            artist: "Young Thug",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13757291/prt_1554170161.gif",
+            videoId: "8nxbrb3h8pE",
+            viewCount: "28M",
+            roles: ["VFX"]
+        },
+        {
+            _id: "complex-networks-reel",
+            title: "COMPLEX NETWORKS REEL",
+            category: "commercial",
+            description: "Director, Editor, VFX",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Complex Networks",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13997919/prt_1575409101_2x.gif",
+            videoId: "ybOE4kh3OTc",
+            viewCount: "",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "cousin-stizz-perfect",
+            title: "Cousin Stizz - Perfect ft. City Girls",
+            category: "music-video",
+            description: "Director, Editor, VFX",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=2Gaxt3zP8Sg",
+            artist: "Cousin Stizz",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13905772/prt_1562816810_2x.gif",
+            videoId: "2Gaxt3zP8Sg",
+            viewCount: "5000000",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "hulu-free-machine",
+            title: "Hulu Presents: Free Machine",
+            category: "narrative",
+            description: "Director, Editor",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=UiUg4_Ao46o",
+            artist: "Hulu",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14236391/prt_1615273109_2x.png",
+            videoId: "UiUg4_Ao46o",
+            viewCount: "",
+            roles: ["Director", "Editor"]
+        },
+        {
+            _id: "swizz-dmx-ross",
+            title: "Swizz Beats, DMX, Rick Ross - Just in Case",
+            category: "music-video",
+            description: "VFX",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13928686/prt_1565978862.gif",
+            videoId: "--RTy_uobI8",
+            viewCount: "",
+            roles: ["VFX"]
+        },
+        {
+            _id: "bea-miller-feel-something",
+            title: "Bea Miller - feel something",
+            category: "music-video",
+            description: "VFX",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=3eLfRb6_Css",
+            artist: "Bea Miller",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13905771/prt_1562817171_2x.gif",
+            videoId: "3eLfRb6_Css",
+            viewCount: "4000000",
+            roles: ["VFX"]
+        },
+        {
+            _id: "elley-duhe",
+            title: "Elley Duhé - $$$$",
+            category: "music-video",
+            description: "Editor, VFX",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=dxgDRaeWvFE",
+            artist: "Elley Duhé",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13831553/prt_1554156412_2x.gif",
+            videoId: "dxgDRaeWvFE",
+            viewCount: "18M",
+            roles: ["Editor", "VFX"]
+        },
+        {
+            _id: "amine-campfire",
+            title: "Aminé - Campfire ft. Injury Reserve",
+            category: "music-video",
+            description: "VFX, Editor",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=NO3k6kqbKGs",
+            artist: "Aminé",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13831574/prt_1554157417_2x.gif",
+            videoId: "NO3k6kqbKGs",
+            viewCount: "5000000",
+            roles: ["VFX", "Editor"]
+        },
+        {
+            _id: "music-tobi-lou-sad-last-night",
+            title: "I was sad last night, I'm OK now",
+            category: "music-production",
+            description: "Production for tobi lou. Breakout hit.",
+            publishedAt: "2019-01-01",
+            featured: true,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-uncle-iroh",
+            title: "Uncle Iroh",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-deserve-it",
+            title: "Deserve It (ft. rockie fresh)",
+            category: "music-production",
+            description: "Production for tobi lou ft. rockie fresh.",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-berlin-westside",
+            title: "Berlin/Westside",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-looped-up",
+            title: "Looped Up",
+            category: "music-production",
+            description: "Production for tobi lou ft. Vernon (SEVENTEEN).",
+            publishedAt: "2019-01-01",
+            featured: true,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-theme-music",
+            title: "Theme Music",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-cheap-vacations",
+            title: "Cheap Vacations",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2019-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-spiral",
+            title: "Spiral",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2019-01-01",
+            featured: true,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-sl-100-thoughts",
+            title: "100 Thoughts",
+            category: "music-production",
+            description: "Production for SL. Top Boy Soundtrack.",
+            publishedAt: "2019-01-01",
+            featured: true,
+            externalUrl: "",
+            artist: "SL",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "shy-glizzy-volcano",
+            title: "Shy Glizzy - Volcano",
+            category: "music-video",
+            description: "Editing, VFX",
+            publishedAt: "2019-03-14",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=aSVzQXvWauY",
+            artist: "Shy Glizzy",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13831556/prt_1554156038_2x.gif",
+            videoId: "aSVzQXvWauY",
+            viewCount: "3.2M",
+            roles: ["Editing", "VFX"]
+        },
+        {
+            _id: "vic-mensa-metaphysical",
+            title: "Vic Mensa - Metaphysical",
+            category: "music-video",
+            description: "VFX",
+            publishedAt: "2019-03-22",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=lVVnL3J_acE",
+            artist: "Vic Mensa",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13659894/prt_1537926076_2x.gif",
+            videoId: "a176WfJQkT8",
+            viewCount: "5.1M",
+            roles: ["VFX"]
+        },
+        {
+            _id: "wiz-khalifa-alright",
+            title: "Wiz Khalifa - Alright ft. Trippie Redd & Preme",
+            category: "music-video",
+            description: "VFX",
+            publishedAt: "2019-05-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=ctTeJRAW_yE",
+            artist: "Wiz Khalifa",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13905770/prt_1562816513_2x.gif",
+            videoId: "HB_JVd7A7_8",
+            viewCount: "31M",
+            roles: ["VFX"]
+        },
+        {
+            _id: "madeon-all-my-friends",
+            title: "Madeon - All My Friends",
+            category: "music-video",
+            description: "Editor, VFX",
+            publishedAt: "2019-07-17",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=o-o0ycSsqYA",
+            artist: "Madeon",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13927661/prt_1565834370.gif",
+            videoId: "_qYyU019PbI",
+            viewCount: "8000000",
+            roles: ["Editor", "VFX"]
+        },
+        {
+            _id: "tove-lo-jacques",
+            title: "Tove Lo - Jacques (ft. Jax Jones)",
+            category: "music-video",
+            description: "Director, Editor, VFX",
+            publishedAt: "2019-09-09",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=0efoCjgNQiE",
+            artist: "Tove Lo",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13974234/prt_1572199004_2x.gif",
+            videoId: "0efoCjgNQiE",
+            viewCount: "12000000",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "swizz-beats-dmx-rick-ross",
+            title: "Swizz Beats, DMX, Rick Ross - Just in Case",
+            category: "archive",
+            description: "",
+            publishedAt: "2019-09-27",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=--RTy_uobI8",
+            artist: "Godfather of Harlem",
+            thumbnail: "",
+            videoId: "--RTy_uobI8",
+            viewCount: "12000000",
+            roles: ["VFX"]
+        },
+        {
+            _id: "google-ultradreamer",
+            title: "GOOGLE x GLASSFACE: ULTRADREAMER",
+            category: "commercial",
+            description: "Director, Editor",
+            publishedAt: "2019-12-16",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=WPehLrjzX3o",
+            artist: "Google",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14236402/prt_1615274254_2x.png",
+            videoId: "gA51z7sMkOc",
+            viewCount: "1200000",
+            roles: ["Director", "Editor"]
+        },
+        {
+            _id: "bryson-tiller-inhale",
+            title: "Bryson Tiller - Inhale",
+            category: "music-video",
+            description: "VFX",
+            publishedAt: "2020-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=zew8SOatV0U",
+            artist: "Bryson Tiller",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14236396/prt_1615273847_2x.png",
+            videoId: "zew8SOatV0U",
+            viewCount: "23M",
+            roles: ["VFX"]
+        },
+        {
+            _id: "24kgoldn-city-of-angels",
+            title: "24kGoldn - CITY OF ANGELS",
+            category: "music-video",
+            description: "VFX",
+            publishedAt: "2020-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=yHwGIA4VeOc",
+            artist: "24kGoldn",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14081078/prt_1586977068_2x.gif",
+            videoId: "yHwGIA4VeOc",
+            viewCount: "52M",
+            roles: ["VFX"]
+        },
+        {
+            _id: "tobi-lou-game-ova",
+            title: "Tobi Lou - Game Ova",
+            category: "music-video",
+            description: "Music Video, Director, Editor",
+            publishedAt: "2020-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=S27Kem0zzBU",
+            artist: "Tobi Lou",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14081077/prt_1586976784_2x.gif",
+            videoId: "S27Kem0zzBU",
+            viewCount: "1500000",
+            roles: ["Director", "Editor"]
+        },
+        {
+            _id: "cheap-vacations",
+            title: "Cheap Vacations - tobi lou ft. Facer (Glassface)",
+            category: "music-video",
+            description: "IMDb: tt13689518; Glassface appears as featured artist",
+            publishedAt: "2020-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director", "Editor"]
+        },
+        {
+            _id: "2hrs",
+            title: "2hrs - tobi lou",
+            category: "music-video",
+            description: "Released December 18, 2020",
+            publishedAt: "2020-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "music-tobi-lou-hot-tub",
+            title: "Hot tub dream machine",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2020-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-already",
+            title: "Already",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2020-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "tokyos-revenge",
+            title: "TOKYO'S REVENGE - GOODMORNINGTOKYO!",
+            category: "music-video",
+            description: "VFX",
+            publishedAt: "2020-02-17",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=B7RWR_5R5GE",
+            artist: "TOKYO'S REVENGE",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/13974237/prt_1572198908.gif",
+            videoId: "RgKqxFR--eo",
+            viewCount: "85M",
+            roles: ["VFX"]
+        },
+        {
+            _id: "tobi-lou-hot-tub",
+            title: "tobi lou - HOT TUB DREAM MACHINE",
+            category: "music-video",
+            description: "director, editor",
+            publishedAt: "2020-02-21",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=-WsO5Tl5OVs",
+            artist: "tobi lou",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14077602/prt_1586507263_2x.png",
+            videoId: "-WsO5Tl5OVs",
+            viewCount: "3500000",
+            roles: ["Director", "Editor"]
+        },
+        {
+            _id: "tobi-lou-lingo-starr",
+            title: "tobi lou - LINGO STARR",
+            category: "music-video",
+            description: "",
+            publishedAt: "2020-07-06",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=EPpVR_whAX8",
+            artist: "tobi lou",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14339661/prt_1643333723_2x.gif",
+            videoId: "EPpVR_whAX8",
+            viewCount: "2000000",
+            roles: ["Director"]
+        },
+        {
+            _id: "jhene-aiko-summer-2020",
+            title: "Jhene Aiko - Summer 2020",
+            category: "music-video",
+            description: "Editor, VFX",
+            publishedAt: "2020-07-17",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=fyvf9jNPTHM",
+            artist: "Jhene Aiko",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14236406/prt_1615277106_2x.png",
+            videoId: "fyvf9jNPTHM",
+            viewCount: "6000000",
+            roles: ["Editor", "VFX"]
+        },
+        {
+            _id: "piaget-michael-b-jordan",
+            title: "PIAGET x MICHAEL B JORDAN",
+            category: "commercial",
+            description: "Editor, VFX",
+            publishedAt: "2021-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=HYEQ7BYRTaQ",
+            artist: "Piaget",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14240913/prt_1616112167_2x.gif",
+            videoId: "SeWwmYt_kvM",
+            viewCount: "",
+            roles: ["Editor", "VFX"]
+        },
+        {
+            _id: "disto-fine-art",
+            title: "DISTO FINE ART",
+            category: "web3",
+            description: "NFT, VFX",
+            publishedAt: "2021-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14242787/prt_1616539788_2x.gif",
+            videoId: "",
+            viewCount: "",
+            roles: ["Creative Director", "VFX"]
+        },
+        {
+            _id: "google-creator-labs",
+            title: "GOOGLE CREATOR LABS SEASONS 5+6",
+            category: "commercial",
+            description: "Photographer",
+            publishedAt: "2022-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Google",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14382692/prt_1657403616_2x.jpeg",
+            videoId: "",
+            viewCount: "",
+            roles: ["Photographer"]
+        },
+        {
+            _id: "adidas-jd-sports",
+            title: "ADIDAS x JD SPORTS",
+            category: "commercial",
+            description: "Director, Editor, VFX",
+            publishedAt: "2022-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Adidas",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14382682/prt_1657409897.gif",
+            videoId: "jOnLTnqZZ1I",
+            viewCount: "",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "puma-jd-sports",
+            title: "PUMA x JD SPORTS",
+            category: "commercial",
+            description: "Director, Editor, VFX",
+            publishedAt: "2022-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Puma",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14382686/prt_1657409669.gif",
+            videoId: "SPA3rWP3x28",
+            viewCount: "",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "snapple-elements-nft",
+            title: "Snapple x Glassface - Elements NFT",
+            category: "commercial",
+            description: "Director",
+            publishedAt: "2022-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Snapple",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14382695/prt_1657408549.gif",
+            videoId: "myr557eLF2E",
+            viewCount: "",
+            roles: ["Director"]
+        },
+        {
+            _id: "jd-sports-ar",
+            title: "JD Sports x AfterPay x Snap: Times Square AR Experience",
+            category: "web3",
+            description: "",
+            publishedAt: "2022-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "JD Sports",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14382691/prt_1657400689_2x.jpeg",
+            videoId: "",
+            viewCount: "",
+            roles: ["Director"]
+        },
+        {
+            _id: "jd-sports-infinite-objects",
+            title: "JD Sports x Glassface - Infinite Objects Frame",
+            category: "product-design",
+            description: "Physical Product Design, 3D Art",
+            publishedAt: "2022-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14382691/prt_1657400689_2x.jpeg",
+            videoId: "",
+            viewCount: "",
+            roles: ["Product Design", "Creative Director"]
+        },
+        {
+            _id: "music-tobi-lou-babycakes",
+            title: "Babycakes",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2022-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-meaningless",
+            title: "Meaningless",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2022-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-busy",
+            title: "Busy",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2022-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-foundation",
+            title: "Foundation",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2022-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-oblivion",
+            title: "Oblivion",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2022-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-summers-over",
+            title: "Summer's Over",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2022-01-01",
+            featured: true,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "tobi-lou-non-perishable",
+            title: "Tobi Lou - Non Perishable",
+            category: "music-video",
+            description: "EP, Tech Director",
+            publishedAt: "2022-03-08",
+            featured: false,
+            externalUrl: "",
+            artist: "Tobi Lou",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14382699/prt_1657409352.gif",
+            videoId: "MXiX6u3gaCQ",
+            viewCount: "3000000",
+            roles: ["Tech Director"]
+        },
+        {
+            _id: "reel",
+            title: "Reel",
+            category: "commercial",
+            description: "Director, Editor, VFX",
+            publishedAt: "2023-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=SAufofjlmYk",
+            artist: "Glassface",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/12698830/prt_1516762765.gif",
+            videoId: "SAufofjlmYk",
+            viewCount: "",
+            roles: ["Director", "Editor", "VFX"]
+        },
+        {
+            _id: "kid-cudi-members-of-the-rage-s1",
+            title: "Kid Cudi - Members of the Rage Season 1",
+            category: "product-design",
+            description: "Fashion Line Design, Creative Direction",
+            publishedAt: "2023-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14494875/prt_1700610555_2x.png",
+            videoId: "",
+            viewCount: "",
+            roles: ["Creative Director", "Product Design"]
+        },
+        {
+            _id: "lauryn-hill-merch",
+            title: "Ms. Lauryn Hill - Tour Merchandise",
+            category: "product-design",
+            description: "Clothing Design, Merchandise",
+            publishedAt: "2023-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14494879/prt_1700610969_2x.jpg",
+            videoId: "",
+            viewCount: "",
+            roles: ["Product Design", "Graphic Design"]
+        },
+        {
+            _id: "music-tobi-lou-numbers",
+            title: "Numbers",
+            category: "music-production",
+            description: "Solo production for tobi lou.",
+            publishedAt: "2023-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-hold-me-close",
+            title: "Hold Me Close",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2023-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-break",
+            title: "Break",
+            category: "music-production",
+            description: "Production for tobi lou ft. Glassface.",
+            publishedAt: "2023-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-no-other-one",
+            title: "There's No Other One",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2023-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-endless-color",
+            title: "Endless Color",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2023-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-whatever",
+            title: "Whatever",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2023-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-chief-keef-forecast",
+            title: "Forecast",
+            category: "music-production",
+            description: "Production for Chief Keef ft. tobi lou.",
+            publishedAt: "2023-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Chief Keef",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-young-thug-cobra",
+            title: "Cobra",
+            category: "music-production",
+            description: "Production for Young Thug ft. tobi lou.",
+            publishedAt: "2023-01-01",
+            featured: true,
+            externalUrl: "",
+            artist: "Young Thug",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "jhene-aiko-love",
+            title: "Jhene Aiko - Love",
+            category: "music-video",
+            description: "Director, VFX",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=nfsr8Yf6oPo",
+            artist: "Jhene Aiko",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14535491/prt_1717890812_2x.gif",
+            videoId: "nfsr8Yf6oPo",
+            viewCount: "15000000",
+            roles: ["Director", "VFX"]
+        },
+        {
+            _id: "kid-cudi-insano",
+            title: "Kid Cudi - Insano Album Artwork",
+            category: "cover-artwork",
+            description: "Graphic Design",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Kid Cudi",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14494875/prt_1700610555_2x.png",
+            videoId: "",
+            viewCount: "",
+            roles: ["Graphic Design"]
+        },
+        {
+            _id: "tobi-lou-non-perishable-cover",
+            title: "tobi lou - Non-Perishable Album Cover",
+            category: "cover-artwork",
+            description: "Graphic Design",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14494874/prt_1700610770_2x.png",
+            videoId: "",
+            viewCount: "",
+            roles: ["Graphic Design"]
+        },
+        {
+            _id: "kid-cudi-porsche",
+            title: "Kid Cudi - Porsche Topless",
+            category: "cover-artwork",
+            description: "Graphic Design",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Kid Cudi",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14494880/prt_1700611135_2x.png",
+            videoId: "",
+            viewCount: "",
+            roles: ["Graphic Design"]
+        },
+        {
+            _id: "kid-cudi-at-the-party",
+            title: "Kid Cudi ft. Pharrell & Travis Scott - At The Party",
+            category: "cover-artwork",
+            description: "Graphic Design",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Kid Cudi",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14494881/prt_1700611339_2x.png",
+            videoId: "",
+            viewCount: "",
+            roles: ["Graphic Design"]
+        },
+        {
+            _id: "lauryn-hill-rebel",
+            title: "Ms. Lauryn Hill - Rebel Cover Artwork",
+            category: "cover-artwork",
+            description: "Graphic Design",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Ms. Lauryn Hill",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14494879/prt_1700610969_2x.jpg",
+            videoId: "",
+            viewCount: "",
+            roles: ["Graphic Design"]
+        },
+        {
+            _id: "kid-cudi-members-of-the-rage-s2",
+            title: "Kid Cudi - Members of the Rage Season 2",
+            category: "product-design",
+            description: "Fashion Line Design, Creative Direction",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14494880/prt_1700611135_2x.png",
+            videoId: "",
+            viewCount: "",
+            roles: ["Creative Director", "Product Design"]
+        },
+        {
+            _id: "music-glassface-mindreader",
+            title: "Mindreader",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2024-01-01",
+            featured: true,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-crash-747",
+            title: "Crash 747",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-hall-of-echoes",
+            title: "Hall of Echoes",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-glassface-vivid-color-dreams",
+            title: "Vivid Color Dreams",
+            category: "music-production",
+            description: "Solo work by Glassface.",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Glassface",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-sango-mindreader-remix",
+            title: "Mindreader (Remix)",
+            category: "music-production",
+            description: "Remix by Sango ft. Glassface, Odunsi.",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Sango",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-blvk-h3ro-up",
+            title: "Up",
+            category: "music-production",
+            description: "Production for Blvk H3ro.",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Blvk H3ro",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-blvk-h3ro-brick",
+            title: "Brick",
+            category: "music-production",
+            description: "Production for Blvk H3ro.",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Blvk H3ro",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-blvk-h3ro-active",
+            title: "Active (EP)",
+            category: "music-production",
+            description: "Production for Blvk H3ro EP.",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Blvk H3ro",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-blvk-h3ro-motion",
+            title: "Motion",
+            category: "music-production",
+            description: "Production for Blvk H3ro.",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Blvk H3ro",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-ayotemi-quality-time",
+            title: "Quality Time",
+            category: "music-production",
+            description: "Production for Ayotemi.",
+            publishedAt: "2024-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Ayotemi",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "jhene-aiko-surrender",
+            title: "Jhene Aiko - Surrender",
+            category: "music-video",
+            description: "Director",
+            publishedAt: "2024-03-07",
+            featured: false,
+            externalUrl: "https://www.youtube.com/watch?v=jtMin8GTNGA",
+            artist: "Jhene Aiko",
+            thumbnail: "https://payload.cargocollective.com/1/22/713998/14535490/prt_1717890965_2x.gif",
+            videoId: "jtMin8GTNGA",
+            viewCount: "8000000",
+            roles: ["Director"]
+        },
+        {
+            _id: "music-tobi-lou-toblerone",
+            title: "Toblerone <3",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2025-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-verizon-man",
+            title: "Verizon Man <3",
+            category: "music-production",
+            description: "Production for tobi lou.",
+            publishedAt: "2025-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-tobi-lou-sotw",
+            title: "$otw <3",
+            category: "music-production",
+            description: "Production for tobi lou ft. Glassface.",
+            publishedAt: "2025-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "tobi lou",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-parris-goebel-intro",
+            title: "A GIRL IS A DRUG - intro",
+            category: "music-production",
+            description: "Production for Parris Goebel.",
+            publishedAt: "2025-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Parris Goebel",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-parris-goebel-dummy",
+            title: "Dummy",
+            category: "music-production",
+            description: "Production for Parris Goebel ft. Sadboi.",
+            publishedAt: "2025-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Parris Goebel",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-ayotemi-no-time",
+            title: "No Time",
+            category: "music-production",
+            description: "Production for Ayotemi.",
+            publishedAt: "2025-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Ayotemi",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        },
+        {
+            _id: "music-ayotemi-senior-man",
+            title: "Senior Man",
+            category: "music-production",
+            description: "Production for Ayotemi.",
+            publishedAt: "2026-01-01",
+            featured: false,
+            externalUrl: "",
+            artist: "Ayotemi",
+            thumbnail: "",
+            videoId: "",
+            viewCount: "",
+            roles: ["Music Production"]
+        }
+    ];
+
+        // State management
+        let projects = [...CAREER_DATABASE];
+        let filteredProjects = [...projects];
+        let editingId = null;
+
+        // Category icons mapping
+        const CATEGORY_ICONS = {
+            commercial: '💼',
+            'music-video': '🎬',
+            'music-production': '🎵',
+            'graphic-design': '🎨',
+            design: '🎨',
+            archive: '📦',
+            web3: '🔗',
+            narrative: '📖',
+            'cover-artwork': '🖼️',
+            'product-design': '📐'
+        };
+
+        // Initialize
+        function init() {
+            updateProjectCount();
+            renderProjects();
+        }
+
+        function updateProjectCount() {
+            document.getElementById('projectCount').textContent = `${projects.length} projects`;
+        }
+
+        function renderProjects() {
+            const list = document.getElementById('projectList');
+            const emptyState = document.getElementById('emptyState');
+
+            if (filteredProjects.length === 0) {
+                list.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            list.innerHTML = filteredProjects.map(project => createProjectCard(project)).join('');
+        }
+
+        function createProjectCard(project) {
+            const icon = CATEGORY_ICONS[project.category] || '◆';
+            const thumbnail = project.thumbnail 
+                ? `<img src="${project.thumbnail}" alt="${project.title}" class="project-thumbnail" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
+                : '';
+            const placeholder = `<div class="project-thumbnail placeholder" style="display: ${project.thumbnail ? 'none' : 'flex'}">${icon}</div>`;
+            const year = new Date(project.publishedAt).getFullYear();
+
+            return `
+                <div class="project-card ${editingId === project._id ? 'editing' : ''}" data-id="${project._id}">
+                    <div class="project-header" onclick="toggleEdit('${project._id}')">
+                        ${thumbnail}
+                        ${placeholder}
+                        <div class="project-info">
+                            <div class="project-title">${escapeHtml(project.title)}</div>
+                            <div class="project-meta">
+                                <span class="project-category">${project.category}</span>
+                                <span>${year}</span>
+                                ${project.artist ? `<span>• ${escapeHtml(project.artist)}</span>` : ''}
+                                ${project.featured ? '<span>★ Featured</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="project-actions" onclick="event.stopPropagation()">
+                            <button class="icon-btn" onclick="toggleEdit('${project._id}')" title="Edit">✏️</button>
+                            <button class="icon-btn delete" onclick="deleteProject('${project._id}')" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                    ${createEditForm(project)}
+                </div>
+            `;
+        }
+
+        function createEditForm(project) {
+            const rolesString = project.roles ? project.roles.join(', ') : '';
+            
+            return `
+                <div class="project-edit">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" id="title-${project._id}" value="${escapeHtml(project.title)}" onchange="updateField('${project._id}', 'title', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Artist</label>
+                            <input type="text" id="artist-${project._id}" value="${escapeHtml(project.artist || '')}" onchange="updateField('${project._id}', 'artist', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="category-${project._id}" onchange="updateField('${project._id}', 'category', this.value)">
+                                <option value="music-video" ${project.category === 'music-video' ? 'selected' : ''}>Music Video</option>
+                                <option value="music-production" ${project.category === 'music-production' ? 'selected' : ''}>Music Production</option>
+                                <option value="commercial" ${project.category === 'commercial' ? 'selected' : ''}>Commercial</option>
+                                <option value="graphic-design" ${project.category === 'graphic-design' ? 'selected' : ''}>Graphic Design</option>
+                                <option value="cover-artwork" ${project.category === 'cover-artwork' ? 'selected' : ''}>Cover Artwork</option>
+                                <option value="product-design" ${project.category === 'product-design' ? 'selected' : ''}>Product Design</option>
+                                <option value="archive" ${project.category === 'archive' ? 'selected' : ''}>Archive</option>
+                                <option value="web3" ${project.category === 'web3' ? 'selected' : ''}>Web3</option>
+                                <option value="narrative" ${project.category === 'narrative' ? 'selected' : ''}>Narrative</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Published Date</label>
+                            <input type="date" id="date-${project._id}" value="${project.publishedAt}" onchange="updateField('${project._id}', 'publishedAt', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>External URL</label>
+                            <input type="text" id="url-${project._id}" value="${escapeHtml(project.externalUrl || '')}" onchange="updateField('${project._id}', 'externalUrl', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Video ID</label>
+                            <input type="text" id="video-${project._id}" value="${escapeHtml(project.videoId || '')}" onchange="updateField('${project._id}', 'videoId', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>View Count</label>
+                            <input type="text" id="views-${project._id}" value="${escapeHtml(project.viewCount || '')}" onchange="updateField('${project._id}', 'viewCount', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Thumbnail URL</label>
+                            <input type="text" id="thumb-${project._id}" value="${escapeHtml(project.thumbnail || '')}" onchange="updateField('${project._id}', 'thumbnail', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Roles (comma-separated)</label>
+                            <input type="text" id="roles-${project._id}" value="${escapeHtml(rolesString)}" onchange="updateRoles('${project._id}', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="featured-${project._id}" ${project.featured ? 'checked' : ''} onchange="updateField('${project._id}', 'featured', this.checked)">
+                                Featured Project
+                            </label>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Description</label>
+                            <textarea id="desc-${project._id}" onchange="updateField('${project._id}', 'description', this.value)">${escapeHtml(project.description || '')}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" onclick="toggleEdit('${project._id}')">Close</button>
+                        <button class="btn btn-primary" onclick="saveProject('${project._id}')">Save Changes</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function toggleEdit(id) {
+            if (editingId === id) {
+                editingId = null;
+            } else {
+                editingId = id;
+            }
+            renderProjects();
+        }
+
+        function updateField(id, field, value) {
+            const project = projects.find(p => p._id === id);
+            if (project) {
+                project[field] = value;
+            }
+        }
+
+        function updateRoles(id, rolesString) {
+            const project = projects.find(p => p._id === id);
+            if (project) {
+                project.roles = rolesString.split(',').map(r => r.trim()).filter(r => r);
+            }
+        }
+
+        function saveProject(id) {
+            showToast('Changes saved successfully!', 'success');
+            editingId = null;
+            renderProjects();
+        }
+
+        function deleteProject(id) {
+            if (confirm('Are you sure you want to delete this project?')) {
+                projects = projects.filter(p => p._id !== id);
+                filterProjects();
+                updateProjectCount();
+                showToast('Project deleted', 'success');
+            }
+        }
+
+        function addNewProject() {
+            const newId = 'new-project-' + Date.now();
+            const newProject = {
+                _id: newId,
+                title: "New Project",
+                category: "music-video",
+                description: "",
+                publishedAt: new Date().toISOString().split('T')[0],
+                featured: false,
+                externalUrl: "",
+                artist: "",
+                thumbnail: "",
+                videoId: "",
+                viewCount: "",
+                roles: []
+            };
+            projects.unshift(newProject);
+            filterProjects();
+            updateProjectCount();
+            editingId = newId;
+            renderProjects();
+            showToast('New project added', 'success');
+        }
+
+        function filterProjects() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const activeCategory = document.querySelector('.filter-chip.active')?.dataset.category || 'all';
+
+            filteredProjects = projects.filter(project => {
+                const matchesSearch = !searchTerm || 
+                    project.title.toLowerCase().includes(searchTerm) ||
+                    (project.artist && project.artist.toLowerCase().includes(searchTerm)) ||
+                    (project.description && project.description.toLowerCase().includes(searchTerm));
+
+                const matchesCategory = activeCategory === 'all' || project.category === activeCategory;
+
+                return matchesSearch && matchesCategory;
+            });
+
+            renderProjects();
+        }
+
+        function filterByCategory(category) {
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.dataset.category === category);
+            });
+            filterProjects();
+        }
+
+        function downloadJSON() {
+            const dataStr = JSON.stringify(projects, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'career-database.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast('Database downloaded!', 'success');
+        }
+
+        function copyToClipboard() {
+            const dataStr = JSON.stringify(projects, null, 2);
+            navigator.clipboard.writeText(dataStr).then(() => {
+                showToast('Copied to clipboard!', 'success');
+            }).catch(() => {
+                showToast('Failed to copy', 'error');
+            });
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
