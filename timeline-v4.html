@@ -304,51 +304,53 @@
         }
 
         /* ========================================
-           PROJECT CARDS - REDESIGNED FOR LESS OVERLAP
+           PROJECT CARDS - 3D CLOUD/FAN-OUT STYLE (iTunes Cover Flow inspired)
            ======================================== */
+        .timeline-content {
+            perspective: 1200px; /* Add 3D perspective */
+            perspective-origin: 50% 50%;
+        }
+
         .project-card {
             position: absolute;
-            width: 100px; /* REDUCED: from 140px */
+            width: 100px;
             cursor: pointer;
-            transform: translate(-50%, -50%) scale(0.9); /* Start slightly smaller */
-            will-change: transform, opacity;
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                        z-index 0s, 
-                        opacity 0.3s ease;
-            opacity: 0.85; /* Slightly dim by default */
+            transform-style: preserve-3d;
+            transform: translate(-50%, -50%) scale(0.85);
+            will-change: transform, opacity, filter;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            opacity: 0.8;
         }
 
-        .project-card:hover {
+        .project-card.hovered {
             z-index: 100;
-            transform: translate(-50%, -50%) scale(1.5); /* Scale up on hover */
+            transform: translate(-50%, -50%) scale(1.4) translateZ(100px) !important;
             opacity: 1;
         }
 
-        /* Dim nearby cards when one is hovered */
-        .timeline-content:has(.project-card:hover) .project-card:not(:hover) {
-            opacity: 0.4;
-            filter: grayscale(30%);
+        .project-card.fan-left {
+            opacity: 0.5;
         }
 
-        /* But keep the hovered card bright */
-        .timeline-content:has(.project-card:hover) .project-card:hover {
-            opacity: 1;
-            filter: none;
+        .project-card.fan-right {
+            opacity: 0.5;
         }
 
         .project-thumb {
             width: 100%;
             aspect-ratio: 16/10;
-            border-radius: 6px; /* Slightly smaller radius */
+            border-radius: 6px;
             overflow: hidden;
             position: relative;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            backface-visibility: hidden;
         }
 
-        .project-card:hover .project-thumb {
-            box-shadow: 0 12px 50px rgba(0, 0, 0, 0.6), 
-                        0 0 30px var(--accent-glow); /* Add glow effect */
+        .project-card.hovered .project-thumb {
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 
+                        0 0 40px var(--accent-glow),
+                        0 0 80px rgba(255, 51, 102, 0.2);
         }
 
         .project-image {
@@ -2843,6 +2845,77 @@
             container.addEventListener('wheel', handleWheel, { passive: false });
 
             document.addEventListener('keydown', handleKeydown);
+
+            // Setup 3D cloud hover effect
+            setup3DCloudHover();
+        }
+
+        // ========================================
+        // 3D CLOUD HOVER EFFECT (iTunes Cover Flow inspired)
+        // ========================================
+        function setup3DCloudHover() {
+            const content = document.getElementById('timelineContent');
+            if (!content) return;
+
+            content.addEventListener('mouseover', (e) => {
+                const hoveredCard = e.target.closest('.project-card');
+                if (!hoveredCard) return;
+
+                const allCards = Array.from(content.querySelectorAll('.project-card'));
+                const hoveredIndex = allCards.indexOf(hoveredCard);
+                
+                // Mark hovered card
+                hoveredCard.classList.add('hovered');
+                hoveredCard.classList.remove('fan-left', 'fan-right');
+
+                // Fan out nearby cards
+                allCards.forEach((card, index) => {
+                    if (card === hoveredCard) return;
+
+                    const distance = index - hoveredIndex;
+                    const absDistance = Math.abs(distance);
+                    
+                    // Only affect cards within fan range (5 cards each side)
+                    if (absDistance <= 5) {
+                        const direction = distance < 0 ? -1 : 1;
+                        const fanAngle = direction * (15 + absDistance * 8); // 15° to 55° rotation
+                        const fanOffsetX = direction * (absDistance * 30); // Push sideways
+                        const fanOffsetZ = -absDistance * 40; // Push back in Z space
+                        const fanScale = Math.max(0.6, 0.85 - absDistance * 0.08); // Smaller as they fan out
+                        const fanOpacity = Math.max(0.3, 0.8 - absDistance * 0.15); // Fade out
+
+                        // Apply 3D transform
+                        card.style.transform = `translate(-50%, -50%) scale(${fanScale}) translateX(${fanOffsetX}px) translateZ(${fanOffsetZ}px) rotateY(${fanAngle}deg)`;
+                        card.style.opacity = fanOpacity;
+                        card.style.filter = `brightness(${0.6 + absDistance * 0.1})`;
+                        
+                        card.classList.add(direction < 0 ? 'fan-left' : 'fan-right');
+                    } else {
+                        // Far cards fade way back
+                        card.style.transform = 'translate(-50%, -50%) scale(0.5) translateZ(-200px)';
+                        card.style.opacity = '0.2';
+                        card.style.filter = 'brightness(0.4) grayscale(50%)';
+                        card.classList.remove('fan-left', 'fan-right');
+                    }
+                });
+            });
+
+            content.addEventListener('mouseout', (e) => {
+                const hoveredCard = e.target.closest('.project-card');
+                if (!hoveredCard) return;
+
+                // Check if we're actually leaving the card (not entering a child)
+                if (hoveredCard.contains(e.relatedTarget)) return;
+
+                // Reset all cards
+                const allCards = content.querySelectorAll('.project-card');
+                allCards.forEach(card => {
+                    card.classList.remove('hovered', 'fan-left', 'fan-right');
+                    card.style.transform = 'translate(-50%, -50%) scale(0.85)';
+                    card.style.opacity = '0.8';
+                    card.style.filter = 'none';
+                });
+            });
         }
 
         function handleDragStart(e) {
