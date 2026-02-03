@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassface Career Database Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1a1a1a;
+            --text: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #666666;
+            --border: #2a2a2a;
+            --accent: #ff3366;
+            --accent-glow: rgba(255, 51, 102, 0.3);
+            --success: #4ecdc4;
+            --warning: #ffe66d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header-stats {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--border);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: #ff5588;
+        }
+
+        .btn-success {
+            background: var(--success);
+            border-color: var(--success);
+            color: #000;
+        }
+
+        .filters {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-select, .search-input {
+            padding: 10px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .projects-list {
+            padding: 20px;
+        }
+
+        .project-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent);
+        }
+
+        .project-card.edited {
+            border-color: var(--warning);
+            background: rgba(255, 230, 109, 0.05);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .project-title-wrap {
+            flex: 1;
+        }
+
+        .project-id {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: monospace;
+            margin-bottom: 4px;
+        }
+
+        .project-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .project-artist {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .project-category {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .category-music-video { background: rgba(78, 205, 196, 0.2); color: #4ecdc4; }
+        .category-music-production { background: rgba(255, 230, 109, 0.2); color: #ffe66d; }
+        .category-commercial { background: rgba(255, 107, 107, 0.2); color: #ff6b6b; }
+        .category-design { background: rgba(199, 206, 234, 0.2); color: #c7ceea; }
+
+        .project-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .field input, .field textarea, .field select {
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .field input:focus, .field textarea:focus, .field select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .status-text.unsaved {
+            color: var(--warning);
+        }
+
+        .status-text.saved {
+            color: var(--success);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .json-output {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎵 Glassface Career Database Editor</h1>
+        <div class="header-stats" id="headerStats">Loading database...</div>
+        <div class="actions">
+            <button class="btn btn-primary" onclick="addNewProject()">+ Add New Project</button>
+            <button class="btn" onclick="showExport()">📤 Export JSON</button>
+            <button class="btn btn-success" onclick="saveChanges()">💾 Save Changes</button>
+            <button class="btn" onclick="loadFromFile()">📁 Load from File</button>
+        </div>
+    </div>
+
+    <div class="filters">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search projects..." oninput="filterProjects()">
+        <select class="filter-select" id="categoryFilter" onchange="filterProjects()">
+            <option value="">All Categories</option>
+            <option value="music-video">Music Video</option>
+            <option value="music-production">Music Production</option>
+            <option value="commercial">Commercial</option>
+            <option value="graphic-design">Graphic Design</option>
+            <option value="web3">Web3</option>
+            <option value="narrative">Narrative</option>
+            <option value="archive">Archive</option>
+        </select>
+        <select class="filter-select" id="yearFilter" onchange="filterProjects()">
+            <option value="">All Years</option>
+        </select>
+    </div>
+
+    <div class="projects-list" id="projectsList">
+        <div class="empty-state">
+            <h3>Loading database...</h3>
+            <p>Please wait while we fetch the career data.</p>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <span class="status-text" id="statusText">All changes saved</span>
+        <button class="btn btn-primary" onclick="saveChanges()">Save Changes</button>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Export Database</h2>
+                <button class="modal-close" onclick="hideExport()">×</button>
+            </div>
+            <p style="margin-bottom: 16px; color: var(--text-secondary);">
+                Copy this JSON and save it to your database file, or download directly.
+            </p>
+            <pre class="json-output" id="jsonOutput"></pre>
+            <div style="margin-top: 16px; display: flex; gap: 12px;">
+                <button class="btn btn-primary" onclick="downloadJSON()">📥 Download JSON</button>
+                <button class="btn" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" style="display: none;" accept=".json" onchange="handleFileLoad(event)">
+
+    <script>
+        // Database state
+        let database = { projects: [] };
+        let editedProjects = new Set();
+        let originalData = null;
+
+        // Load database on startup
+        async function loadDatabase() {
+            try {
+                // Try to load from localStorage first (for offline editing)
+                const saved = localStorage.getItem('glassface-database');
+                if (saved) {
+                    database = JSON.parse(saved);
+                    console.log('Loaded from localStorage');
+                } else {
+                    // Otherwise fetch from file
+                    const response = await fetch('career-database-enriched.json');
+                    database = await response.json();
+                }
+                
+                originalData = JSON.parse(JSON.stringify(database));
+                populateYearFilter();
+                renderProjects();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading database:', error);
+                document.getElementById('projectsList').innerHTML = `
+                    <div class="empty-state">
+                        <h3>⚠️ Error loading database</h3>
+                        <p>${error.message}</p>
+                        <button class="btn btn-primary" onclick="loadFromFile()" style="margin-top: 16px;">Load from File</button>
+                    </div>
+                `;
+            }
+        }
+
+        function populateYearFilter() {
+            const years = [...new Set(database.projects.map(p => {
+                const date = new Date(p.publishedAt || '2015-01-01');
+                return date.getFullYear();
+            }))].sort((a, b) => b - a);
+
+            const select = document.getElementById('yearFilter');
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                select.appendChild(option);
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('headerStats').textContent = 
+                `${database.projects.length} projects • ${editedProjects.size} edited`;
+        }
+
+        function renderProjects() {
+            const container = document.getElementById('projectsList');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+
+            let filtered = database.projects;
+
+            if (searchTerm) {
+                filtered = filtered.filter(p => 
+                    p.title?.toLowerCase().includes(searchTerm) ||
+                    p.artist?.toLowerCase().includes(searchTerm) ||
+                    p._id?.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (categoryFilter) {
+                filtered = filtered.filter(p => p.category === categoryFilter);
+            }
+
+            if (yearFilter) {
+                filtered = filtered.filter(p => {
+                    const year = new Date(p.publishedAt || '2015-01-01').getFullYear();
+                    return year.toString() === yearFilter;
+                });
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No projects found</h3>
+                        <p>Try adjusting your filters.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(project => renderProjectCard(project)).join('');
+        }
+
+        function renderProjectCard(project) {
+            const isEdited = editedProjects.has(project._id);
+            const year = new Date(project.publishedAt || '2015-01-01').getFullYear();
+
+            return `
+                <div class="project-card ${isEdited ? 'edited' : ''}" data-id="${project._id}">
+                    <div class="project-header">
+                        <div class="project-title-wrap">
+                            <div class="project-id">${project._id}</div>
+                            <div class="project-title">${project.title || 'Untitled'}</div>
+                            <div class="project-artist">${project.artist || 'Unknown Artist'} • ${year}</div>
+                        </div>
+                        <span class="project-category category-${project.category}">${project.category}</span>
+                    </div>
+                    
+                    <div class="project-fields">
+                        <div class="field">
+                            <label>Title</label>
+                            <input type="text" value="${escapeHtml(project.title || '')}" 
+                                onchange="updateField('${project._id}', 'title', this.value)">
+                        </div>
+                        
+                        <div class="field">
+                            <label>Artist</label>
+                            <input type="text" value="${escapeHtml(project.artist || '')}" 
+                                onchange="updateField('${project._id}', 'artist', this.value)">
+                        </div>
+                        
+                        <div class="field">
+                            <label>Date (YYYY-MM-DD)</label>
+                            <input type="date" value="${project.publishedAt || ''}" 
+                                onchange="updateField('${project._id}', 'publishedAt', this.value)">
+                        </div>
+                        
+                        <div class="field">
+                            <label>Category</label>
+                            <select onchange="updateField('${project._id}', 'category', this.value)">
+                                <option value="music-video" ${project.category === 'music-video' ? 'selected' : ''}>Music Video</option>
+                                <option value="music-production" ${project.category === 'music-production' ? 'selected' : ''}>Music Production</option>
+                                <option value="commercial" ${project.category === 'commercial' ? 'selected' : ''}>Commercial</option>
+                                <option value="graphic-design" ${project.category === 'graphic-design' ? 'selected' : ''}>Graphic Design</option>
+                                <option value="web3" ${project.category === 'web3' ? 'selected' : ''}>Web3</option>
+                                <option value="narrative" ${project.category === 'narrative' ? 'selected' : ''}>Narrative</option>
+                                <option value="archive" ${project.category === 'archive' ? 'selected' : ''}>Archive</option>
+                            </select>
+                        </div>
+                        
+                        <div class="field">
+                            <label>YouTube URL</label>
+                            <input type="url" value="${escapeHtml(project.externalUrl || '')}" 
+                                onchange="updateField('${project._id}', 'externalUrl', this.value)">
+                        </div>
+                        
+                        <div class="field">
+                            <label>View Count</label>
+                            <input type="text" value="${escapeHtml(project.viewCount || '')}" 
+                                onchange="updateField('${project._id}', 'viewCount', this.value)"
+                                placeholder="e.g., 5000000 or 5M">
+                        </div>
+                        
+                        <div class="field" style="grid-column: 1 / -1;">
+                            <label>Description</label>
+                            <textarea onchange="updateField('${project._id}', 'description', this.value)">${escapeHtml(project.description || '')}</textarea>
+                        </div>
+                        
+                        <div class="field" style="grid-column: 1 / -1;">
+                            <label>Roles (comma-separated)</label>
+                            <input type="text" value="${escapeHtml((project.roles || []).join(', '))}" 
+                                onchange="updateRoles('${project._id}', this.value)"
+                                placeholder="Director, Editor, VFX">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function updateField(projectId, field, value) {
+            const project = database.projects.find(p => p._id === projectId);
+            if (project) {
+                project[field] = value;
+                editedProjects.add(projectId);
+                updateStats();
+                updateStatus('unsaved');
+                
+                // Add visual indicator
+                const card = document.querySelector(`[data-id="${projectId}"]`);
+                if (card) card.classList.add('edited');
+            }
+        }
+
+        function updateRoles(projectId, rolesString) {
+            const roles = rolesString.split(',').map(r => r.trim()).filter(r => r);
+            updateField(projectId, 'roles', roles);
+        }
+
+        function filterProjects() {
+            renderProjects();
+        }
+
+        function addNewProject() {
+            const id = prompt('Enter unique project ID (e.g., "artist-song-title"):');
+            if (!id) return;
+
+            if (database.projects.find(p => p._id === id)) {
+                alert('A project with this ID already exists!');
+                return;
+            }
+
+            const newProject = {
+                _id: id,
+                title: 'New Project',
+                artist: '',
+                category: 'music-video',
+                publishedAt: new Date().toISOString().split('T')[0],
+                description: '',
+                externalUrl: '',
+                videoId: '',
+                viewCount: '',
+                roles: [],
+                featured: false
+            };
+
+            database.projects.push(newProject);
+            editedProjects.add(id);
+            renderProjects();
+            updateStats();
+            updateStatus('unsaved');
+            
+            // Scroll to new project
+            setTimeout(() => {
+                const card = document.querySelector(`[data-id="${id}"]`);
+                if (card) card.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        function saveChanges() {
+            // Save to localStorage for persistence
+            localStorage.setItem('glassface-database', JSON.stringify(database));
+            updateStatus('saved');
+            console.log('Saved to localStorage:', database);
+            alert(`Saved ${editedProjects.size} edited projects to browser storage!\n\nTo permanently save, use Export and commit to GitHub.`);
+        }
+
+        function updateStatus(status) {
+            const statusEl = document.getElementById('statusText');
+            if (status === 'unsaved') {
+                statusEl.textContent = `⚠️ ${editedProjects.size} unsaved changes`;
+                statusEl.className = 'status-text unsaved';
+            } else if (status === 'saved') {
+                statusEl.textContent = '✅ All changes saved to local storage';
+                statusEl.className = 'status-text saved';
+            }
+        }
+
+        function showExport() {
+            const json = JSON.stringify(database, null, 2);
+            document.getElementById('jsonOutput').textContent = json;
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        function hideExport() {
+            document.getElementById('exportModal').classList.remove('active');
+        }
+
+        function downloadJSON() {
+            const json = JSON.stringify(database, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `career-database-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function copyToClipboard() {
+            const json = JSON.stringify(database, null, 2);
+            navigator.clipboard.writeText(json).then(() => {
+                alert('JSON copied to clipboard!');
+            });
+        }
+
+        function loadFromFile() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileLoad(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    database = JSON.parse(e.target.result);
+                    editedProjects.clear();
+                    populateYearFilter();
+                    renderProjects();
+                    updateStats();
+                    updateStatus('saved');
+                    localStorage.setItem('glassface-database', JSON.stringify(database));
+                    alert('Database loaded successfully!');
+                } catch (error) {
+                    alert('Error loading file: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Load on startup
+        loadDatabase();
+    </script>
+</body>
+</html>

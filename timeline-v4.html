@@ -223,11 +223,16 @@
             }
         }
 
+        /* PAUSE all title animations on hover - hover takes priority */
+        .variable-title:hover .char {
+            animation-play-state: paused !important;
+        }
+
         /* HOVER EFFECTS - Each letter responds individually */
         .variable-title .char:hover {
             font-variation-settings: 'wght' 900, 'slnt' -10;
             transform: scale(1.15) translateY(-5px);
-            animation-play-state: paused;
+            animation-play-state: paused !important;
         }
 
         /* Neighbor effects - letters near hovered letter get partial effect */
@@ -491,6 +496,13 @@
         .project-card.floating {
             animation: float var(--float-duration, 4s) ease-in-out infinite;
             animation-delay: var(--float-delay, 0s);
+        }
+
+        /* PAUSE floating animation on hover - hover takes priority */
+        .timeline-content:hover .project-card.floating,
+        .project-card:hover,
+        .project-card.hovered {
+            animation-play-state: paused !important;
         }
 
         /* ========================================
