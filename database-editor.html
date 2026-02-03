@@ -384,6 +384,25 @@
         let editedProjects = new Set();
         let originalData = null;
 
+        // Initialize empty database
+        function createEmptyDatabase() {
+            database = {
+                lastUpdated: new Date().toISOString().split('T')[0],
+                totalProjects: 0,
+                projects: []
+            };
+            originalData = JSON.parse(JSON.stringify(database));
+            populateYearFilter();
+            renderProjects();
+            updateStats();
+            document.getElementById('projectsList').innerHTML = `
+                <div class="empty-state">
+                    <h3>Empty Database Created</h3>
+                    <p>Click "+ Add New Project" to start building your database.</p>
+                </div>
+            `;
+        }
+
         // Load database on startup
         async function loadDatabase() {
             try {
@@ -392,9 +411,28 @@
                 if (saved) {
                     database = JSON.parse(saved);
                     console.log('Loaded from localStorage');
+                    originalData = JSON.parse(JSON.stringify(database));
+                    populateYearFilter();
+                    renderProjects();
+                    updateStats();
+                    return;
+                }
+                
+                // Otherwise fetch from file with proper error handling
+                const response = await fetch('./career-database-enriched.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    // Try to parse anyway - sometimes content-type is wrong
+                    const text = await response.text();
+                    try {
+                        database = JSON.parse(text);
+                    } catch {
+                        throw new Error('Server returned non-JSON content. File may not exist or is HTML error page.');
+                    }
                 } else {
-                    // Otherwise fetch from file
-                    const response = await fetch('career-database-enriched.json');
                     database = await response.json();
                 }
                 
@@ -408,7 +446,15 @@
                     <div class="empty-state">
                         <h3>⚠️ Error loading database</h3>
                         <p>${error.message}</p>
-                        <button class="btn btn-primary" onclick="loadFromFile()" style="margin-top: 16px;">Load from File</button>
+                        <p style="margin-top: 12px; color: var(--text-muted);">
+                            This may happen if the JSON file isn't served correctly from GitHub Pages.<br>
+                            Try loading the file manually:
+                        </p>
+                        <button class="btn btn-primary" onclick="loadFromFile()" style="margin-top: 16px;">📁 Load from File</button>
+                        <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
+                            Or use the button below to create a new database
+                        </p>
+                        <button class="btn" onclick="createEmptyDatabase()" style="margin-top: 8px;">➕ Create Empty Database</button>
                     </div>
                 `;
             }
