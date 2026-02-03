@@ -932,6 +932,14 @@
         // COVER ARTWORK MAPPING (Music production projects)
         // ========================================
         const COVER_ART_MAPPING = {
+            // User requested entries
+            "lil-yachty-1-night": "images/covers/lil-yachty-1-night.jpg",
+            "music-facer-spiral": "images/covers/music-facer-spiral.jpg",
+            "music-facer-wavelength": "images/covers/music-facer-wavelength.jpg",
+            "music-glassface-theres-no-other-one": "images/covers/music-glassface-theres-no-other-one.jpg",
+            "music-tobi-lou-live-on-ice": "images/covers/music-tobi-lou-live-on-ice.jpg",
+            "tokyos-revenge": "images/covers/tokyos-revenge.jpg",
+            // Music production projects
             "music-tobi-lou-new-bish": "images/covers/music-tobi-lou-new-bish.jpg",
             "music-glassface-press": "images/covers/music-glassface-press.jpg",
             "music-glassface-wavelength": "images/covers/music-glassface-wavelength.jpg",
@@ -960,11 +968,12 @@
             "music-glassface-whatever": "images/covers/music-glassface-whatever.jpg",
             "music-chief-keef-forecast": "images/covers/music-chief-keef-forecast.jpg",
             "music-young-thug-cobra": "images/covers/music-young-thug-cobra.jpg",
-            "music-glassface-mindreader": "images/covers/music-glassface-mindreader.jpg",
+            // Note: music-glassface-mindreader.jpg doesn't exist, using press cover
+            "music-glassface-mindreader": "images/covers/music-glassface-press.jpg",
             "music-glassface-crash-747": "images/covers/music-glassface-summers-over.jpg",
             "music-glassface-hall-of-echoes": "images/covers/music-glassface-summers-over.jpg",
             "music-glassface-vivid-color-dreams": "images/covers/music-glassface-endless-color.jpg",
-            "music-sango-mindreader-remix": "images/covers/music-glassface-mindreader.jpg",
+            "music-sango-mindreader-remix": "images/covers/music-glassface-press.jpg",
             "music-blvk-h3ro-up": "images/covers/music-glassface-press.jpg",
             "music-blvk-h3ro-brick": "images/covers/music-glassface-press.jpg",
             "music-blvk-h3ro-active": "images/covers/music-glassface-press.jpg",
@@ -976,7 +985,21 @@
             "music-parris-goebel-intro": "images/covers/music-glassface-wavelength.jpg",
             "music-parris-goebel-dummy": "images/covers/music-glassface-wavelength.jpg",
             "music-ayotemi-no-time": "images/covers/music-glassface-wavelength.jpg",
-            "music-ayotemi-senior-man": "images/covers/music-glassface-wavelength.jpg"
+            "music-ayotemi-senior-man": "images/covers/music-glassface-wavelength.jpg",
+            // Missing music-production projects (using appropriate existing covers)
+            "music-tobi-lou-deserve-it": "images/covers/music-tobi-lou-new-bish.jpg",
+            "music-tobi-lou-berlin-westside": "images/covers/music-tobi-lou-new-bish.jpg",
+            "music-tobi-lou-theme-music": "images/covers/music-tobi-lou-new-bish.jpg",
+            "music-tobi-lou-cheap-vacations": "images/covers/music-tobi-lou-new-bish.jpg",
+            // Additional cover art for music-videos (can be used as thumbnails)
+            "24kgoldn-city-of-angels": "images/covers/24kgoldn-city-of-angels.jpg",
+            "bryson-tiller-inhale": "images/covers/bryson-tiller-inhale.jpg",
+            "khalid-location": "images/covers/khalid-location.jpg",
+            "og-maco-u-guessed-it": "images/covers/og-maco-u-guessed-it.jpg",
+            "sango-khlorine": "images/covers/sango-khlorine.jpg",
+            "tobi-lou-troop": "images/covers/tobi-lou-troop.jpg",
+            "tove-lo-jacques": "images/covers/tove-lo-jacques.jpg",
+            "wiz-khalifa-alright": "images/covers/wiz-khalifa-alright.jpg"
         };
 
         // ========================================
@@ -1162,10 +1185,14 @@
                 imgUrl = COVER_ART_MAPPING[project._id];
                 imgSource = 'cover';
             }
-            // 3. Fall back to YouTube thumbnail if available
+            // 3. Fall back to YouTube thumbnail if available (check videoId first, then externalUrl)
             else {
-                const hasYouTube = project.externalUrl && project.externalUrl.includes('youtube');
-                const youtubeId = hasYouTube ? extractYouTubeId(project.externalUrl) : null;
+                let youtubeId = null;
+                if (project.videoId) {
+                    youtubeId = project.videoId;
+                } else if (project.externalUrl && project.externalUrl.includes('youtube')) {
+                    youtubeId = extractYouTubeId(project.externalUrl);
+                }
                 if (youtubeId) {
                     imgUrl = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
                     imgSource = 'youtube';
@@ -1197,7 +1224,15 @@
                 </div>
             `;
 
-            card.addEventListener('click', () => openModal(project, imgSource === 'youtube' ? extractYouTubeId(project.externalUrl) : null));
+            card.addEventListener('click', () => {
+                let youtubeId = null;
+                if (project.videoId) {
+                    youtubeId = project.videoId;
+                } else if (project.externalUrl && project.externalUrl.includes('youtube')) {
+                    youtubeId = extractYouTubeId(project.externalUrl);
+                }
+                openModal(project, youtubeId);
+            });
 
             return card;
         }

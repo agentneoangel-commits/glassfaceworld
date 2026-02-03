@@ -1,0 +1,87 @@
+{
+  "downloaded": [
+    {
+      "id": "og-maco-u-guessed-it",
+      "title": "OG Maco - U Guessed It",
+      "filepath": "images/covers/og-maco-u-guessed-it.jpg",
+      "source": "youtube-max",
+      "year": 2014,
+      "musicAlias": "Facer"
+    },
+    {
+      "id": "24kgoldn-city-of-angels",
+      "title": "24kGoldn - CITY OF ANGELS",
+      "filepath": "images/covers/24kgoldn-city-of-angels.jpg",
+      "source": "youtube-max",
+      "year": 2020,
+      "musicAlias": "Glassface"
+    },
+    {
+      "id": "wiz-khalifa-alright",
+      "title": "Wiz Khalifa - Alright ft. Trippie Redd & Preme",
+      "filepath": "images/covers/wiz-khalifa-alright.jpg",
+      "source": "youtube-max",
+      "year": 2019,
+      "musicAlias": "Glassface"
+    },
+    {
+      "id": "khalid-location",
+      "title": "Khalid - Location",
+      "filepath": "images/covers/khalid-location.jpg",
+      "source": "youtube-max",
+      "year": 2016,
+      "musicAlias": "Facer"
+    },
+    {
+      "id": "tove-lo-jacques",
+      "title": "Tove Lo - Jacques (ft. Jax Jones)",
+      "filepath": "images/covers/tove-lo-jacques.jpg",
+      "source": "youtube-max",
+      "year": 2019,
+      "musicAlias": "Glassface"
+    },
+    {
+      "id": "tobi-lou-troop",
+      "title": "tobi lou - Troop",
+      "filepath": "images/covers/tobi-lou-troop.jpg",
+      "source": "youtube-max",
+      "year": 2018,
+      "musicAlias": "Facer"
+    },
+    {
+      "id": "bryson-tiller-inhale",
+      "title": "Bryson Tiller - Inhale",
+      "filepath": "images/covers/bryson-tiller-inhale.jpg",
+      "source": "youtube-max",
+      "year": 2020,
+      "musicAlias": "Glassface"
+    }
+  ],
+  "failed": [
+    {
+      "id": "lil-yachty-1-night",
+      "title": "Lil Yachty - 1 Night",
+      "error": "HTTP 404",
+      "url": "https://img.youtube.com/vi/251cxou3yR4/maxresdefault.jpg",
+      "year": 2016,
+      "musicAlias": "Facer"
+    },
+    {
+      "id": "tokyos-revenge",
+      "title": "TOKYO'S REVENGE - GOODMORNINGTOKYO!",
+      "error": "HTTP 404",
+      "url": "https://img.youtube.com/vi/RgKqxFR--eo/maxresdefault.jpg",
+      "year": 2020,
+      "musicAlias": "Glassface"
+    },
+    {
+      "id": "sango-khlorine",
+      "title": "Sango – Khlorine (feat. Smino)",
+      "error": "HTTP 404",
+      "url": "https://img.youtube.com/vi/dbv1O3jV_Hk/maxresdefault.jpg",
+      "year": 2018,
+      "musicAlias": "Facer"
+    }
+  ],
+  "skipped": []
+}
