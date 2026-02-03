@@ -2699,10 +2699,10 @@
             applyZoom();
             
             // Center on middle years
-            const container = document.getElementById('timelineContainer');
+            const timelineContainer = document.getElementById('timelineContainer');
             const content = document.getElementById('timelineContent');
-            if (container && content) {
-                const containerWidth = container.offsetWidth;
+            if (timelineContainer && content) {
+                const containerWidth = timelineContainer.offsetWidth;
                 const midX = (containerWidth / 2) - (state.totalWidth / 2);
                 content.style.transform = `translateX(${midX}px)`;
             }
