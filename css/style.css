@@ -1064,9 +1064,12 @@ body {
 .modal-media iframe,
 .modal-media img {
     width: 100%;
+    max-width: 100%;
     aspect-ratio: 16/9;
     border: none;
     display: block;
+    object-fit: contain;
+    background: var(--bg-secondary);
 }
 
 .modal-stats {
