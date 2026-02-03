@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassface Database Editor (GitHub Edition)</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1a1a1a;
+            --text: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #666666;
+            --border: #2a2a2a;
+            --accent: #ff3366;
+            --success: #4ecdc4;
+            --warning: #ffe66d;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 { font-size: 24px; margin-bottom: 8px; }
+        .header p { color: var(--text-muted); font-size: 14px; }
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn:hover { background: var(--border); }
+        .btn-primary { background: var(--accent); border-color: var(--accent); }
+        .btn-success { background: var(--success); border-color: var(--success); color: #000; }
+        .instructions {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px;
+        }
+        .instructions h3 { margin-bottom: 12px; color: var(--accent); }
+        .instructions ol { margin-left: 20px; line-height: 1.8; color: var(--text-secondary); }
+        .instructions code {
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--text);
+        }
+        .editor-container {
+            margin: 20px;
+        }
+        .editor-textarea {
+            width: 100%;
+            min-height: 60vh;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            color: var(--text);
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+        .editor-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .validation {
+            margin: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            display: none;
+        }
+        .validation.error {
+            display: block;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+        .validation.success {
+            display: block;
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+        .project-count {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .github-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .github-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗄️ Glassface Database Editor</h1>
+        <p>Edit the JSON directly. Changes can be committed to GitHub to update the timeline.</p>
+        <div class="actions">
+            <button class="btn btn-primary" onclick="validateJSON()">✓ Validate JSON</button>
+            <button class="btn btn-success" onclick="downloadJSON()">💾 Download career-database.json</button>
+            <button class="btn" onclick="formatJSON()">🔧 Format</button>
+            <button class="btn" onclick="loadOriginal()">↩️ Reset to Original</button>
+        </div>
+        <div class="project-count" id="projectCount"></div>
+    </div>
+
+    <div class="instructions">
+        <h3>How to update the timeline:</h3>
+        <ol>
+            <li>Edit the JSON below (dates, titles, descriptions, etc.)</li>
+            <li>Click <strong>"Validate JSON"</strong> to check for errors</li>
+            <li>Click <strong>"Download career-database.json"</strong> to save the file</li>
+            <li>Upload the file to GitHub in your repo: <code>glassfaceworld-v2/career-database-enriched.json</code></li>
+            <li>Commit the changes - the timeline will update automatically!</li>
+        </ol>
+        <a href="https://github.com/agentneoangel-commits/glassfaceworld" target="_blank" class="github-link">
+            Open GitHub Repository →
+        </a>
+    </div>
+
+    <div class="validation" id="validationMsg"></div>
+
+    <div class="editor-container">
+        <textarea class="editor-textarea" id="jsonEditor" spellcheck="false"></textarea>
+    </div>
+
+    <script>
+        // INLINE DATABASE - This is loaded from the current career-database-enriched.json
+        const DEFAULT_DATABASE = {
+            "lastUpdated": "2026-02-03",
+            "totalProjects": 100,
+            "projects": [
+                // Projects will be loaded here from the actual database
+            ]
+        };
+
+        // Load database from embedded script or localStorage
+        function loadDatabase() {
+            const editor = document.getElementById('jsonEditor');
+            
+            // Try localStorage first (for unsaved changes)
+            const saved = localStorage.getItem('glassface-database-raw');
+            if (saved) {
+                editor.value = saved;
+                updateProjectCount();
+                return;
+            }
+            
+            // Otherwise show empty template with instructions
+            editor.value = JSON.stringify(DEFAULT_DATABASE, null, 2);
+            
+            // Show message that user needs to load the actual database
+            document.getElementById('validationMsg').innerHTML = `
+                ℹ️ Paste your career-database-enriched.json content here, or click "Reset to Original" to load the default structure.
+            `;
+            document.getElementById('validationMsg').style.display = 'block';
+        }
+
+        function validateJSON() {
+            const editor = document.getElementById('jsonEditor');
+            const msg = document.getElementById('validationMsg');
+            
+            try {
+                const data = JSON.parse(editor.value);
+                
+                // Basic structure validation
+                if (!data.projects || !Array.isArray(data.projects)) {
+                    throw new Error('Missing "projects" array');
+                }
+                
+                // Validate each project has required fields
+                const required = ['_id', 'title', 'category', 'publishedAt'];
+                const issues = [];
+                
+                data.projects.forEach((p, i) => {
+                    required.forEach(field => {
+                        if (!p[field]) {
+                            issues.push(`Project ${i} (${p._id || 'unknown'}): missing ${field}`);
+                        }
+                    });
+                });
+                
+                if (issues.length > 0) {
+                    msg.innerHTML = '⚠️ Validation warnings:\n' + issues.join('\n');
+                    msg.className = 'validation error';
+                } else {
+                    msg.innerHTML = `✅ Valid! ${data.projects.length} projects found.`;
+                    msg.className = 'validation success';
+                    updateProjectCount();
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('glassface-database-raw', editor.value);
+                
+            } catch (e) {
+                msg.innerHTML = '❌ JSON Error: ' + e.message;
+                msg.className = 'validation error';
+            }
+            
+            msg.style.display = 'block';
+        }
+
+        function formatJSON() {
+            const editor = document.getElementById('jsonEditor');
+            try {
+                const data = JSON.parse(editor.value);
+                editor.value = JSON.stringify(data, null, 2);
+                localStorage.setItem('glassface-database-raw', editor.value);
+            } catch (e) {
+                alert('Cannot format: ' + e.message);
+            }
+        }
+
+        function downloadJSON() {
+            const editor = document.getElementById('jsonEditor');
+            try {
+                // Validate first
+                JSON.parse(editor.value);
+                
+                // Download
+                const blob = new Blob([editor.value], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'career-database-enriched.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                // Clear localStorage after successful download
+                localStorage.removeItem('glassface-database-raw');
+                
+            } catch (e) {
+                alert('Cannot download - JSON is invalid: ' + e.message);
+            }
+        }
+
+        function loadOriginal() {
+            // This would load the actual database - for now show the structure
+            fetch('./career-database-enriched.json')
+                .then(r => r.text())
+                .then(text => {
+                    document.getElementById('jsonEditor').value = text;
+                    updateProjectCount();
+                    document.getElementById('validationMsg').style.display = 'none';
+                })
+                .catch(() => {
+                    // If fetch fails, show template
+                    const template = {
+                        lastUpdated: new Date().toISOString().split('T')[0],
+                        totalProjects: 0,
+                        projects: []
+                    };
+                    document.getElementById('jsonEditor').value = JSON.stringify(template, null, 2);
+                });
+        }
+
+        function updateProjectCount() {
+            try {
+                const data = JSON.parse(document.getElementById('jsonEditor').value);
+                document.getElementById('projectCount').textContent = 
+                    `${data.projects?.length || 0} projects`;
+            } catch {
+                document.getElementById('projectCount').textContent = 'Invalid JSON';
+            }
+        }
+
+        // Auto-save to localStorage
+        document.getElementById('jsonEditor').addEventListener('input', () => {
+            localStorage.setItem('glassface-database-raw', document.getElementById('jsonEditor').value);
+        });
+
+        // Load on startup
+        loadDatabase();
+    </script>
+</body>
+</html>
