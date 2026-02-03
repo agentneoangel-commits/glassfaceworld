@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GLASSFACE — Career Timeline</title>
+    <meta name="description" content="Interactive career timeline of Glassface — Director, Editor, VFX Artist, Music Producer.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1a1a1a;
+            --text: #ffffff;
+            --text-secondary: #cccccc;
+            --text-tertiary: #999999;
+            --text-muted: #666666;
+            --border: #2a2a2a;
+            --border-light: #1f1f1f;
+            --accent: #ff3366;
+            --accent-glow: rgba(255, 51, 102, 0.3);
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --nav-height: 60px;
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            padding-bottom: calc(80px + var(--safe-area-bottom));
+        }
+
+        /* ========================================
+           NAVIGATION
+           ======================================== */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            padding: 0 16px;
+        }
+
+        .logo {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-toggle {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text);
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .nav-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .nav-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        .nav-links {
+            position: fixed;
+            top: var(--nav-height);
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 16px;
+            display: none;
+            flex-direction: column;
+            gap: 0;
+            max-height: calc(100vh - var(--nav-height));
+            overflow-y: auto;
+        }
+
+        .nav-links.active {
+            display: flex;
+        }
+
+        .nav-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-link:last-child {
+            border-bottom: none;
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+        }
+
+        /* ========================================
+           HEADER
+           ======================================== */
+        .timeline-header {
+            padding: calc(var(--nav-height) + 24px) 16px 20px;
+            text-align: center;
+        }
+
+        .timeline-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .timeline-stats {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* ========================================
+           YEAR SELECTOR (Sticky)
+           ======================================== */
+        .year-selector {
+            position: sticky;
+            top: var(--nav-height);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            padding: 12px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .year-selector::-webkit-scrollbar {
+            display: none;
+        }
+
+        .year-list {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px;
+            width: max-content;
+        }
+
+        .year-btn {
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .year-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        /* ========================================
+           CATEGORY FILTER
+           ======================================== */
+        .category-filter {
+            padding: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .filter-chip {
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.inactive {
+            opacity: 0.4;
+        }
+
+        .filter-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .filter-dot.commercial { background: #ff6b6b; }
+        .filter-dot.music-video { background: #4ecdc4; }
+        .filter-dot.music-production { background: #ffe66d; }
+        .filter-dot.design { background: #c7ceea; }
+
+        /* ========================================
+           TIMELINE CONTENT (Vertical)
+           ======================================== */
+        .timeline-content {
+            padding: 16px;
+        }
+
+        .year-section {
+            margin-bottom: 32px;
+        }
+
+        .year-header {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .year-header.active {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        @media (min-width: 480px) {
+            .projects-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ========================================
+           PROJECT CARD
+           ======================================== */
+        .project-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .project-card:active {
+            transform: scale(0.98);
+        }
+
+        .project-thumb {
+            aspect-ratio: 16/10;
+            background: var(--bg-tertiary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--text-muted);
+        }
+
+        .project-views {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: var(--accent);
+            color: var(--text);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        .project-info {
+            padding: 12px;
+        }
+
+        .project-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .project-artist {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        /* ========================================
+           MODAL (Full Screen on Mobile)
+           ======================================== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-header {
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            z-index: 10;
+        }
+
+        .modal-title-wrap {
+            flex: 1;
+            padding-right: 16px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .modal-role {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .modal-media {
+            aspect-ratio: 16/9;
+            background: var(--bg-secondary);
+        }
+
+        .modal-media iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .modal-body {
+            padding: 20px 16px;
+        }
+
+        .modal-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .modal-stats {
+            display: flex;
+            gap: 24px;
+            padding: 16px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 4px;
+        }
+
+        /* ========================================
+           BOTTOM NAV
+           ======================================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 8px 16px calc(8px + var(--safe-area-bottom));
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 10px;
+            transition: color 0.2s;
+        }
+
+        .bottom-nav-item.active {
+            color: var(--accent);
+        }
+
+        .bottom-nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* ========================================
+           SCROLL TO TOP
+           ======================================== */
+        .scroll-top {
+            position: fixed;
+            bottom: calc(80px + var(--safe-area-bottom));
+            right: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: var(--text);
+            font-size: 20px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--accent-glow);
+            z-index: 100;
+        }
+
+        .scroll-top.visible {
+            display: flex;
+        }
+
+        /* ========================================
+           LOADING STATE
+           ======================================== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="/" class="logo">GLASSFACE</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="/" class="nav-link">Portfolio</a>
+            <a href="timeline-v4.html" class="nav-link active">Timeline</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="https://face-brand.com" class="nav-link" target="_blank">Shop</a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="timeline-header">
+        <h1>Career Timeline</h1>
+        <p class="timeline-stats" id="timelineStats">Loading...</p>
+    </header>
+
+    <!-- Year Selector -->
+    <div class="year-selector">
+        <div class="year-list" id="yearList"></div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="category-filter" id="categoryFilter">
+        <div class="filter-chip" data-category="commercial">
+            <div class="filter-dot commercial"></div>
+            <span>Commercial</span>
+        </div>
+        <div class="filter-chip" data-category="music-video">
+            <div class="filter-dot music-video"></div>
+            <span>Music Video</span>
+        </div>
+        <div class="filter-chip" data-category="music-production">
+            <div class="filter-dot music-production"></div>
+            <span>Production</span>
+        </div>
+        <div class="filter-chip" data-category="design">
+            <div class="filter-dot design"></div>
+            <span>Design</span>
+        </div>
+    </div>
+
+    <!-- Timeline Content -->
+    <div class="timeline-content" id="timelineContent">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading timeline...</p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <div class="modal-title-wrap">
+                <h2 class="modal-title" id="modalTitle">Project Title</h2>
+                <p class="modal-role" id="modalRole">Role</p>
+            </div>
+            <button class="modal-close" id="modalClose">×</button>
+        </div>
+        <div class="modal-media" id="modalMedia"></div>
+        <div class="modal-body">
+            <p class="modal-text" id="modalText">Description</p>
+            <div class="modal-stats" id="modalStats"></div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top -->
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/" class="bottom-nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            <span>Work</span>
+        </a>
+        <a href="timeline-v4.html" class="bottom-nav-item active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+            </svg>
+            <span>Timeline</span>
+        </a>
+        <a href="about.html" class="bottom-nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>About</span>
+        </a>
+        <a href="https://face-brand.com" class="bottom-nav-item" target="_blank">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span>Shop</span>
+        </a>
+    </nav>
+
+    <script>
+        // Career database (abbreviated for mobile - same structure)
+        const CAREER_DATABASE = [];
+
+        const CONFIG = {
+            yearStart: 2011,
+            yearEnd: 2026
+        };
+
+        const CATEGORY_MAP = {
+            commercial: 'commercial',
+            'music-video': 'music-video',
+            'music-production': 'music-production',
+            'graphic-design': 'design',
+            design: 'design',
+            archive: 'commercial',
+            web3: 'design',
+            narrative: 'commercial',
+            'cover-artwork': 'design',
+            'product-design': 'design'
+        };
+
+        const CATEGORY_ICONS = {
+            commercial: '◆',
+            'music-video': '♪',
+            'music-production': '♫',
+            design: '◎',
+            'graphic-design': '◎',
+            archive: '◆',
+            web3: '◎',
+            narrative: '◆',
+            'cover-artwork': '◎',
+            'product-design': '◎'
+        };
+
+        let state = {
+            projects: [],
+            activeCategories: new Set(['commercial', 'music-video', 'music-production', 'design']),
+            currentYear: null
+        };
+
+        // Load data from desktop version
+        async function loadData() {
+            try {
+                // Fetch the desktop version to get the full database
+                const response = await fetch('timeline-v4-desktop.html');
+                const html = await response.text();
+                
+                // Extract CAREER_DATABASE
+                const match = html.match(/const CAREER_DATABASE = (\[.*?\]);/s);
+                if (match) {
+                    CAREER_DATABASE.push(...eval(match[1]));
+                }
+            } catch (e) {
+                console.error('Failed to load data:', e);
+            }
+
+            state.projects = CAREER_DATABASE.sort((a, b) => {
+                return new Date(a.publishedAt || '2015-01-01') - new Date(b.publishedAt || '2015-01-01');
+            });
+
+            document.getElementById('timelineStats').textContent = 
+                `${state.projects.length} Projects • 2011-2025`;
+
+            renderYearSelector();
+            renderTimeline();
+        }
+
+        function renderYearSelector() {
+            const yearList = document.getElementById('yearList');
+            const years = [];
+            
+            for (let y = CONFIG.yearEnd; y >= CONFIG.yearStart; y--) {
+                const count = state.projects.filter(p => {
+                    const year = new Date(p.publishedAt || '2015-01-01').getFullYear();
+                    return year === y;
+                }).length;
+                if (count > 0) years.push(y);
+            }
+
+            yearList.innerHTML = years.map(year => `
+                <button class="year-btn" data-year="${year}">${year}</button>
+            `).join('');
+
+            yearList.querySelectorAll('.year-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const year = parseInt(btn.dataset.year);
+                    scrollToYear(year);
+                    updateActiveYear(year);
+                });
+            });
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timelineContent');
+            const filtered = state.projects.filter(p => {
+                const cat = CATEGORY_MAP[p.category] || p.category;
+                return state.activeCategories.has(cat);
+            });
+
+            // Group by year
+            const byYear = {};
+            filtered.forEach(p => {
+                const year = new Date(p.publishedAt || '2015-01-01').getFullYear();
+                if (!byYear[year]) byYear[year] = [];
+                byYear[year].push(p);
+            });
+
+            const years = Object.keys(byYear).sort((a, b) => b - a);
+
+            container.innerHTML = years.map(year => `
+                <section class="year-section" data-year="${year}">
+                    <h2 class="year-header">${year}</h2>
+                    <div class="projects-grid">
+                        ${byYear[year].map(project => createProjectCard(project)).join('')}
+                    </div>
+                </section>
+            `).join('');
+
+            // Add click handlers
+            container.querySelectorAll('.project-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const projectId = card.dataset.projectId;
+                    const project = state.projects.find(p => p._id === projectId);
+                    if (project) openModal(project);
+                });
+            });
+        }
+
+        function createProjectCard(project) {
+            const hasYouTube = project.externalUrl && project.externalUrl.includes('youtube');
+            const youtubeId = hasYouTube ? extractYouTubeId(project.externalUrl) : null;
+            const imgUrl = youtubeId ? `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg` : null;
+            
+            const hasViews = project.viewCount && project.viewCount >= 1000000;
+            const viewsBadge = hasViews ? `<span class="project-views">${formatPlayCount(project.viewCount)}</span>` : '';
+
+            const thumbnail = imgUrl 
+                ? `<img src="${imgUrl}" alt="${project.title}" class="project-image" loading="lazy">`
+                : `<div class="project-placeholder">${CATEGORY_ICONS[project.category] || '◆'}</div>`;
+
+            return `
+                <div class="project-card" data-project-id="${project._id}">
+                    <div class="project-thumb">
+                        ${thumbnail}
+                        ${viewsBadge}
+                    </div>
+                    <div class="project-info">
+                        <div class="project-title">${project.title}</div>
+                        <div class="project-artist">${project.artist || project.roles?.join(', ') || ''}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function extractYouTubeId(url) {
+            if (!url) return null;
+            const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+            return match ? match[1] : null;
+        }
+
+        function formatPlayCount(count) {
+            if (!count) return '';
+            const num = parseInt(count);
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        function openModal(project) {
+            const modal = document.getElementById('modal');
+            const hasYouTube = project.externalUrl && project.externalUrl.includes('youtube');
+            const youtubeId = hasYouTube ? extractYouTubeId(project.externalUrl) : null;
+
+            document.getElementById('modalTitle').textContent = project.title;
+            document.getElementById('modalRole').textContent = 
+                (project.artist ? project.artist + ' • ' : '') + (project.roles?.join(', ') || '');
+            document.getElementById('modalText').textContent = 
+                project.description || 'No description available.';
+
+            const mediaEl = document.getElementById('modalMedia');
+            if (youtubeId) {
+                mediaEl.innerHTML = `
+                    <iframe src="https://www.youtube.com/embed/${youtubeId}?rel=0" 
+                            title="${project.title}" allowfullscreen></iframe>`;
+            } else {
+                mediaEl.innerHTML = `
+                    <div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:64px;">
+                        ${CATEGORY_ICONS[project.category] || '◆'}
+                    </div>`;
+            }
+
+            const year = new Date(project.publishedAt || '2015-01-01').getFullYear();
+            const statsEl = document.getElementById('modalStats');
+            if (project.viewCount && parseInt(project.viewCount) >= 1000000) {
+                statsEl.innerHTML = `
+                    <div class="stat-item">
+                        <div class="stat-value">${formatPlayCount(project.viewCount)}</div>
+                        <div class="stat-label">Views</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${year}</div>
+                        <div class="stat-label">Year</div>
+                    </div>`;
+            } else {
+                statsEl.innerHTML = `
+                    <div class="stat-item">
+                        <div class="stat-value">${year}</div>
+                        <div class="stat-label">Year</div>
+                    </div>`;
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('modalMedia').innerHTML = '';
+        }
+
+        function scrollToYear(year) {
+            const section = document.querySelector(`.year-section[data-year="${year}"]`);
+            if (section) {
+                const navHeight = 60;
+                const yearSelectorHeight = 56;
+                const offset = navHeight + yearSelectorHeight + 16;
+                const top = section.offsetTop - offset;
+                window.scrollTo({ top, behavior: 'smooth' });
+            }
+        }
+
+        function updateActiveYear(year) {
+            document.querySelectorAll('.year-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.year) === year);
+            });
+            document.querySelectorAll('.year-header').forEach(header => {
+                header.classList.toggle('active', parseInt(header.textContent) === year);
+            });
+        }
+
+        // Event Listeners
+        document.getElementById('navToggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+
+        // Category filter
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const cat = chip.dataset.category;
+                if (state.activeCategories.has(cat)) {
+                    state.activeCategories.delete(cat);
+                    chip.classList.add('inactive');
+                } else {
+                    state.activeCategories.add(cat);
+                    chip.classList.remove('inactive');
+                }
+                renderTimeline();
+            });
+        });
+
+        // Scroll to top
+        const scrollTopBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTopBtn.classList.toggle('visible', window.scrollY > 500);
+            
+            // Update active year based on scroll
+            const sections = document.querySelectorAll('.year-section');
+            const navHeight = 60;
+            const yearSelectorHeight = 56;
+            const offset = navHeight + yearSelectorHeight + 100;
+            
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= offset && rect.bottom >= offset) {
+                    updateActiveYear(parseInt(section.dataset.year));
+                }
+            });
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
