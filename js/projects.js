@@ -440,7 +440,7 @@ var projects = {
             id: "sochi-olympics",
             title: "Sochi 2014 Olympics",
             role: "Brand Identity, Graphic Design",
-            image: "images/cargo/sochi-olympics.gif",
+            image: "images/cargo/sochi-olympics-new.gif",
             youtubeId: null,
             playCount: null,
             releaseDate: "2014-02-01",
@@ -586,10 +586,26 @@ var projects = {
             title: 'Bhad Bhabie: HACKED Campaign',
             role: "Director, Editor, VFX",
             image: "images/cargo/bhad-bhabie-hacked.gif",
-            youtubeId: "JEdAUcra2X0",
+            youtubeId: "v9LvTxhFxpY",
             playCount: 8000000,
             releaseDate: "2019-02-01",
-            description: "Viral campaign for Bhad Bhabie. Directed by Face.",
+            description: "Coordinated marketing scheme with Bhad Bhabie and her management to kick off her music career. Gained 2M+ followers in 3 days through 'Illuminati hack' stunt. Featured on Refinery29.",
+            press: [
+                { quote: "The viral stunt that launched a music career.", source: "Refinery29" }
+            ],
+            links: {
+                article: "https://www.refinery29.com/en-us/2017/03/144230/cash-me-outside-girl-instagram-danielle-bergoli-illuminati-take-over"
+            }
+        },
+        {
+            id: "mook-boy-juvy",
+            title: 'Mook Boy - Juvy',
+            role: "Director, Editor",
+            image: "images/cargo/mook-boy-juvy.jpg",
+            youtubeId: "JEdAUcra2X0",
+            playCount: 3500000,
+            releaseDate: "2017-03-01",
+            description: "Music video starring Danielle Bregoli (Bhad Bhabie). Directed by Face.",
             press: []
         },
         {
