@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLASSFACE — Legacy Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #0a0a0a;
+            --bg-elevated: #141414;
+            --text: #ffffff;
+            --text-muted: #666666;
+            --accent: #ff3366;
+            --card-width: 300px;
+            --card-height: 190px;
+        }
+
+        body {
+            font-family: 'Roboto Flex', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.5rem 4rem;
+            background: linear-gradient(to bottom, var(--bg) 80%, transparent);
+            pointer-events: none;
+        }
+
+        .title {
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 200;
+            letter-spacing: -0.03em;
+            display: flex;
+            gap: 0.3em;
+            justify-content: center;
+        }
+
+        .title span {
+            display: inline-block;
+            font-variation-settings: 'wght' 200;
+            transition: font-variation-settings 0.4s ease;
+            cursor: default;
+        }
+
+        .title span:hover {
+            font-variation-settings: 'wght' 900;
+            color: var(--accent);
+        }
+
+        .title .accent {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* Year Track */
+        .year-track {
+            position: fixed;
+            top: 120px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5vw;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .year-marker {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .year-marker.active {
+            color: var(--accent);
+            font-size: 2rem;
+            text-shadow: 0 0 20px rgba(255,51,102,0.5);
+        }
+
+        /* 3D STAGE with deep perspective */
+        .stage-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            perspective: 1500px;
+            perspective-origin: center center;
+            overflow: hidden;
+            padding-top: 180px;
+        }
+
+        .carousel-3d {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 180px);
+            transform-style: preserve-3d;
+            display: flex;
+            align-items: center;
+            padding: 0 10vw;
+            gap: 100px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+
+        .carousel-3d::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Year groups in 3D space */
+        .year-group {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transform-style: preserve-3d;
+            scroll-snap-align: center;
+            position: relative;
+        }
+
+        .year-label-3d {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%) translateZ(-200px);
+            font-size: 3rem;
+            font-weight: 100;
+            color: rgba(255,255,255,0.15);
+            letter-spacing: 0.2em;
+            pointer-events: none;
+        }
+
+        /* Rows at different Z depths */
+        .row-3d {
+            display: flex;
+            gap: 20px;
+            transform-style: preserve-3d;
+            align-items: center;
+        }
+
+        /* Each row at different depth */
+        .row-3d:nth-child(1) { transform: translateZ(-120px) scale(0.88); }
+        .row-3d:nth-child(2) { transform: translateZ(-60px) scale(0.94); }
+        .row-3d:nth-child(3) { transform: translateZ(0px) scale(1.0); }
+        .row-3d:nth-child(4) { transform: translateZ(-60px) scale(0.94); }
+        .row-3d:nth-child(5) { transform: translateZ(-120px) scale(0.88); }
+
+        /* 3D CARDS with Z-rotation into depth */
+        .card-3d {
+            width: var(--card-width);
+            height: var(--card-height);
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            backface-visibility: hidden;
+        }
+
+        /* Idle floating with 3D rotation */
+        .card-3d.floating {
+            animation: float3d 5s ease-in-out infinite;
+        }
+
+        @keyframes float3d {
+            0%, 100% { 
+                transform: translateZ(0px) rotateX(2deg) rotateY(-1deg);
+            }
+            25% { 
+                transform: translateZ(10px) rotateX(-1deg) rotateY(2deg);
+            }
+            50% { 
+                transform: translateZ(0px) rotateX(1deg) rotateY(-2deg);
+            }
+            75% { 
+                transform: translateZ(-10px) rotateX(-2deg) rotateY(1deg);
+            }
+        }
+
+        /* HOVER - Hero comes FORWARD into Z-space */
+        .card-3d.hovered {
+            transform: translateZ(200px) rotateX(-5deg) rotateY(0deg) scale(1.3) !important;
+            box-shadow: 
+                0 50px 100px rgba(0,0,0,0.8),
+                0 0 60px rgba(255,51,102,0.4),
+                0 0 120px rgba(255,51,102,0.2);
+            z-index: 9999;
+            animation: none;
+        }
+
+        /* Neighbors tilt AWAY into depth */
+        .card-3d.tilt-back-left {
+            transform: translateZ(-80px) rotateY(25deg) scale(0.85) !important;
+            opacity: 0.7;
+            animation: none;
+        }
+
+        .card-3d.tilt-back-right {
+            transform: translateZ(-80px) rotateY(-25deg) scale(0.85) !important;
+            opacity: 0.7;
+            animation: none;
+        }
+
+        .card-3d.tilt-far-left {
+            transform: translateZ(-150px) rotateY(40deg) scale(0.75) !important;
+            opacity: 0.5;
+            animation: none;
+        }
+
+        .card-3d.tilt-far-right {
+            transform: translateZ(-150px) rotateY(-40deg) scale(0.75) !important;
+            opacity: 0.5;
+            animation: none;
+        }
+
+        .card-3d.tilt-up {
+            transform: translateZ(-60px) rotateX(20deg) scale(0.9) !important;
+            opacity: 0.75;
+            animation: none;
+        }
+
+        .card-3d.tilt-down {
+            transform: translateZ(-60px) rotateX(-20deg) scale(0.9) !important;
+            opacity: 0.75;
+            animation: none;
+        }
+
+        /* Card content */
+        .card-face {
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            position: relative;
+        }
+
+        .card-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card-3d.hovered .card-thumb {
+            transform: scale(1.1);
+        }
+
+        .music-note {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--text-muted);
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+        }
+
+        .card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+            backface-visibility: hidden;
+        }
+
+        .card-3d.hovered .card-info {
+            transform: translateY(0);
+        }
+
+        .card-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.25rem; }
+        .card-meta { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        /* Category colors */
+        .cat-music-video { border-left: 3px solid #4ecdc4; }
+        .cat-commercial { border-left: 3px solid #ff6b6b; }
+        .cat-music-production { border-left: 3px solid #ffe66d; }
+        .cat-design { border-left: 3px solid #c7ceea; }
+        .cat-web3 { border-left: 3px solid #a8e6cf; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="title" id="title">
+            <span>G</span><span>l</span><span>a</span><span>s</span><span>s</span><span>f</span><span>a</span><span>c</span><span>e</span>
+            <span class="accent">L</span><span class="accent">e</span><span class="accent">g</span><span class="accent">a</span><span class="accent">c</span><span class="accent">y</span>
+            <span>M</span><span>a</span><span>p</span>
+        </div>
+    </header>
+
+    <!-- Year Track -->
+    <div class="year-track" id="yearTrack"></div>
+
+    <!-- 3D STAGE -->
+    <div class="stage-3d">
+        <div class="carousel-3d" id="carousel3d">
+            <!-- Content loaded dynamically -->
+        </div>
+    </div>
+
+    <script>
+        const COVER_ART = {
+            "music-tobi-lou-new-bish": "images/covers/music-tobi-lou-new-bish.jpg",
+            "music-tobi-lou-cult-classic": "images/covers/music-tobi-lou-cult-classic.jpg",
+            "music-tobi-lou-lounar": "images/covers/music-tobi-lou-lounar.jpg",
+            "music-tobi-lou-solange": "images/covers/music-tobi-lou-solange.jpg",
+            "music-tobi-lou-the-fun": "images/covers/music-tobi-lou-the-fun.jpg",
+            "music-tobi-lou-uncle-iroh": "images/covers/music-tobi-lou-uncle-iroh.jpg",
+            "music-tobi-lou-live-on-ice": "images/covers/music-tobi-lou-live-on-ice.jpg",
+            "music-glassface-press": "images/covers/music-glassface-press.jpg",
+            "music-glassface-wavelength": "images/covers/music-glassface-wavelength.jpg",
+            "music-glassface-spiral": "images/covers/music-facer-spiral.jpg",
+            "music-glassface-already": "images/covers/music-glassface-already.jpg",
+            "music-glassface-foundation": "images/covers/music-glassface-foundation.jpg",
+            "music-glassface-oblivion": "images/covers/music-glassface-oblivion.jpg",
+            "music-glassface-summers-over": "images/covers/music-glassface-summers-over.jpg",
+            "music-glassface-endless-color": "images/covers/music-glassface-endless-color.jpg",
+            "music-glassface-theres-no-other-one": "images/covers/music-glassface-theres-no-other-one.jpg",
+            "music-glassface-whatever": "images/covers/music-glassface-whatever.jpg",
+            "music-sl-100-thoughts": "images/covers/music-sl-100-thoughts.jpg",
+            "music-chief-keef-forecast": "images/covers/music-chief-keef-forecast.jpg",
+            "music-young-thug-cobra": "images/covers/music-young-thug-cobra.jpg"
+        };
+
+        async function loadTimeline() {
+            const response = await fetch('career-database-enriched.json');
+            const projects = await response.json();
+            renderTimeline(projects);
+            renderYearTrack();
+            init3DHover();
+            scrollToYear(2018);
+        }
+
+        function renderYearTrack() {
+            const track = document.getElementById('yearTrack');
+            for (let year = 2011; year <= 2025; year++) {
+                const marker = document.createElement('div');
+                marker.className = 'year-marker';
+                marker.dataset.year = year;
+                marker.textContent = year;
+                track.appendChild(marker);
+            }
+        }
+
+        function renderTimeline(projects) {
+            const carousel = document.getElementById('carousel3d');
+
+            // Group by year
+            const byYear = {};
+            projects.forEach(p => {
+                const year = p.publishedAt.substring(0, 4);
+                if (!byYear[year]) byYear[year] = [];
+                byYear[year].push(p);
+            });
+
+            const years = Object.keys(byYear).sort();
+
+            years.forEach(year => {
+                const group = document.createElement('div');
+                group.className = 'year-group';
+                group.dataset.year = year;
+
+                // Year label in 3D
+                const label = document.createElement('div');
+                label.className = 'year-label-3d';
+                label.textContent = year;
+                group.appendChild(label);
+
+                // 5 rows at different Z depths
+                for (let row = 1; row <= 5; row++) {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'row-3d';
+                    
+                    const rowProjects = byYear[year].filter((_, i) => i % 5 === row - 1);
+                    
+                    rowProjects.forEach(project => {
+                        const card = createCard3D(project);
+                        rowDiv.appendChild(card);
+                    });
+
+                    group.appendChild(rowDiv);
+                }
+
+                carousel.appendChild(group);
+            });
+        }
+
+        function createCard3D(project) {
+            const card = document.createElement('div');
+            card.className = `card-3d cat-${project.category} floating`;
+            card.dataset.id = project._id;
+
+            // Random animation delay
+            card.style.animationDelay = `${Math.random() * 5}s`;
+
+            const thumb = COVER_ART[project._id] || (project.videoId ? `https://img.youtube.com/vi/${project.videoId}/mqdefault.jpg` : null);
+
+            card.innerHTML = `
+                <div class="card-face">
+                    ${thumb 
+                        ? `<img class="card-thumb" src="${thumb}" alt="" onerror="this.style.display='none'; this.parentElement.innerHTML += '<div class=\\'music-note\\'>♪</div>'">`
+                        : `<div class="music-note">♪</div>`
+                    }
+                    <div class="card-info">
+                        <div class="card-title">${project.title}</div>
+                        <div class="card-meta">${project.category.replace(/-/g, ' ')}</div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function init3DHover() {
+            const carousel = document.getElementById('carousel3d');
+
+            carousel.addEventListener('mouseover', (e) => {
+                const card = e.target.closest('.card-3d');
+                if (!card) return;
+
+                // Get all cards and find position
+                const allCards = [...document.querySelectorAll('.card-3d')];
+                const cardRect = card.getBoundingClientRect();
+                const cardCenterX = cardRect.left + cardRect.width / 2;
+
+                allCards.forEach((c) => {
+                    c.classList.remove('hovered', 'tilt-back-left', 'tilt-back-right', 'tilt-far-left', 'tilt-far-right', 'tilt-up', 'tilt-down');
+
+                    if (c === card) {
+                        c.classList.add('hovered');
+                        return;
+                    }
+
+                    // Calculate visual relationship
+                    const cRect = c.getBoundingClientRect();
+                    const cCenterX = cRect.left + cRect.width / 2;
+                    const dx = cCenterX - cardCenterX;
+                    const dy = cRect.top - cardRect.top;
+
+                    // Same row (similar Y position)
+                    if (Math.abs(dy) < 50) {
+                        if (dx < -50) c.classList.add('tilt-back-left');
+                        else if (dx > 50) c.classList.add('tilt-back-right');
+                        else if (dx < -150) c.classList.add('tilt-far-left');
+                        else if (dx > 150) c.classList.add('tilt-far-right');
+                    }
+                    // Different row
+                    else {
+                        if (dy < 0) c.classList.add('tilt-up');
+                        else c.classList.add('tilt-down');
+                    }
+                });
+            });
+
+            carousel.addEventListener('mouseleave', () => {
+                document.querySelectorAll('.card-3d').forEach(c => {
+                    c.classList.remove('hovered', 'tilt-back-left', 'tilt-back-right', 'tilt-far-left', 'tilt-far-right', 'tilt-up', 'tilt-down');
+                });
+            });
+        }
+
+        function scrollToYear(targetYear) {
+            const carousel = document.getElementById('carousel3d');
+            const group = carousel.querySelector(`[data-year="${targetYear}"]`);
+            if (group) {
+                group.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+            }
+        }
+
+        loadTimeline();
+    </script>
+</body>
+</html>
