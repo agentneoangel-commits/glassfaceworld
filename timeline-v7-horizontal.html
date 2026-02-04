@@ -140,28 +140,47 @@
             transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             flex-shrink: 0;
+            z-index: 1;
         }
 
-        /* Proximity states */
-        .project-card {
-            transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
-        }
-
+        /* PUSH AWAY HOVER EFFECT - No overlap */
         .project-card.hovered {
-            transform: scale(1.4) translateZ(100px) rotateY(5deg);
-            box-shadow: 0 50px 100px rgba(0,0,0,0.6), 0 0 50px rgba(255,51,102,0.3);
-            z-index: 1000;
+            transform: scale(1.6) translateZ(200px);
+            box-shadow: 0 60px 120px rgba(0,0,0,0.8), 0 0 80px rgba(255,51,102,0.4);
+            z-index: 9999 !important;
         }
 
-        .project-card.neighbor {
-            transform: scale(1.15) translateZ(50px);
-            opacity: 0.9;
+        /* Neighbors get pushed away */
+        .project-card.pushed-left {
+            transform: translateX(-80px) scale(0.85);
+            opacity: 0.7;
         }
 
-        .project-card.far {
-            transform: scale(0.85);
+        .project-card.pushed-right {
+            transform: translateX(80px) scale(0.85);
+            opacity: 0.7;
+        }
+
+        /* Same row neighbors pushed further */
+        .project-card.pushed-far-left {
+            transform: translateX(-120px) scale(0.75);
             opacity: 0.5;
-            filter: blur(2px);
+        }
+
+        .project-card.pushed-far-right {
+            transform: translateX(120px) scale(0.75);
+            opacity: 0.5;
+        }
+
+        /* Adjacent rows pushed vertically */
+        .project-card.pushed-up {
+            transform: translateY(-60px) scale(0.85);
+            opacity: 0.7;
+        }
+
+        .project-card.pushed-down {
+            transform: translateY(60px) scale(0.85);
+            opacity: 0.7;
         }
 
         /* Card content */
@@ -400,25 +419,47 @@
                 if (!card) return;
 
                 const allCards = [...document.querySelectorAll('.project-card')];
-                const hoveredIndex = allCards.indexOf(card);
+                const hoveredRow = card.closest('.row');
+                const allRows = [...document.querySelectorAll('.row')];
+                const hoveredRowIndex = allRows.indexOf(hoveredRow);
 
-                allCards.forEach((c, i) => {
-                    c.classList.remove('hovered', 'neighbor', 'far');
-                    const distance = Math.abs(i - hoveredIndex);
-                    
-                    if (i === hoveredIndex) {
+                // Get position within row
+                const cardsInRow = [...hoveredRow.querySelectorAll('.project-card')];
+                const positionInRow = cardsInRow.indexOf(card);
+
+                allCards.forEach((c) => {
+                    // Reset all classes
+                    c.classList.remove('hovered', 'pushed-left', 'pushed-right', 'pushed-far-left', 'pushed-far-right', 'pushed-up', 'pushed-down');
+
+                    const cardRow = c.closest('.row');
+                    const cardRowIndex = allRows.indexOf(cardRow);
+                    const rowDiff = cardRowIndex - hoveredRowIndex;
+
+                    if (c === card) {
                         c.classList.add('hovered');
-                    } else if (distance <= 2) {
-                        c.classList.add('neighbor');
-                    } else if (distance > 5) {
-                        c.classList.add('far');
+                    } else if (rowDiff === 0) {
+                        // Same row - push left/right
+                        const cardsInThisRow = [...cardRow.querySelectorAll('.project-card')];
+                        const thisPosition = cardsInThisRow.indexOf(c);
+                        const distance = thisPosition - positionInRow;
+                        
+                        if (distance === -1) c.classList.add('pushed-left');
+                        else if (distance === 1) c.classList.add('pushed-right');
+                        else if (distance < -1) c.classList.add('pushed-far-left');
+                        else if (distance > 1) c.classList.add('pushed-far-right');
+                    } else if (rowDiff === -1) {
+                        // Row above - push up
+                        c.classList.add('pushed-up');
+                    } else if (rowDiff === 1) {
+                        // Row below - push down
+                        c.classList.add('pushed-down');
                     }
                 });
             });
 
             container.addEventListener('mouseleave', () => {
                 document.querySelectorAll('.project-card').forEach(c => {
-                    c.classList.remove('hovered', 'neighbor', 'far');
+                    c.classList.remove('hovered', 'pushed-left', 'pushed-right', 'pushed-far-left', 'pushed-far-right', 'pushed-up', 'pushed-down');
                 });
             });
         }
