@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLASSFACE — Legacy Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #0a0a0a;
+            --bg-elevated: #141414;
+            --text: #ffffff;
+            --text-muted: #666666;
+            --accent: #ff3366;
+            --card-width: 320px;
+            --card-height: 200px;
+            --row-gap: 30px;
+        }
+
+        body {
+            font-family: 'Roboto Flex', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.5rem 4rem;
+            background: linear-gradient(to bottom, var(--bg) 80%, transparent);
+            pointer-events: none;
+        }
+
+        .title {
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 200;
+            letter-spacing: -0.03em;
+            display: flex;
+            gap: 0.3em;
+            justify-content: center;
+        }
+
+        .title span {
+            display: inline-block;
+            font-variation-settings: 'wght' 200;
+            transition: font-variation-settings 0.4s ease;
+            cursor: default;
+        }
+
+        .title span:hover {
+            font-variation-settings: 'wght' 900;
+            color: var(--accent);
+        }
+
+        .title .accent {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* Year Track - Horizontal on top */
+        .year-track {
+            position: fixed;
+            top: 120px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5vw;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .year-marker {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .year-marker.active {
+            color: var(--accent);
+            font-size: 2rem;
+            text-shadow: 0 0 20px rgba(255,51,102,0.5);
+        }
+
+        .year-marker::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: currentColor;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+        }
+
+        .year-marker.active::after {
+            opacity: 1;
+        }
+
+        /* Horizontal Scroll Container */
+        .horizontal-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            padding-top: 180px;
+        }
+
+        .horizontal-scroll {
+            display: flex;
+            height: calc(100vh - 180px);
+            width: fit-content;
+            padding: 2vh 5vw;
+            gap: 60px;
+            will-change: transform;
+            align-items: center;
+        }
+
+        /* Year Section */
+        .year-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--row-gap);
+            flex-shrink: 0;
+            position: relative;
+            padding-top: 40px;
+        }
+
+        /* 5 Rows */
+        .row {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        /* Row sizing - center row (row-3) largest */
+        .row-1 { transform: scale(0.82) translateZ(-80px); opacity: 0.88; }
+        .row-2 { transform: scale(0.92) translateZ(-40px); opacity: 0.94; }
+        .row-3 { transform: scale(1.0) translateZ(0px); opacity: 1; }
+        .row-4 { transform: scale(0.92) translateZ(-40px); opacity: 0.94; }
+        .row-5 { transform: scale(0.82) translateZ(-80px); opacity: 0.88; }
+
+        /* Cards with random size variation */
+        .project-card {
+            width: var(--card-width);
+            height: var(--card-height);
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        /* Floating animation when idle */
+        .project-card.floating {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(1deg); }
+            50% { transform: translateY(0px) rotate(0deg); }
+            75% { transform: translateY(8px) rotate(-1deg); }
+        }
+
+        /* Hovered card - hero effect */
+        .project-card.hovered {
+            transform: scale(1.5) translateZ(200px) !important;
+            box-shadow: 0 60px 120px rgba(0,0,0,0.8), 0 0 80px rgba(255,51,102,0.4);
+            z-index: 9999 !important;
+            animation: none;
+        }
+
+        /* Neighbors pushed away with Z-rotation */
+        .project-card.pushed-left {
+            transform: translateX(-100px) scale(0.85) rotateZ(-8deg) !important;
+            opacity: 0.7;
+            animation: none;
+        }
+
+        .project-card.pushed-right {
+            transform: translateX(100px) scale(0.85) rotateZ(8deg) !important;
+            opacity: 0.7;
+            animation: none;
+        }
+
+        .project-card.pushed-far-left {
+            transform: translateX(-150px) scale(0.75) rotateZ(-12deg) !important;
+            opacity: 0.5;
+            animation: none;
+        }
+
+        .project-card.pushed-far-right {
+            transform: translateX(150px) scale(0.75) rotateZ(12deg) !important;
+            opacity: 0.5;
+            animation: none;
+        }
+
+        .project-card.pushed-up {
+            transform: translateY(-80px) scale(0.85) rotateZ(-5deg) !important;
+            opacity: 0.7;
+            animation: none;
+        }
+
+        .project-card.pushed-down {
+            transform: translateY(80px) scale(0.85) rotateZ(5deg) !important;
+            opacity: 0.7;
+            animation: none;
+        }
+
+        /* Card content */
+        .card-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .project-card.hovered .card-thumb {
+            transform: scale(1.1);
+        }
+
+        .music-note {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--text-muted);
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+        }
+
+        .card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .project-card.hovered .card-info {
+            transform: translateY(0);
+        }
+
+        .card-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.25rem; }
+        .card-meta { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        /* Category colors */
+        .cat-music-video { border-left: 3px solid #4ecdc4; }
+        .cat-commercial { border-left: 3px solid #ff6b6b; }
+        .cat-music-production { border-left: 3px solid #ffe66d; }
+        .cat-design { border-left: 3px solid #c7ceea; }
+        .cat-web3 { border-left: 3px solid #a8e6cf; }
+
+        /* Loading */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* Hide scroll hint */
+        .scroll-hint {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="title" id="title">
+            <span>G</span><span>l</span><span>a</span><span>s</span><span>s</span><span>f</span><span>a</span><span>c</span><span>e</span>
+            <span class="accent">L</span><span class="accent">e</span><span class="accent">g</span><span class="accent">a</span><span class="accent">c</span><span class="accent">y</span>
+            <span>M</span><span>a</span><span>p</span>
+        </div>
+    </header>
+
+    <!-- Year Track - Horizontal on top -->
+    <div class="year-track" id="yearTrack"></div>
+
+    <div class="horizontal-wrapper">
+        <div class="horizontal-scroll" id="scrollContainer">
+            <div class="loading">Loading timeline...</div>
+        </div>
+    </div>
+
+    <script>
+        const COVER_ART = {
+            "music-tobi-lou-new-bish": "images/covers/music-tobi-lou-new-bish.jpg",
+            "music-tobi-lou-cult-classic": "images/covers/music-tobi-lou-cult-classic.jpg",
+            "music-tobi-lou-lounar": "images/covers/music-tobi-lou-lounar.jpg",
+            "music-tobi-lou-solange": "images/covers/music-tobi-lou-solange.jpg",
+            "music-tobi-lou-the-fun": "images/covers/music-tobi-lou-the-fun.jpg",
+            "music-tobi-lou-uncle-iroh": "images/covers/music-tobi-lou-uncle-iroh.jpg",
+            "music-tobi-lou-live-on-ice": "images/covers/music-tobi-lou-live-on-ice.jpg",
+            "music-glassface-press": "images/covers/music-glassface-press.jpg",
+            "music-glassface-wavelength": "images/covers/music-glassface-wavelength.jpg",
+            "music-glassface-spiral": "images/covers/music-facer-spiral.jpg",
+            "music-glassface-already": "images/covers/music-glassface-already.jpg",
+            "music-glassface-foundation": "images/covers/music-glassface-foundation.jpg",
+            "music-glassface-oblivion": "images/covers/music-glassface-oblivion.jpg",
+            "music-glassface-summers-over": "images/covers/music-glassface-summers-over.jpg",
+            "music-glassface-endless-color": "images/covers/music-glassface-endless-color.jpg",
+            "music-glassface-theres-no-other-one": "images/covers/music-glassface-theres-no-other-one.jpg",
+            "music-glassface-whatever": "images/covers/music-glassface-whatever.jpg",
+            "music-sl-100-thoughts": "images/covers/music-sl-100-thoughts.jpg",
+            "music-chief-keef-forecast": "images/covers/music-chief-keef-forecast.jpg",
+            "music-young-thug-cobra": "images/covers/music-young-thug-cobra.jpg"
+        };
+
+        // Random scale for each card (±10%)
+        function getRandomScale() {
+            return 0.9 + Math.random() * 0.2; // 0.9 to 1.1
+        }
+
+        // Random animation delay for floating effect
+        function getRandomDelay() {
+            return Math.random() * 4;
+        }
+
+        async function loadTimeline() {
+            const response = await fetch('career-database-enriched.json');
+            const projects = await response.json();
+            renderTimeline(projects);
+            renderYearTrack();
+            initHorizontalScroll();
+            initProximityHover();
+            
+            // Scroll to 2018-2023 range on load
+            setTimeout(() => scrollToYear(2018), 500);
+        }
+
+        function renderYearTrack() {
+            const track = document.getElementById('yearTrack');
+            for (let year = 2011; year <= 2025; year++) {
+                const marker = document.createElement('div');
+                marker.className = 'year-marker';
+                marker.dataset.year = year;
+                marker.textContent = year;
+                track.appendChild(marker);
+            }
+        }
+
+        function renderTimeline(projects) {
+            const container = document.getElementById('scrollContainer');
+            container.innerHTML = '';
+
+            // Group by year
+            const byYear = {};
+            projects.forEach(p => {
+                const year = p.publishedAt.substring(0, 4);
+                if (!byYear[year]) byYear[year] = [];
+                byYear[year].push(p);
+            });
+
+            // Sort years
+            const years = Object.keys(byYear).sort();
+
+            years.forEach(year => {
+                const yearProjects = byYear[year];
+                const section = document.createElement('div');
+                section.className = 'year-section';
+                section.dataset.year = year;
+
+                // Create 5 rows
+                for (let row = 1; row <= 5; row++) {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = `row row-${row}`;
+                    
+                    // Distribute projects across rows
+                    const rowProjects = yearProjects.filter((_, i) => i % 5 === row - 1);
+                    
+                    rowProjects.forEach(project => {
+                        const card = createCard(project);
+                        rowDiv.appendChild(card);
+                    });
+
+                    section.appendChild(rowDiv);
+                }
+
+                container.appendChild(section);
+            });
+
+            // Start floating animation
+            startFloatingAnimation();
+        }
+
+        function createCard(project) {
+            const card = document.createElement('div');
+            card.className = `project-card cat-${project.category} floating`;
+            card.dataset.id = project._id;
+            
+            // Apply random scale
+            const randomScale = getRandomScale();
+            card.style.setProperty('--random-scale', randomScale);
+            card.style.transform = `scale(${randomScale})`;
+            
+            // Apply random animation delay
+            card.style.animationDelay = `${getRandomDelay()}s`;
+
+            const thumb = COVER_ART[project._id] || (project.videoId ? `https://img.youtube.com/vi/${project.videoId}/mqdefault.jpg` : null);
+
+            card.innerHTML = `
+                ${thumb 
+                    ? `<img class="card-thumb" src="${thumb}" alt="" onerror="this.style.display='none'; this.parentElement.innerHTML += '<div class=\\'music-note\\'>♪</div>'">`
+                    : `<div class="music-note">♪</div>`
+                }
+                <div class="card-info">
+                    <div class="card-title">${project.title}</div>
+                    <div class="card-meta">${project.category.replace(/-/g, ' ')} • ${project.publishedAt.substring(0, 4)}</div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function startFloatingAnimation() {
+            // GSAP floating animation for each card
+            document.querySelectorAll('.project-card').forEach((card, i) => {
+                const duration = 3 + Math.random() * 2;
+                const delay = Math.random() * 2;
+                const yMove = 5 + Math.random() * 10;
+                const rotate = Math.random() * 2 - 1;
+
+                gsap.to(card, {
+                    y: yMove,
+                    rotation: rotate,
+                    duration: duration,
+                    delay: delay,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                });
+            });
+        }
+
+        function initHorizontalScroll() {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            const container = document.getElementById('scrollContainer');
+            
+            // GSAP horizontal scroll
+            const scrollTween = gsap.to(container, {
+                x: () => -(container.scrollWidth - window.innerWidth),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".horizontal-wrapper",
+                    start: "top top",
+                    end: () => `+=${container.scrollWidth - window.innerWidth}`,
+                    pin: true,
+                    scrub: 1,
+                    anticipatePin: 1,
+                    invalidateOnRefresh: true,
+                    onUpdate: (self) => {
+                        // Update active year marker
+                        updateActiveYear(self.progress);
+                    }
+                }
+            });
+        }
+
+        function updateActiveYear(progress) {
+            const markers = document.querySelectorAll('.year-marker');
+            const totalYears = markers.length;
+            const activeIndex = Math.floor(progress * totalYears);
+            
+            markers.forEach((marker, i) => {
+                marker.classList.toggle('active', i === activeIndex);
+            });
+        }
+
+        function scrollToYear(targetYear) {
+            const container = document.getElementById('scrollContainer');
+            const yearSections = [...document.querySelectorAll('.year-section')];
+            const targetSection = yearSections.find(s => s.dataset.year === String(targetYear));
+            
+            if (targetSection) {
+                const containerWidth = container.scrollWidth - window.innerWidth;
+                const sectionLeft = targetSection.offsetLeft;
+                const progress = sectionLeft / containerWidth;
+                
+                // Scroll to position
+                window.scrollTo({
+                    top: progress * containerWidth,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        function initProximityHover() {
+            const container = document.getElementById('scrollContainer');
+            
+            container.addEventListener('mouseover', (e) => {
+                const card = e.target.closest('.project-card');
+                if (!card) return;
+
+                // Stop floating animation on all cards
+                gsap.killTweensOf('.project-card');
+
+                const allCards = [...document.querySelectorAll('.project-card')];
+                const hoveredRow = card.closest('.row');
+                const allRows = [...document.querySelectorAll('.row')];
+                const hoveredRowIndex = allRows.indexOf(hoveredRow);
+
+                // Get position within row
+                const cardsInRow = [...hoveredRow.querySelectorAll('.project-card')];
+                const positionInRow = cardsInRow.indexOf(card);
+
+                allCards.forEach((c) => {
+                    // Reset all classes
+                    c.classList.remove('hovered', 'pushed-left', 'pushed-right', 'pushed-far-left', 'pushed-far-right', 'pushed-up', 'pushed-down');
+
+                    const cardRow = c.closest('.row');
+                    const cardRowIndex = allRows.indexOf(cardRow);
+                    const rowDiff = cardRowIndex - hoveredRowIndex;
+
+                    if (c === card) {
+                        c.classList.add('hovered');
+                    } else if (rowDiff === 0) {
+                        // Same row - push left/right with Z-rotation
+                        const cardsInThisRow = [...cardRow.querySelectorAll('.project-card')];
+                        const thisPosition = cardsInThisRow.indexOf(c);
+                        const distance = thisPosition - positionInRow;
+                        
+                        if (distance === -1) c.classList.add('pushed-left');
+                        else if (distance === 1) c.classList.add('pushed-right');
+                        else if (distance < -1) c.classList.add('pushed-far-left');
+                        else if (distance > 1) c.classList.add('pushed-far-right');
+                    } else if (rowDiff === -1) {
+                        // Row above - push up with rotation
+                        c.classList.add('pushed-up');
+                    } else if (rowDiff === 1) {
+                        // Row below - push down with rotation
+                        c.classList.add('pushed-down');
+                    }
+                });
+            });
+
+            container.addEventListener('mouseleave', () => {
+                document.querySelectorAll('.project-card').forEach(c => {
+                    c.classList.remove('hovered', 'pushed-left', 'pushed-right', 'pushed-far-left', 'pushed-far-right', 'pushed-up', 'pushed-down');
+                });
+                
+                // Resume floating animation
+                startFloatingAnimation();
+            });
+        }
+
+        loadTimeline();
+    </script>
+</body>
+</html>
