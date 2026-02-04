@@ -516,6 +516,7 @@
             }
         }
 
+        // PIXEL-BASED PROXIMITY - Cards react to ACTUAL visual distance
         function initProximityHover() {
             const container = document.getElementById('scrollContainer');
             
@@ -523,54 +524,65 @@
                 const card = e.target.closest('.project-card');
                 if (!card) return;
 
-                // Stop floating animation on all cards
+                // Stop floating animation
                 gsap.killTweensOf('.project-card');
 
                 const allCards = [...document.querySelectorAll('.project-card')];
-                const hoveredRow = card.closest('.row');
-                const allRows = [...document.querySelectorAll('.row')];
-                const hoveredRowIndex = allRows.indexOf(hoveredRow);
-
-                // Get position within row
-                const cardsInRow = [...hoveredRow.querySelectorAll('.project-card')];
-                const positionInRow = cardsInRow.indexOf(card);
+                const hoveredRect = card.getBoundingClientRect();
+                const hoveredCenter = {
+                    x: hoveredRect.left + hoveredRect.width / 2,
+                    y: hoveredRect.top + hoveredRect.height / 2
+                };
 
                 allCards.forEach((c) => {
-                    // Reset all classes
-                    c.classList.remove('hovered', 'pushed-left', 'pushed-right', 'pushed-far-left', 'pushed-far-right', 'pushed-up', 'pushed-down');
-
-                    const cardRow = c.closest('.row');
-                    const cardRowIndex = allRows.indexOf(cardRow);
-                    const rowDiff = cardRowIndex - hoveredRowIndex;
+                    // Reset
+                    c.classList.remove('hovered');
+                    c.style.transform = '';
+                    c.style.opacity = '';
 
                     if (c === card) {
                         c.classList.add('hovered');
-                    } else if (rowDiff === 0) {
-                        // Same row - push left/right with Z-rotation
-                        const cardsInThisRow = [...cardRow.querySelectorAll('.project-card')];
-                        const thisPosition = cardsInThisRow.indexOf(c);
-                        const distance = thisPosition - positionInRow;
+                        return;
+                    }
+
+                    // Calculate ACTUAL pixel distance from hovered card
+                    const cardRect = c.getBoundingClientRect();
+                    const cardCenter = {
+                        x: cardRect.left + cardRect.width / 2,
+                        y: cardRect.top + cardRect.height / 2
+                    };
+
+                    const dx = cardCenter.x - hoveredCenter.x;
+                    const dy = cardCenter.y - hoveredCenter.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    // Only affect cards within 500px radius
+                    if (distance < 500 && distance > 0) {
+                        // Calculate push vector (away from hovered card)
+                        const pushStrength = 1 - (distance / 500);
+                        const pushX = (dx / distance) * pushStrength * 150;
+                        const pushY = (dy / distance) * pushStrength * 100;
                         
-                        if (distance === -1) c.classList.add('pushed-left');
-                        else if (distance === 1) c.classList.add('pushed-right');
-                        else if (distance < -1) c.classList.add('pushed-far-left');
-                        else if (distance > 1) c.classList.add('pushed-far-right');
-                    } else if (rowDiff === -1) {
-                        // Row above - push up with rotation
-                        c.classList.add('pushed-up');
-                    } else if (rowDiff === 1) {
-                        // Row below - push down with rotation
-                        c.classList.add('pushed-down');
+                        // Rotate away from center
+                        const angle = Math.atan2(dy, dx);
+                        const rotation = angle * (180 / Math.PI) * 0.15;
+                        
+                        // Scale down slightly
+                        const scale = 0.9 - (pushStrength * 0.15);
+
+                        // Apply dynamic transform
+                        c.style.transform = `translate(${pushX}px, ${pushY}px) rotate(${rotation}deg) scale(${scale})`;
+                        c.style.opacity = 0.5 + (pushStrength * 0.4);
                     }
                 });
             });
 
             container.addEventListener('mouseleave', () => {
                 document.querySelectorAll('.project-card').forEach(c => {
-                    c.classList.remove('hovered', 'pushed-left', 'pushed-right', 'pushed-far-left', 'pushed-far-right', 'pushed-up', 'pushed-down');
+                    c.classList.remove('hovered');
+                    c.style.transform = '';
+                    c.style.opacity = '';
                 });
-                
-                // Resume floating animation
                 startFloatingAnimation();
             });
         }
