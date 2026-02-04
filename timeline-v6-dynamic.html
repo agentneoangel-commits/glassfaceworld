@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLASSFACE — Legacy Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Variable font: Roboto Flex for true weight animation -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg-elevated: #141414;
+            --text: #ffffff;
+            --text-muted: #666666;
+            --accent: #ff3366;
+        }
+
+        body {
+            font-family: 'Roboto Flex', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+            perspective: 2000px;
+        }
+
+        /* ========================================
+           HEADER - Variable Font Animation
+           ======================================== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 3rem 4rem;
+            background: linear-gradient(to bottom, var(--bg) 50%, transparent);
+            pointer-events: none;
+        }
+
+        .title-container {
+            position: relative;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Variable font characters */
+        .char {
+            display: inline-block;
+            font-size: clamp(4rem, 10vw, 9rem);
+            font-variation-settings: 'wght' 100, 'wdth' 100;
+            transition: font-variation-settings 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: default;
+            line-height: 1;
+        }
+
+        .char:hover {
+            font-variation-settings: 'wght' 900, 'wdth' 120;
+            color: var(--accent);
+        }
+
+        .word {
+            display: inline-flex;
+            margin: 0 0.2em;
+        }
+
+        .word-accent .char {
+            color: var(--accent);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-top: 1rem;
+        }
+
+        /* ========================================
+           3D GALLERY - Dynamic Proximity
+           ======================================== */
+        .gallery-stage {
+            position: relative;
+            margin-top: 40vh;
+            padding: 4rem 2rem;
+            min-height: 100vh;
+            transform-style: preserve-3d;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+        }
+
+        /* ========================================
+           PROJECT CARD - Dynamic 3D
+           ======================================== */
+        .project-card {
+            aspect-ratio: 16 / 10;
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        /* Proximity-based scaling classes */
+        .project-card {
+            --base-scale: 1;
+            --hover-scale: 1.3;
+            --neighbor-scale: 1.15;
+            --far-scale: 0.9;
+            transform: scale(var(--current-scale, 1)) translateZ(calc((var(--current-scale, 1) - 1) * 100px));
+            z-index: calc(var(--current-scale, 1) * 10);
+        }
+
+        .project-card.hovered {
+            --current-scale: var(--hover-scale);
+            z-index: 100;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(255,51,102,0.3);
+        }
+
+        .project-card.neighbor-1 {
+            --current-scale: var(--neighbor-scale);
+            z-index: 50;
+        }
+
+        .project-card.neighbor-2 {
+            --current-scale: 1.05;
+            z-index: 30;
+        }
+
+        .project-card.far {
+            --current-scale: var(--far-scale);
+            opacity: 0.7;
+        }
+
+        .project-card.dimmed {
+            opacity: 0.4;
+            filter: blur(2px);
+        }
+
+        /* Inner content */
+        .card-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .project-card.hovered .project-thumbnail {
+            transform: scale(1.1);
+        }
+
+        /* Music note fallback */
+        .music-note {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--text-muted);
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+        }
+
+        /* Info overlay */
+        .card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .project-card.hovered .card-info,
+        .project-card.neighbor-1 .card-info {
+            transform: translateY(0);
+        }
+
+        .project-title {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .project-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .project-year {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-top: 0.5rem;
+        }
+
+        /* Category borders */
+        .category-music-video { border-left: 4px solid #4ecdc4; }
+        .category-commercial { border-left: 4px solid #ff6b6b; }
+        .category-music-production { border-left: 4px solid #ffe66d; }
+        .category-design { border-left: 4px solid #c7ceea; }
+        .category-web3 { border-left: 4px solid #a8e6cf; }
+
+        /* ========================================
+           TIMELINE TRACK
+           ======================================== */
+        .timeline-track {
+            position: fixed;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            background: rgba(20,20,20,0.9);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 100px;
+            z-index: 1000;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .timeline-year {
+            font-size: 0.75rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border-radius: 100px;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-year:hover,
+        .timeline-year.active {
+            background: var(--accent);
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 6rem;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Variable Font -->
+    <header class="header">
+        <div class="title-container">
+            <div id="title"></div>
+        </div>
+        <p class="subtitle">132 Projects • 2011-2025 • Interactive 3D Timeline</p>
+    </header>
+
+    <!-- Gallery -->
+    <div class="gallery-stage">
+        <div class="gallery-grid" id="gallery">
+            <div class="loading">Loading projects...</div>
+        </div>
+    </div>
+
+    <!-- Timeline Track -->
+    <div class="timeline-track" id="timelineTrack"></div>
+
+    <script>
+        // ========================================
+        // CONFIG
+        // ========================================
+        const CONFIG = {
+            yearStart: 2011,
+            yearEnd: 2025
+        };
+
+        // ========================================
+        // COVER ART MAPPING
+        // ========================================
+        const COVER_ART_MAPPING = {
+            "music-tobi-lou-new-bish": "images/covers/music-tobi-lou-new-bish.jpg",
+            "music-tobi-lou-cult-classic": "images/covers/music-tobi-lou-cult-classic.jpg",
+            "music-tobi-lou-lounar": "images/covers/music-tobi-lou-lounar.jpg",
+            "music-tobi-lou-solange": "images/covers/music-tobi-lou-solange.jpg",
+            "music-tobi-lou-the-fun": "images/covers/music-tobi-lou-the-fun.jpg",
+            "music-tobi-lou-uncle-iroh": "images/covers/music-tobi-lou-uncle-iroh.jpg",
+            "music-tobi-lou-live-on-ice": "images/covers/music-tobi-lou-live-on-ice.jpg",
+            "music-glassface-press": "images/covers/music-glassface-press.jpg",
+            "music-glassface-wavelength": "images/covers/music-glassface-wavelength.jpg",
+            "music-glassface-spiral": "images/covers/music-facer-spiral.jpg",
+            "music-glassface-already": "images/covers/music-glassface-already.jpg",
+            "music-glassface-foundation": "images/covers/music-glassface-foundation.jpg",
+            "music-glassface-oblivion": "images/covers/music-glassface-oblivion.jpg",
+            "music-glassface-summers-over": "images/covers/music-glassface-summers-over.jpg",
+            "music-glassface-endless-color": "images/covers/music-glassface-endless-color.jpg",
+            "music-glassface-theres-no-other-one": "images/covers/music-glassface-theres-no-other-one.jpg",
+            "music-glassface-whatever": "images/covers/music-glassface-whatever.jpg",
+            "music-sl-100-thoughts": "images/covers/music-sl-100-thoughts.jpg",
+            "music-chief-keef-forecast": "images/covers/music-chief-keef-forecast.jpg",
+            "music-young-thug-cobra": "images/covers/music-young-thug-cobra.jpg"
+        };
+
+        // ========================================
+        // RENDER VARIABLE FONT TITLE
+        // ========================================
+        function renderTitle() {
+            const titleContainer = document.getElementById('title');
+            const words = [
+                { text: 'Glassface', accent: false },
+                { text: 'Legacy', accent: true },
+                { text: 'Map', accent: false }
+            ];
+
+            words.forEach(word => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'word' + (word.accent ? ' word-accent' : '');
+                
+                word.text.split('').forEach((char, i) => {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = 'char';
+                    charSpan.textContent = char;
+                    charSpan.style.animationDelay = `${i * 0.05}s`;
+                    wordSpan.appendChild(charSpan);
+                });
+                
+                titleContainer.appendChild(wordSpan);
+            });
+
+            // Animate in
+            gsap.from('.char', {
+                fontVariationSettings: "'wght' 100, 'wdth' 50",
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                stagger: 0.03,
+                ease: 'power3.out'
+            });
+        }
+
+        // ========================================
+        // LOAD PROJECTS
+        // ========================================
+        async function loadProjects() {
+            try {
+                const response = await fetch('career-database-enriched.json');
+                const projects = await response.json();
+                renderGallery(projects);
+                renderTimelineTrack();
+            } catch (error) {
+                console.error('Error loading projects:', error);
+            }
+        }
+
+        // ========================================
+        // RENDER GALLERY
+        // ========================================
+        function renderGallery(projects) {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+
+            projects.forEach((project, index) => {
+                const card = createCard(project, index);
+                gallery.appendChild(card);
+            });
+
+            // Setup proximity hover
+            setupProximityHover();
+        }
+
+        // ========================================
+        // CREATE CARD
+        // ========================================
+        function createCard(project, index) {
+            const card = document.createElement('div');
+            card.className = `project-card category-${project.category}`;
+            card.dataset.index = index;
+            card.dataset.year = project.publishedAt.substring(0, 4);
+
+            const thumbnail = getThumbnail(project);
+
+            card.innerHTML = `
+                <div class="card-content">
+                    ${thumbnail 
+                        ? `<img class="project-thumbnail" src="${thumbnail}" alt="${project.title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                           <div class="music-note" style="display:none">♪</div>`
+                        : `<div class="music-note">♪</div>`
+                    }
+                    <div class="card-info">
+                        <div class="project-title">${project.title}</div>
+                        <div class="project-meta">${project.category.replace(/-/g, ' ')}</div>
+                        <div class="project-year">${project.publishedAt.substring(0, 4)}</div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // ========================================
+        // GET THUMBNAIL
+        // ========================================
+        function getThumbnail(project) {
+            if (COVER_ART_MAPPING[project._id]) {
+                return COVER_ART_MAPPING[project._id];
+            }
+            if (project.videoId) {
+                return `https://img.youtube.com/vi/${project.videoId}/mqdefault.jpg`;
+            }
+            return null;
+        }
+
+        // ========================================
+        // PROXIMITY HOVER - Dynamic 3D
+        // ========================================
+        function setupProximityHover() {
+            const cards = document.querySelectorAll('.project-card');
+            const grid = document.querySelector('.gallery-grid');
+
+            // Get grid columns
+            const gridComputed = getComputedStyle(grid);
+            const columns = gridComputed.gridTemplateColumns.split(' ').length;
+
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    const index = parseInt(card.dataset.index);
+                    updateCardStates(index, cards, columns);
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    resetCardStates(cards);
+                });
+            });
+        }
+
+        function updateCardStates(hoveredIndex, cards, columns) {
+            cards.forEach((card, index) => {
+                card.classList.remove('hovered', 'neighbor-1', 'neighbor-2', 'far', 'dimmed');
+
+                const distance = Math.abs(index - hoveredIndex);
+                const rowDiff = Math.abs(Math.floor(index / columns) - Math.floor(hoveredIndex / columns));
+                const colDiff = Math.abs((index % columns) - (hoveredIndex % columns));
+                const gridDistance = Math.max(rowDiff, colDiff);
+
+                if (index === hoveredIndex) {
+                    card.classList.add('hovered');
+                } else if (gridDistance === 1) {
+                    card.classList.add('neighbor-1');
+                } else if (gridDistance === 2) {
+                    card.classList.add('neighbor-2');
+                } else if (gridDistance > 3) {
+                    card.classList.add('far', 'dimmed');
+                }
+            });
+        }
+
+        function resetCardStates(cards) {
+            cards.forEach(card => {
+                card.classList.remove('hovered', 'neighbor-1', 'neighbor-2', 'far', 'dimmed');
+            });
+        }
+
+        // ========================================
+        // TIMELINE TRACK
+        // ========================================
+        function renderTimelineTrack() {
+            const track = document.getElementById('timelineTrack');
+            for (let year = CONFIG.yearStart; year <= CONFIG.yearEnd; year++) {
+                const yearBtn = document.createElement('div');
+                yearBtn.className = 'timeline-year';
+                yearBtn.textContent = year;
+                yearBtn.addEventListener('click', () => scrollToYear(year));
+                track.appendChild(yearBtn);
+            }
+        }
+
+        function scrollToYear(year) {
+            const cards = document.querySelectorAll('.project-card');
+            const targetCard = Array.from(cards).find(card => card.dataset.year === String(year));
+            if (targetCard) {
+                targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // ========================================
+        // INIT
+        // ========================================
+        renderTitle();
+        loadProjects();
+    </script>
+</body>
+</html>
