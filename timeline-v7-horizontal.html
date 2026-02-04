@@ -29,8 +29,7 @@
             background: var(--bg);
             color: var(--text);
             overflow-x: hidden;
-            overflow-y: hidden; /* Hide vertical, horizontal scroll only */
-            height: 100vh;
+            /* Allow vertical scroll for GSAP ScrollTrigger to work */
         }
 
         /* Header */
@@ -121,12 +120,12 @@
             perspective: 1000px;
         }
 
-        /* Row sizing - center row (row-3) largest */
-        .row-1 { transform: scale(0.75) translateZ(-150px); opacity: 0.6; }
-        .row-2 { transform: scale(0.88) translateZ(-75px); opacity: 0.8; }
+        /* Row sizing - center row (row-3) largest - INCREASED OPACITY */
+        .row-1 { transform: scale(0.78) translateZ(-100px); opacity: 0.85; }
+        .row-2 { transform: scale(0.9) translateZ(-50px); opacity: 0.92; }
         .row-3 { transform: scale(1.0) translateZ(0px); opacity: 1; }
-        .row-4 { transform: scale(0.88) translateZ(-75px); opacity: 0.8; }
-        .row-5 { transform: scale(0.75) translateZ(-150px); opacity: 0.6; }
+        .row-4 { transform: scale(0.9) translateZ(-50px); opacity: 0.92; }
+        .row-5 { transform: scale(0.78) translateZ(-100px); opacity: 0.85; }
 
         /* Cards */
         .project-card {
@@ -365,36 +364,32 @@
         }
 
         function initHorizontalScroll() {
-            const container = document.getElementById('scrollContainer');
+            gsap.registerPlugin(ScrollTrigger);
             
-            // Mouse wheel → horizontal scroll
+            const container = document.getElementById('scrollContainer');
+            const scrollWidth = container.scrollWidth - window.innerWidth;
+            
+            // GSAP horizontal scroll
+            gsap.to(container, {
+                x: () => -(container.scrollWidth - window.innerWidth),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".horizontal-wrapper",
+                    start: "top top",
+                    end: () => `+=${container.scrollWidth - window.innerWidth}`,
+                    pin: true,
+                    scrub: 1,
+                    anticipatePin: 1,
+                    invalidateOnRefresh: true
+                }
+            });
+
+            // Mouse wheel support
             window.addEventListener('wheel', (e) => {
                 if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-                    e.preventDefault();
-                    container.scrollLeft += e.deltaY;
+                    // Let GSAP handle it via scroll trigger
                 }
-            }, { passive: false });
-
-            // Touch/drag support
-            let isDown = false;
-            let startX;
-            let scrollLeft;
-
-            container.addEventListener('mousedown', (e) => {
-                isDown = true;
-                startX = e.pageX - container.offsetLeft;
-                scrollLeft = container.scrollLeft;
-            });
-
-            container.addEventListener('mouseleave', () => isDown = false);
-            container.addEventListener('mouseup', () => isDown = false);
-            container.addEventListener('mousemove', (e) => {
-                if (!isDown) return;
-                e.preventDefault();
-                const x = e.pageX - container.offsetLeft;
-                const walk = (x - startX) * 2;
-                container.scrollLeft = scrollLeft - walk;
-            });
+            }, { passive: true });
         }
 
         function initProximityHover() {
