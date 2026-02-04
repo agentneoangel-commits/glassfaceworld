@@ -1,0 +1,434 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLASSFACE — Legacy Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #0a0a0a;
+            --bg-elevated: #141414;
+            --text: #ffffff;
+            --text-muted: #666666;
+            --accent: #ff3366;
+            --card-width: 320px;
+            --card-height: 200px;
+            --row-gap: 20px;
+        }
+
+        body {
+            font-family: 'Roboto Flex', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            overflow-y: hidden; /* Hide vertical, horizontal scroll only */
+            height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 2rem 4rem;
+            background: linear-gradient(to bottom, var(--bg) 70%, transparent);
+            pointer-events: none;
+        }
+
+        .title {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 200;
+            letter-spacing: -0.03em;
+            display: flex;
+            gap: 0.3em;
+            justify-content: center;
+        }
+
+        .title span {
+            display: inline-block;
+            font-variation-settings: 'wght' 200;
+            transition: font-variation-settings 0.4s ease;
+            cursor: default;
+        }
+
+        .title span:hover {
+            font-variation-settings: 'wght' 900;
+            color: var(--accent);
+        }
+
+        .title .accent {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* Horizontal Scroll Container */
+        .horizontal-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .horizontal-scroll {
+            display: flex;
+            height: 100vh;
+            width: fit-content;
+            padding: 25vh 5vw 10vh;
+            gap: 80px;
+            will-change: transform;
+        }
+
+        /* Year Section */
+        .year-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--row-gap);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .year-label {
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-size: 4rem;
+            font-weight: 100;
+            color: rgba(255,255,255,0.1);
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        /* 5 Rows */
+        .row {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        /* Row sizing - center row (row-3) largest */
+        .row-1 { transform: scale(0.75) translateZ(-150px); opacity: 0.6; }
+        .row-2 { transform: scale(0.88) translateZ(-75px); opacity: 0.8; }
+        .row-3 { transform: scale(1.0) translateZ(0px); opacity: 1; }
+        .row-4 { transform: scale(0.88) translateZ(-75px); opacity: 0.8; }
+        .row-5 { transform: scale(0.75) translateZ(-150px); opacity: 0.6; }
+
+        /* Cards */
+        .project-card {
+            width: var(--card-width);
+            height: var(--card-height);
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            flex-shrink: 0;
+        }
+
+        /* Proximity states */
+        .project-card {
+            transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+        }
+
+        .project-card.hovered {
+            transform: scale(1.4) translateZ(100px) rotateY(5deg);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.6), 0 0 50px rgba(255,51,102,0.3);
+            z-index: 1000;
+        }
+
+        .project-card.neighbor {
+            transform: scale(1.15) translateZ(50px);
+            opacity: 0.9;
+        }
+
+        .project-card.far {
+            transform: scale(0.85);
+            opacity: 0.5;
+            filter: blur(2px);
+        }
+
+        /* Card content */
+        .card-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .project-card.hovered .card-thumb {
+            transform: scale(1.1);
+        }
+
+        .music-note {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--text-muted);
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+        }
+
+        .card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .project-card.hovered .card-info,
+        .project-card.neighbor .card-info {
+            transform: translateY(0);
+        }
+
+        .card-title { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.25rem; }
+        .card-meta { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        /* Category colors */
+        .cat-music-video { border-left: 3px solid #4ecdc4; }
+        .cat-commercial { border-left: 3px solid #ff6b6b; }
+        .cat-music-production { border-left: 3px solid #ffe66d; }
+
+        /* Scroll indicator */
+        .scroll-hint {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .arrow {
+            font-size: 1.2rem;
+        }
+
+        /* Loading */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="title" id="title">
+            <span>G</span><span>l</span><span>a</span><span>s</span><span>s</span><span>f</span><span>a</span><span>c</span><span>e</span>
+            <span class="accent">L</span><span class="accent">e</span><span class="accent">g</span><span class="accent">a</span><span class="accent">c</span><span class="accent">y</span>
+            <span>M</span><span>a</span><span>p</span>
+        </div>
+    </header>
+
+    <div class="horizontal-wrapper">
+        <div class="horizontal-scroll" id="scrollContainer">
+            <div class="loading">Loading timeline...</div>
+        </div>
+    </div>
+
+    <div class="scroll-hint">
+        <span>Scroll horizontally</span>
+        <span class="arrow">→</span>
+    </div>
+
+    <script>
+        const COVER_ART = {
+            "music-tobi-lou-new-bish": "images/covers/music-tobi-lou-new-bish.jpg",
+            "music-tobi-lou-cult-classic": "images/covers/music-tobi-lou-cult-classic.jpg",
+            "music-tobi-lou-lounar": "images/covers/music-tobi-lou-lounar.jpg",
+            "music-tobi-lou-solange": "images/covers/music-tobi-lou-solange.jpg",
+            "music-tobi-lou-the-fun": "images/covers/music-tobi-lou-the-fun.jpg",
+            "music-tobi-lou-uncle-iroh": "images/covers/music-tobi-lou-uncle-iroh.jpg",
+            "music-tobi-lou-live-on-ice": "images/covers/music-tobi-lou-live-on-ice.jpg",
+            "music-glassface-press": "images/covers/music-glassface-press.jpg",
+            "music-glassface-wavelength": "images/covers/music-glassface-wavelength.jpg",
+            "music-glassface-spiral": "images/covers/music-facer-spiral.jpg",
+            "music-glassface-already": "images/covers/music-glassface-already.jpg",
+            "music-glassface-foundation": "images/covers/music-glassface-foundation.jpg",
+            "music-glassface-oblivion": "images/covers/music-glassface-oblivion.jpg",
+            "music-glassface-summers-over": "images/covers/music-glassface-summers-over.jpg",
+            "music-glassface-endless-color": "images/covers/music-glassface-endless-color.jpg",
+            "music-glassface-theres-no-other-one": "images/covers/music-glassface-theres-no-other-one.jpg",
+            "music-glassface-whatever": "images/covers/music-glassface-whatever.jpg",
+            "music-sl-100-thoughts": "images/covers/music-sl-100-thoughts.jpg",
+            "music-chief-keef-forecast": "images/covers/music-chief-keef-forecast.jpg",
+            "music-young-thug-cobra": "images/covers/music-young-thug-cobra.jpg"
+        };
+
+        async function loadTimeline() {
+            const response = await fetch('career-database-enriched.json');
+            const projects = await response.json();
+            renderTimeline(projects);
+            initHorizontalScroll();
+            initProximityHover();
+        }
+
+        function renderTimeline(projects) {
+            const container = document.getElementById('scrollContainer');
+            container.innerHTML = '';
+
+            // Group by year
+            const byYear = {};
+            projects.forEach(p => {
+                const year = p.publishedAt.substring(0, 4);
+                if (!byYear[year]) byYear[year] = [];
+                byYear[year].push(p);
+            });
+
+            // Sort years
+            const years = Object.keys(byYear).sort();
+
+            years.forEach(year => {
+                const yearProjects = byYear[year];
+                const section = document.createElement('div');
+                section.className = 'year-section';
+                
+                // Year label
+                const label = document.createElement('div');
+                label.className = 'year-label';
+                label.textContent = year;
+                section.appendChild(label);
+
+                // Create 5 rows
+                for (let row = 1; row <= 5; row++) {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = `row row-${row}`;
+                    
+                    // Distribute projects across rows
+                    const rowProjects = yearProjects.filter((_, i) => i % 5 === row - 1);
+                    
+                    rowProjects.forEach(project => {
+                        const card = createCard(project);
+                        rowDiv.appendChild(card);
+                    });
+
+                    section.appendChild(rowDiv);
+                }
+
+                container.appendChild(section);
+            });
+        }
+
+        function createCard(project) {
+            const card = document.createElement('div');
+            card.className = `project-card cat-${project.category}`;
+            card.dataset.id = project._id;
+
+            const thumb = COVER_ART[project._id] || (project.videoId ? `https://img.youtube.com/vi/${project.videoId}/mqdefault.jpg` : null);
+
+            card.innerHTML = `
+                ${thumb 
+                    ? `<img class="card-thumb" src="${thumb}" alt="" onerror="this.style.display='none'; this.parentElement.innerHTML += '<div class=\\'music-note\\'>♪</div>'">`
+                    : `<div class="music-note">♪</div>`
+                }
+                <div class="card-info">
+                    <div class="card-title">${project.title}</div>
+                    <div class="card-meta">${project.category.replace(/-/g, ' ')} • ${project.publishedAt.substring(0, 4)}</div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function initHorizontalScroll() {
+            const container = document.getElementById('scrollContainer');
+            
+            // Mouse wheel → horizontal scroll
+            window.addEventListener('wheel', (e) => {
+                if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                    e.preventDefault();
+                    container.scrollLeft += e.deltaY;
+                }
+            }, { passive: false });
+
+            // Touch/drag support
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            container.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+            });
+
+            container.addEventListener('mouseleave', () => isDown = false);
+            container.addEventListener('mouseup', () => isDown = false);
+            container.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * 2;
+                container.scrollLeft = scrollLeft - walk;
+            });
+        }
+
+        function initProximityHover() {
+            const container = document.getElementById('scrollContainer');
+            
+            container.addEventListener('mouseover', (e) => {
+                const card = e.target.closest('.project-card');
+                if (!card) return;
+
+                const allCards = [...document.querySelectorAll('.project-card')];
+                const hoveredIndex = allCards.indexOf(card);
+
+                allCards.forEach((c, i) => {
+                    c.classList.remove('hovered', 'neighbor', 'far');
+                    const distance = Math.abs(i - hoveredIndex);
+                    
+                    if (i === hoveredIndex) {
+                        c.classList.add('hovered');
+                    } else if (distance <= 2) {
+                        c.classList.add('neighbor');
+                    } else if (distance > 5) {
+                        c.classList.add('far');
+                    }
+                });
+            });
+
+            container.addEventListener('mouseleave', () => {
+                document.querySelectorAll('.project-card').forEach(c => {
+                    c.classList.remove('hovered', 'neighbor', 'far');
+                });
+            });
+        }
+
+        loadTimeline();
+    </script>
+</body>
+</html>
