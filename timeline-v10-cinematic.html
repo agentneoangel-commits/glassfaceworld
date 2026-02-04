@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLASSFACE — Director's Reel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #050505;
+            --bg-elevated: #0a0a0a;
+            --text: #ffffff;
+            --text-muted: #666666;
+            --accent: #ff3366;
+            --film-perforation: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Film Grain Overlay */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            animation: grain 0.5s steps(10) infinite;
+        }
+
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -5%); }
+            20% { transform: translate(-10%, 5%); }
+            30% { transform: translate(5%, -10%); }
+            40% { transform: translate(-5%, 15%); }
+            50% { transform: translate(-10%, 5%); }
+            60% { transform: translate(15%, 0); }
+            70% { transform: translate(0, 10%); }
+            80% { transform: translate(-15%, 0); }
+            90% { transform: translate(10%, 5%); }
+        }
+
+        /* Light Leak Effect */
+        .light-leak {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 20%, rgba(255,100,100,0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(100,100,255,0.1) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 9998;
+            animation: lightLeak 8s ease-in-out infinite;
+            mix-blend-mode: screen;
+        }
+
+        @keyframes lightLeak {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+            25% { transform: translate(2%, 2%) rotate(2deg); opacity: 0.5; }
+            50% { transform: translate(-1%, 3%) rotate(-1deg); opacity: 0.4; }
+            75% { transform: translate(3%, -2%) rotate(1deg); opacity: 0.6; }
+        }
+
+        /* Header - Minimal */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 2rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, var(--bg) 60%, transparent);
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .stats {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* Film Strip Container */
+        .film-stage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            perspective: 2000px;
+            overflow: hidden;
+        }
+
+        .film-strip {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 0 10vw;
+            transform-style: preserve-3d;
+            animation: filmFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes filmFloat {
+            0%, 100% { transform: translateY(0) rotateX(0.5deg); }
+            50% { transform: translateY(-10px) rotateX(-0.5deg); }
+        }
+
+        /* Film Perforations */
+        .film-perforations {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 15px,
+                var(--film-perforation) 15px,
+                var(--film-perforation) 35px,
+                transparent 35px,
+                transparent 50px
+            );
+            opacity: 0.3;
+        }
+
+        .film-perforations.top { top: calc(50% - 140px); }
+        .film-perforations.bottom { bottom: calc(50% - 140px); }
+
+        /* Year Marker */
+        .year-marker {
+            flex-shrink: 0;
+            padding: 0 3rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .year-marker.active {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        /* Film Frame */
+        .film-frame {
+            width: 400px;
+            height: 225px;
+            margin: 0 10px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .film-frame:hover {
+            transform: translateZ(150px) scale(1.15);
+            box-shadow: 
+                0 40px 100px rgba(0,0,0,0.8),
+                0 0 80px rgba(255,51,102,0.3);
+            z-index: 100;
+        }
+
+        /* Frame Content */
+        .frame-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .frame-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .film-frame:hover .frame-thumb {
+            transform: scale(1.05);
+        }
+
+        /* Video Preview (autoplay on hover) */
+        .video-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.3s;
+            object-fit: cover;
+        }
+
+        .film-frame:hover .video-preview {
+            opacity: 1;
+        }
+
+        .film-frame:hover .frame-thumb {
+            opacity: 0;
+        }
+
+        /* Particle Effect on Hover */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .film-frame:hover .particle {
+            animation: particleFloat 1s ease-out forwards;
+        }
+
+        @keyframes particleFloat {
+            0% { 
+                opacity: 1;
+                transform: translate(50%, 50%) scale(1);
+            }
+            100% { 
+                opacity: 0;
+                transform: translate(calc(50% + var(--px)), calc(50% + var(--py))) scale(0);
+            }
+        }
+
+        /* Frame Info */
+        .frame-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .film-frame:hover .frame-info {
+            transform: translateY(0);
+        }
+
+        .frame-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .frame-meta {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        /* Play Button */
+        .play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,51,102,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .play-btn::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 18px solid white;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            margin-left: 4px;
+        }
+
+        .film-frame:hover .play-btn {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Category Colors */
+        .cat-music-video { border-bottom: 3px solid #4ecdc4; }
+        .cat-commercial { border-bottom: 3px solid #ff6b6b; }
+        .cat-music-production { border-bottom: 3px solid #ffe66d; }
+        .cat-design { border-bottom: 3px solid #c7ceea; }
+
+        /* Timecode Display */
+        .timecode {
+            position: fixed;
+            bottom: 2rem;
+            left: 3rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+
+        .timecode span {
+            color: var(--accent);
+        }
+
+        /* Scroll Hint */
+        .scroll-hint {
+            position: fixed;
+            bottom: 2rem;
+            right: 3rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .scroll-hint::after {
+            content: '→';
+            animation: scrollArrow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes scrollArrow {
+            0%, 100% { transform: translateX(0); opacity: 0.5; }
+            50% { transform: translateX(5px); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Effects -->
+    <div class="grain-overlay"></div>
+    <div class="light-leak"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">GLASS<span>FACE</span></div>
+        <div class="stats">132 Projects • 2B+ Views • 2011-2025</div>
+    </header>
+
+    <!-- Film Stage -->
+    <div class="film-stage">
+        <div class="film-perforations top"></div>
+        <div class="film-perforations bottom"></div>
+        
+        <div class="film-strip" id="filmStrip">
+            <!-- Content loaded dynamically -->
+        </div>
+    </div>
+
+    <!-- Timecode -->
+    <div class="timecode">
+        TC <span id="timecode">00:00:00:00</span>
+    </div>
+
+    <!-- Scroll Hint -->
+    <div class="scroll-hint">Scroll</div>
+
+    <script>
+        const COVER_ART = {
+            "music-tobi-lou-new-bish": "images/covers/music-tobi-lou-new-bish.jpg",
+            "music-tobi-lou-cult-classic": "images/covers/music-tobi-lou-cult-classic.jpg",
+            "music-tobi-lou-lounar": "images/covers/music-tobi-lou-lounar.jpg",
+            "music-tobi-lou-solange": "images/covers/music-tobi-lou-solange.jpg",
+            "music-tobi-lou-the-fun": "images/covers/music-tobi-lou-the-fun.jpg",
+            "music-tobi-lou-uncle-iroh": "images/covers/music-tobi-lou-uncle-iroh.jpg",
+            "music-tobi-lou-live-on-ice": "images/covers/music-tobi-lou-live-on-ice.jpg",
+            "music-glassface-press": "images/covers/music-glassface-press.jpg",
+            "music-glassface-wavelength": "images/covers/music-glassface-wavelength.jpg",
+            "music-glassface-spiral": "images/covers/music-facer-spiral.jpg",
+            "music-glassface-already": "images/covers/music-glassface-already.jpg",
+            "music-glassface-foundation": "images/covers/music-glassface-foundation.jpg",
+            "music-glassface-oblivion": "images/covers/music-glassface-oblivion.jpg",
+            "music-glassface-summers-over": "images/covers/music-glassface-summers-over.jpg",
+            "music-glassface-endless-color": "images/covers/music-glassface-endless-color.jpg",
+            "music-glassface-theres-no-other-one": "images/covers/music-glassface-theres-no-other-one.jpg",
+            "music-glassface-whatever": "images/covers/music-glassface-whatever.jpg",
+            "music-sl-100-thoughts": "images/covers/music-sl-100-thoughts.jpg",
+            "music-chief-keef-forecast": "images/covers/music-chief-keef-forecast.jpg",
+            "music-young-thug-cobra": "images/covers/music-young-thug-cobra.jpg",
+            "og-maco-u-guessed-it": "images/covers/og-maco-u-guessed-it.jpg",
+            "lil-yachty-1-night": "images/covers/lil-yachty-1-night.jpg",
+            "khalid-location": "images/covers/khalid-location.jpg",
+            "sango-khlorine": "images/covers/sango-khlorine.jpg"
+        };
+
+        async function init() {
+            const response = await fetch('career-database-enriched.json');
+            const projects = await response.json();
+            renderFilmStrip(projects);
+            initScroll();
+            updateTimecode();
+        }
+
+        function renderFilmStrip(projects) {
+            const strip = document.getElementById('filmStrip');
+            
+            // Sort by date
+            const sorted = projects.sort((a, b) => 
+                new Date(a.publishedAt) - new Date(b.publishedAt)
+            );
+
+            // Group by year
+            let currentYear = null;
+            
+            sorted.forEach((project, index) => {
+                const year = project.publishedAt.substring(0, 4);
+                
+                // Add year marker
+                if (year !== currentYear) {
+                    currentYear = year;
+                    const yearMarker = document.createElement('div');
+                    yearMarker.className = 'year-marker';
+                    yearMarker.dataset.year = year;
+                    yearMarker.textContent = year;
+                    strip.appendChild(yearMarker);
+                }
+
+                // Add frame
+                const frame = createFrame(project, index);
+                strip.appendChild(frame);
+            });
+        }
+
+        function createFrame(project, index) {
+            const frame = document.createElement('div');
+            frame.className = `film-frame cat-${project.category}`;
+            frame.dataset.index = index;
+
+            const thumb = COVER_ART[project._id] || 
+                (project.videoId ? `https://img.youtube.com/vi/${project.videoId}/hqdefault.jpg` : null);
+
+            // Create particles
+            let particlesHTML = '';
+            for (let i = 0; i < 8; i++) {
+                const angle = (i / 8) * Math.PI * 2;
+                const distance = 50 + Math.random() * 50;
+                const px = Math.cos(angle) * distance;
+                const py = Math.sin(angle) * distance;
+                const delay = Math.random() * 0.5;
+                particlesHTML += `<div class="particle" style="--px: ${px}px; --py: ${py}px; animation-delay: ${delay}s;"></div>`;
+            }
+
+            frame.innerHTML = `
+                <div class="frame-content">
+                    ${thumb ? `<img class="frame-thumb" src="${thumb}" alt="" onerror="this.style.display='none'">` : ''}
+                    ${project.videoId ? `
+                        <video class="video-preview" muted loop preload="none"
+                            onmouseenter="this.play()" onmouseleave="this.pause(); this.currentTime=0;"
+                            poster="${thumb || ''}">
+                            <source src="https://www.youtube.com/embed/${project.videoId}?autoplay=1&mute=1&loop=1&playlist=${project.videoId}" type="video/mp4">
+                        </video>
+                    ` : ''}
+                    <div class="particles">${particlesHTML}</div>
+                    <div class="play-btn"></div>
+                    <div class="frame-info">
+                        <div class="frame-title">${project.title}</div>
+                        <div class="frame-meta">${project.category.replace(/-/g, ' ')} • ${project.viewCount || 'N/A'} views</div>
+                    </div>
+                </div>
+            `;
+
+            // Click to expand
+            frame.addEventListener('click', () => {
+                // TODO: Expand to full player
+                console.log('Play:', project.title);
+            });
+
+            return frame;
+        }
+
+        function initScroll() {
+            const strip = document.getElementById('filmStrip');
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            // Mouse drag
+            strip.addEventListener('mousedown', (e) => {
+                isDown = true;
+                strip.style.cursor = 'grabbing';
+                startX = e.pageX - strip.offsetLeft;
+                scrollLeft = strip.parentElement.scrollLeft;
+            });
+
+            strip.addEventListener('mouseleave', () => {
+                isDown = false;
+                strip.style.cursor = 'grab';
+            });
+
+            strip.addEventListener('mouseup', () => {
+                isDown = false;
+                strip.style.cursor = 'grab';
+            });
+
+            strip.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - strip.offsetLeft;
+                const walk = (x - startX) * 2;
+                strip.parentElement.scrollLeft = scrollLeft - walk;
+            });
+
+            // Wheel scroll (horizontal)
+            strip.parentElement.addEventListener('wheel', (e) => {
+                if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                    e.preventDefault();
+                    strip.parentElement.scrollLeft += e.deltaY;
+                }
+            }, { passive: false });
+
+            // Update timecode on scroll
+            strip.parentElement.addEventListener('scroll', updateTimecode);
+        }
+
+        function updateTimecode() {
+            const strip = document.getElementById('filmStrip');
+            const container = strip.parentElement;
+            const scrollPercent = container.scrollLeft / (strip.scrollWidth - container.clientWidth);
+            const totalSeconds = scrollPercent * 120; // 2 minutes = 120 seconds
+            
+            const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+            const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+            const seconds = Math.floor(totalSeconds % 60).toString().padStart(2, '0');
+            const frames = Math.floor((totalSeconds % 1) * 24).toString().padStart(2, '0');
+            
+            document.getElementById('timecode').textContent = `${hours}:${minutes}:${seconds}:${frames}`;
+
+            // Update active year
+            const frames2 = document.querySelectorAll('.film-frame');
+            frames2.forEach(f => {
+                const rect = f.getBoundingClientRect();
+                if (rect.left > window.innerWidth / 2 - 200 && rect.left < window.innerWidth / 2 + 200) {
+                    const year = f.previousElementSibling?.dataset?.year;
+                    if (year) {
+                        document.querySelectorAll('.year-marker').forEach(y => {
+                            y.classList.toggle('active', y.dataset.year === year);
+                        });
+                    }
+                }
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
