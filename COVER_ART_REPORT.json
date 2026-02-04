@@ -1,0 +1,1062 @@
+{
+  "generatedAt": "2026-02-04T21:37:28.499Z",
+  "summary": {
+    "totalEntries": 132,
+    "totalCoverFiles": 134,
+    "entriesWithCoverArt": 122,
+    "entriesWithVideoThumbnail": 0,
+    "entriesTrulyMissing": 10
+  },
+  "coverArtByCategory": {
+    "graphic-design": [
+      {
+        "id": "sochi-olympics",
+        "title": "Sochi 2014 Olympics",
+        "artist": "",
+        "category": "graphic-design",
+        "filename": "sochi-olympics.jpg"
+      }
+    ],
+    "archive": [
+      {
+        "id": "archive-early-works",
+        "title": "Early Works Archive",
+        "artist": "",
+        "category": "archive",
+        "filename": "archive-early-works.jpg"
+      },
+      {
+        "id": "prhyme",
+        "title": "PRhyme - PRhyme",
+        "artist": "PRhyme",
+        "category": "archive",
+        "filename": "prhyme-prhyme.jpg"
+      },
+      {
+        "id": "migos-motorsport",
+        "title": "Migos - Motorsport (Lyric Video)",
+        "artist": "Migos",
+        "category": "archive",
+        "filename": "migos-motorsport.jpg"
+      },
+      {
+        "id": "fifth-harmony",
+        "title": "Fifth Harmony Stage Visuals",
+        "artist": "Fifth Harmony",
+        "category": "archive",
+        "filename": "fifth-harmony-visuals.jpg"
+      },
+      {
+        "id": "swizz-beats-dmx-rick-ross",
+        "title": "Swizz Beats, DMX, Rick Ross - Just in Case",
+        "artist": "Godfather of Harlem",
+        "category": "archive",
+        "filename": "swizz-beats-dmx-rick-ross.jpg"
+      }
+    ],
+    "music-video": [
+      {
+        "id": "prhyme-prhyme",
+        "title": "PRhyme - PRhyme",
+        "artist": "",
+        "category": "music-video",
+        "filename": "prhyme-prhyme.jpg"
+      },
+      {
+        "id": "lil-yachty-1-night",
+        "title": "Lil Yachty - 1 Night",
+        "artist": "Lil Yachty",
+        "category": "music-video",
+        "filename": "lil-yachty-1-night.jpg"
+      },
+      {
+        "id": "forever-young",
+        "title": "Forever Young - Lil Yachty",
+        "artist": "Lil Yachty",
+        "category": "music-video",
+        "filename": "forever-young.jpg"
+      },
+      {
+        "id": "lounar",
+        "title": "Lounar - tobi lou",
+        "artist": "tobi lou",
+        "category": "music-video",
+        "filename": "lounar.jpg"
+      },
+      {
+        "id": "solange",
+        "title": "Solange - tobi lou",
+        "artist": "tobi lou",
+        "category": "music-video",
+        "filename": "solange.jpg"
+      },
+      {
+        "id": "mama-don-t-worry-still-ain-t-dirty-",
+        "title": "Mama Don't Worry (Still Ain't Dirty) - Bhad Bhabie",
+        "artist": "Bhad Bhabie",
+        "category": "music-video",
+        "filename": "mama-don-t-worry-still-ain-t-dirty-.jpg"
+      },
+      {
+        "id": "act-up",
+        "title": "Act Up - Thouxanbanfauni ft. Uno The Activist",
+        "artist": "Thouxanbanfauni",
+        "category": "music-video",
+        "filename": "act-up.jpg"
+      },
+      {
+        "id": "lil-yachty-one-night",
+        "title": "Lil Yachty - 1 Night",
+        "artist": "",
+        "category": "music-video",
+        "filename": "lil-yachty-one-night.jpg"
+      },
+      {
+        "id": "og-maco-u-guessed-it",
+        "title": "OG Maco - U Guessed It",
+        "artist": "OG Maco",
+        "category": "music-video",
+        "filename": "og-maco-u-guessed-it.jpg"
+      },
+      {
+        "id": "one-night",
+        "title": "One Night - Lil Yachty",
+        "artist": "Lil Yachty",
+        "category": "music-video",
+        "filename": "one-night.jpg"
+      },
+      {
+        "id": "tunji-ige-war",
+        "title": "Tunji Ige - War",
+        "artist": "Tunji Ige",
+        "category": "music-video",
+        "filename": "tunji-ige-war.jpg"
+      },
+      {
+        "id": "dua-lipa-genesis",
+        "title": "Dua Lipa - Genesis",
+        "artist": "Dua Lipa",
+        "category": "music-video",
+        "filename": "dua-lipa-genesis.jpg"
+      },
+      {
+        "id": "dram-ill-nana",
+        "title": "DRAM ft. Trippie Redd - ILL NANA",
+        "artist": "DRAM",
+        "category": "music-video",
+        "filename": "dram-ill-nana.jpg"
+      },
+      {
+        "id": "khalid-location",
+        "title": "Khalid - Location",
+        "artist": "Khalid",
+        "category": "music-video",
+        "filename": "khalid-location.jpg"
+      },
+      {
+        "id": "lil-yachty-forever-young",
+        "title": "Lil Yachty & Diplo - Forever Young",
+        "artist": "",
+        "category": "music-video",
+        "filename": "lil-yachty-forever-young.jpg"
+      },
+      {
+        "id": "why-don-t-you",
+        "title": "Why Don't You - Tunji Ige",
+        "artist": "Tunji Ige",
+        "category": "music-video",
+        "filename": "why-don-t-you.jpg"
+      },
+      {
+        "id": "smokepurpp-bless-yo-trap",
+        "title": "Smokepurpp - Bless Yo Trap",
+        "artist": "Smokepurpp",
+        "category": "music-video",
+        "filename": "smokepurpp-bless-yo-trap.jpg"
+      },
+      {
+        "id": "bhad-bhabie-hacked",
+        "title": "Bhad Bhabie: HACKED Campaign",
+        "artist": "Bhad Bhabie",
+        "category": "music-video",
+        "filename": "bhad-bhabie-hacked.jpg"
+      },
+      {
+        "id": "fifth-harmony-visuals",
+        "title": "Fifth Harmony Stage Visuals",
+        "artist": "",
+        "category": "music-video",
+        "filename": "fifth-harmony-visuals.jpg"
+      },
+      {
+        "id": "a-ap-twelvyy-glock-rivers",
+        "title": "A$AP Twelvyy - Glock Rivers",
+        "artist": "",
+        "category": "music-video",
+        "filename": "a-ap-twelvyy-glock-rivers.jpg"
+      },
+      {
+        "id": "rome-fortune",
+        "title": "Rome Fortune - Music Videos",
+        "artist": "",
+        "category": "music-video",
+        "filename": "rome-fortune.jpg"
+      },
+      {
+        "id": "tobi-lou-troop",
+        "title": "Tobi Lou - Troop",
+        "artist": "Tobi Lou",
+        "category": "music-video",
+        "filename": "tobi-lou-troop.jpg"
+      },
+      {
+        "id": "sango-khlorine",
+        "title": "Sango – Khlorine (feat. Smino)",
+        "artist": "Sango",
+        "category": "music-video",
+        "filename": "sango-khlorine.jpg"
+      },
+      {
+        "id": "lil-yachty-boom",
+        "title": "Lil Yachty - BOOM! ft. Ugly God",
+        "artist": "Lil Yachty",
+        "category": "music-video",
+        "filename": "lil-yachty-boom.jpg"
+      },
+      {
+        "id": "lil-yachty-66",
+        "title": "Lil Yachty - 66 ft. Trippie Redd",
+        "artist": "Lil Yachty",
+        "category": "music-video",
+        "filename": "lil-yachty-66.jpg"
+      },
+      {
+        "id": "young-thug-dirty-shoes",
+        "title": "Young Thug - Dirty Shoes (ft. Gunna)",
+        "artist": "Young Thug",
+        "category": "music-video",
+        "filename": "young-thug-dirty-shoes.jpg"
+      },
+      {
+        "id": "cousin-stizz-perfect",
+        "title": "Cousin Stizz - Perfect ft. City Girls",
+        "artist": "Cousin Stizz",
+        "category": "music-video",
+        "filename": "cousin-stizz-perfect.jpg"
+      },
+      {
+        "id": "swizz-dmx-ross",
+        "title": "Swizz Beats, DMX, Rick Ross - Just in Case",
+        "artist": "",
+        "category": "music-video",
+        "filename": "swizz-dmx-ross.jpg"
+      },
+      {
+        "id": "bea-miller-feel-something",
+        "title": "Bea Miller - feel something",
+        "artist": "Bea Miller",
+        "category": "music-video",
+        "filename": "bea-miller-feel-something.jpg"
+      },
+      {
+        "id": "elley-duhe",
+        "title": "Elley Duhé - $$$$",
+        "artist": "Elley Duhé",
+        "category": "music-video",
+        "filename": "elley-duhe.jpg"
+      },
+      {
+        "id": "amine-campfire",
+        "title": "Aminé - Campfire ft. Injury Reserve",
+        "artist": "Aminé",
+        "category": "music-video",
+        "filename": "amine-campfire.jpg"
+      },
+      {
+        "id": "shy-glizzy-volcano",
+        "title": "Shy Glizzy - Volcano",
+        "artist": "Shy Glizzy",
+        "category": "music-video",
+        "filename": "shy-glizzy-volcano.jpg"
+      },
+      {
+        "id": "vic-mensa-metaphysical",
+        "title": "Vic Mensa - Metaphysical",
+        "artist": "Vic Mensa",
+        "category": "music-video",
+        "filename": "vic-mensa-metaphysical.jpg"
+      },
+      {
+        "id": "wiz-khalifa-alright",
+        "title": "Wiz Khalifa - Alright ft. Trippie Redd & Preme",
+        "artist": "Wiz Khalifa",
+        "category": "music-video",
+        "filename": "wiz-khalifa-alright.jpg"
+      },
+      {
+        "id": "madeon-all-my-friends",
+        "title": "Madeon - All My Friends",
+        "artist": "Madeon",
+        "category": "music-video",
+        "filename": "madeon-all-my-friends.jpg"
+      },
+      {
+        "id": "tove-lo-jacques",
+        "title": "Tove Lo - Jacques (ft. Jax Jones)",
+        "artist": "Tove Lo",
+        "category": "music-video",
+        "filename": "tove-lo-jacques.jpg"
+      },
+      {
+        "id": "bryson-tiller-inhale",
+        "title": "Bryson Tiller - Inhale",
+        "artist": "Bryson Tiller",
+        "category": "music-video",
+        "filename": "bryson-tiller-inhale.jpg"
+      },
+      {
+        "id": "24kgoldn-city-of-angels",
+        "title": "24kGoldn - CITY OF ANGELS",
+        "artist": "24kGoldn",
+        "category": "music-video",
+        "filename": "24kgoldn-city-of-angels.jpg"
+      },
+      {
+        "id": "tobi-lou-game-ova",
+        "title": "Tobi Lou - Game Ova",
+        "artist": "Tobi Lou",
+        "category": "music-video",
+        "filename": "tobi-lou-game-ova.jpg"
+      },
+      {
+        "id": "cheap-vacations",
+        "title": "Cheap Vacations - tobi lou ft. Facer (Glassface)",
+        "artist": "tobi lou",
+        "category": "music-video",
+        "filename": "cheap-vacations.jpg"
+      },
+      {
+        "id": "2hrs",
+        "title": "2hrs - tobi lou",
+        "artist": "tobi lou",
+        "category": "music-video",
+        "filename": "2hrs.jpg"
+      },
+      {
+        "id": "tokyos-revenge",
+        "title": "TOKYO'S REVENGE - GOODMORNINGTOKYO!",
+        "artist": "TOKYO'S REVENGE",
+        "category": "music-video",
+        "filename": "tokyos-revenge.jpg"
+      },
+      {
+        "id": "tobi-lou-hot-tub",
+        "title": "tobi lou - HOT TUB DREAM MACHINE",
+        "artist": "tobi lou",
+        "category": "music-video",
+        "filename": "tobi-lou-hot-tub.jpg"
+      },
+      {
+        "id": "tobi-lou-lingo-starr",
+        "title": "tobi lou - LINGO STARR",
+        "artist": "tobi lou",
+        "category": "music-video",
+        "filename": "tobi-lou-lingo-starr.jpg"
+      },
+      {
+        "id": "jhene-aiko-summer-2020",
+        "title": "Jhene Aiko - Summer 2020",
+        "artist": "Jhene Aiko",
+        "category": "music-video",
+        "filename": "jhene-aiko-summer-2020.jpg"
+      },
+      {
+        "id": "tobi-lou-non-perishable",
+        "title": "Tobi Lou - Non Perishable",
+        "artist": "Tobi Lou",
+        "category": "music-video",
+        "filename": "tobi-lou-non-perishable.jpg"
+      },
+      {
+        "id": "jhene-aiko-love",
+        "title": "Jhene Aiko - Love",
+        "artist": "Jhene Aiko",
+        "category": "music-video",
+        "filename": "jhene-aiko-love.jpg"
+      },
+      {
+        "id": "jhene-aiko-surrender",
+        "title": "Jhene Aiko - Surrender",
+        "artist": "Jhene Aiko",
+        "category": "music-video",
+        "filename": "jhene-aiko-surrender.jpg"
+      }
+    ],
+    "music-production": [
+      {
+        "id": "music-tobi-lou-new-bish",
+        "title": "New Bish",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-new-bish.jpg"
+      },
+      {
+        "id": "music-glassface-press",
+        "title": "Press",
+        "artist": "Glassface",
+        "category": "music-production",
+        "filename": "music-glassface-press.jpg"
+      },
+      {
+        "id": "music-glassface-wavelength",
+        "title": "Wavelength",
+        "artist": "Glassface",
+        "category": "music-production",
+        "filename": "music-glassface-wavelength.jpg"
+      },
+      {
+        "id": "music-tobi-lou-the-fun",
+        "title": "The Fun",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-the-fun.jpg"
+      },
+      {
+        "id": "music-tobi-lou-cult-classic",
+        "title": "The Name of My First Album is \"Cult Classic\"",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-cult-classic.jpg"
+      },
+      {
+        "id": "music-tobi-lou-lounar",
+        "title": "Lounar",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-lounar.jpg"
+      },
+      {
+        "id": "music-tobi-lou-solange",
+        "title": "Solange",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-solange.jpg"
+      },
+      {
+        "id": "music-tobi-lou-sad-last-night",
+        "title": "I was sad last night, I'm OK now",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-sad-last-night.jpg"
+      },
+      {
+        "id": "music-tobi-lou-uncle-iroh",
+        "title": "Uncle Iroh",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-uncle-iroh.jpg"
+      },
+      {
+        "id": "music-tobi-lou-deserve-it",
+        "title": "Deserve It (ft. rockie fresh)",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-deserve-it.jpg"
+      },
+      {
+        "id": "music-tobi-lou-berlin-westside",
+        "title": "Berlin/Westside",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-berlin-westside.jpg"
+      },
+      {
+        "id": "music-tobi-lou-looped-up",
+        "title": "Looped Up",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-looped-up.jpg"
+      },
+      {
+        "id": "music-tobi-lou-theme-music",
+        "title": "Theme Music",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-theme-music.jpg"
+      },
+      {
+        "id": "music-tobi-lou-cheap-vacations",
+        "title": "Cheap Vacations",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-cheap-vacations.jpg"
+      },
+      {
+        "id": "music-sl-100-thoughts",
+        "title": "100 Thoughts",
+        "artist": "SL",
+        "category": "music-production",
+        "filename": "music-sl-100-thoughts.jpg"
+      },
+      {
+        "id": "music-tobi-lou-hot-tub",
+        "title": "Hot tub dream machine",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-hot-tub.jpg"
+      },
+      {
+        "id": "music-glassface-already",
+        "title": "Already",
+        "artist": "Glassface",
+        "category": "music-production",
+        "filename": "music-glassface-already.jpg"
+      },
+      {
+        "id": "music-tobi-lou-babycakes",
+        "title": "Babycakes",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-babycakes.jpg"
+      },
+      {
+        "id": "music-tobi-lou-meaningless",
+        "title": "Meaningless",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-meaningless.jpg"
+      },
+      {
+        "id": "music-tobi-lou-busy",
+        "title": "Busy",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-busy.jpg"
+      },
+      {
+        "id": "music-glassface-foundation",
+        "title": "Foundation",
+        "artist": "Glassface",
+        "category": "music-production",
+        "filename": "music-glassface-foundation.jpg"
+      },
+      {
+        "id": "music-glassface-oblivion",
+        "title": "Oblivion",
+        "artist": "Glassface",
+        "category": "music-production",
+        "filename": "music-glassface-oblivion.jpg"
+      },
+      {
+        "id": "music-glassface-summers-over",
+        "title": "Summer's Over",
+        "artist": "Glassface",
+        "category": "music-production",
+        "filename": "music-glassface-summers-over.jpg"
+      },
+      {
+        "id": "music-tobi-lou-numbers",
+        "title": "Numbers",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-numbers.jpg"
+      },
+      {
+        "id": "music-tobi-lou-hold-me-close",
+        "title": "Hold Me Close",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-hold-me-close.jpg"
+      },
+      {
+        "id": "music-tobi-lou-break",
+        "title": "Break",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-break.jpg"
+      },
+      {
+        "id": "music-glassface-no-other-one",
+        "title": "There's No Other One",
+        "artist": "Glassface",
+        "category": "music-production",
+        "filename": "music-glassface-no-other-one.jpg"
+      },
+      {
+        "id": "music-glassface-endless-color",
+        "title": "Endless Color",
+        "artist": "Glassface",
+        "category": "music-production",
+        "filename": "music-glassface-endless-color.jpg"
+      },
+      {
+        "id": "music-glassface-whatever",
+        "title": "Whatever",
+        "artist": "Glassface",
+        "category": "music-production",
+        "filename": "music-glassface-whatever.jpg"
+      },
+      {
+        "id": "music-chief-keef-forecast",
+        "title": "Forecast",
+        "artist": "Chief Keef",
+        "category": "music-production",
+        "filename": "music-chief-keef-forecast.jpg"
+      },
+      {
+        "id": "music-young-thug-cobra",
+        "title": "Cobra",
+        "artist": "Young Thug",
+        "category": "music-production",
+        "filename": "music-young-thug-cobra.jpg"
+      },
+      {
+        "id": "music-glassface-mindreader",
+        "title": "Mindreader",
+        "artist": "Glassface",
+        "category": "music-production",
+        "filename": "music-glassface-mindreader.jpg"
+      },
+      {
+        "id": "music-glassface-hall-of-echoes",
+        "title": "Hall of Echoes",
+        "artist": "Glassface",
+        "category": "music-production",
+        "filename": "music-glassface-hall-of-echoes.jpg"
+      },
+      {
+        "id": "music-blvk-h3ro-brick",
+        "title": "Brick",
+        "artist": "Blvk H3ro",
+        "category": "music-production",
+        "filename": "music-blvk-h3ro-brick.jpg"
+      },
+      {
+        "id": "music-blvk-h3ro-active",
+        "title": "Active (EP)",
+        "artist": "Blvk H3ro",
+        "category": "music-production",
+        "filename": "music-blvk-h3ro-active.jpg"
+      },
+      {
+        "id": "music-blvk-h3ro-motion",
+        "title": "Motion",
+        "artist": "Blvk H3ro",
+        "category": "music-production",
+        "filename": "music-blvk-h3ro-motion.jpg"
+      },
+      {
+        "id": "music-ayotemi-quality-time",
+        "title": "Quality Time",
+        "artist": "Ayotemi",
+        "category": "music-production",
+        "filename": "music-ayotemi-quality-time.jpg"
+      },
+      {
+        "id": "music-tobi-lou-toblerone",
+        "title": "Toblerone <3",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-toblerone.jpg"
+      },
+      {
+        "id": "music-tobi-lou-verizon-man",
+        "title": "Verizon Man <3",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-verizon-man.jpg"
+      },
+      {
+        "id": "music-tobi-lou-sotw",
+        "title": "$otw <3",
+        "artist": "tobi lou",
+        "category": "music-production",
+        "filename": "music-tobi-lou-sotw.jpg"
+      },
+      {
+        "id": "music-parris-goebel-intro",
+        "title": "A GIRL IS A DRUG - intro",
+        "artist": "Parris Goebel",
+        "category": "music-production",
+        "filename": "music-parris-goebel-intro.jpg"
+      },
+      {
+        "id": "music-parris-goebel-dummy",
+        "title": "Dummy",
+        "artist": "Parris Goebel",
+        "category": "music-production",
+        "filename": "music-parris-goebel-dummy.jpg"
+      },
+      {
+        "id": "music-ayotemi-no-time",
+        "title": "No Time",
+        "artist": "Ayotemi",
+        "category": "music-production",
+        "filename": "music-ayotemi-no-time.jpg"
+      },
+      {
+        "id": "music-ayotemi-senior-man",
+        "title": "Senior Man",
+        "artist": "Ayotemi",
+        "category": "music-production",
+        "filename": "music-ayotemi-senior-man.jpg"
+      }
+    ],
+    "commercial": [
+      {
+        "id": "target-lil-yachty-carly-rae-jepsen",
+        "title": "TARGET x LIL YACHTY x CARLY RAE JEPSEN",
+        "artist": "Target",
+        "category": "commercial",
+        "filename": "target-lil-yachty-carly-rae-jepsen.jpg"
+      },
+      {
+        "id": "target-lil-yachty-carly",
+        "title": "TARGET x LIL YACHTY x CARLY RAE JEPSEN",
+        "artist": "",
+        "category": "commercial",
+        "filename": "target-lil-yachty-carly.jpg"
+      },
+      {
+        "id": "finish-line-nike",
+        "title": "FINISH LINE x NIKE SPORTS",
+        "artist": "Finish Line",
+        "category": "commercial",
+        "filename": "finish-line-nike.jpg"
+      },
+      {
+        "id": "adidas-kylie-jenner",
+        "title": "ADIDAS x KYLIE JENNER",
+        "artist": "Adidas",
+        "category": "commercial",
+        "filename": "adidas-kylie-jenner.jpg"
+      },
+      {
+        "id": "complex-networks-reel",
+        "title": "COMPLEX NETWORKS REEL",
+        "artist": "Complex Networks",
+        "category": "commercial",
+        "filename": "complex-networks-reel.jpg"
+      },
+      {
+        "id": "google-ultradreamer",
+        "title": "GOOGLE x GLASSFACE: ULTRADREAMER",
+        "artist": "Google",
+        "category": "commercial",
+        "filename": "google-ultradreamer.jpg"
+      },
+      {
+        "id": "piaget-michael-b-jordan",
+        "title": "PIAGET x MICHAEL B JORDAN",
+        "artist": "Piaget",
+        "category": "commercial",
+        "filename": "piaget-michael-b-jordan.jpg"
+      },
+      {
+        "id": "google-creator-labs",
+        "title": "GOOGLE CREATOR LABS SEASONS 5+6",
+        "artist": "Google",
+        "category": "commercial",
+        "filename": "google-creator-labs.jpg"
+      },
+      {
+        "id": "adidas-jd-sports",
+        "title": "ADIDAS x JD SPORTS",
+        "artist": "Adidas",
+        "category": "commercial",
+        "filename": "adidas-jd-sports.jpg"
+      },
+      {
+        "id": "puma-jd-sports",
+        "title": "PUMA x JD SPORTS",
+        "artist": "Puma",
+        "category": "commercial",
+        "filename": "puma-jd-sports.jpg"
+      },
+      {
+        "id": "snapple-elements-nft",
+        "title": "Snapple x Glassface - Elements NFT",
+        "artist": "Snapple",
+        "category": "commercial",
+        "filename": "snapple-elements-nft.jpg"
+      },
+      {
+        "id": "reel",
+        "title": "Reel",
+        "artist": "Glassface",
+        "category": "commercial",
+        "filename": "reel.jpg"
+      }
+    ],
+    "narrative": [
+      {
+        "id": "hulu-free-machine",
+        "title": "Hulu Presents: Free Machine",
+        "artist": "Hulu",
+        "category": "narrative",
+        "filename": "hulu-free-machine.jpg"
+      }
+    ],
+    "web3": [
+      {
+        "id": "disto-fine-art",
+        "title": "DISTO FINE ART",
+        "artist": "",
+        "category": "web3",
+        "filename": "disto-fine-art.jpg"
+      },
+      {
+        "id": "jd-sports-ar",
+        "title": "JD Sports x AfterPay x Snap: Times Square AR Experience",
+        "artist": "JD Sports",
+        "category": "web3",
+        "filename": "jd-sports-ar.jpg"
+      }
+    ],
+    "product-design": [
+      {
+        "id": "jd-sports-infinite-objects",
+        "title": "JD Sports x Glassface - Infinite Objects Frame",
+        "artist": "",
+        "category": "product-design",
+        "filename": "jd-sports-infinite-objects.jpg"
+      },
+      {
+        "id": "kid-cudi-members-of-the-rage-s1",
+        "title": "Kid Cudi - Members of the Rage Season 1",
+        "artist": "",
+        "category": "product-design",
+        "filename": "kid-cudi-members-of-the-rage-s1.png"
+      },
+      {
+        "id": "lauryn-hill-merch",
+        "title": "Ms. Lauryn Hill - Tour Merchandise",
+        "artist": "",
+        "category": "product-design",
+        "filename": "lauryn-hill-merch.jpg"
+      },
+      {
+        "id": "kid-cudi-members-of-the-rage-s2",
+        "title": "Kid Cudi - Members of the Rage Season 2",
+        "artist": "",
+        "category": "product-design",
+        "filename": "kid-cudi-members-of-the-rage-s2.png"
+      }
+    ],
+    "cover-artwork": [
+      {
+        "id": "kid-cudi-insano",
+        "title": "Kid Cudi - Insano Album Artwork",
+        "artist": "Kid Cudi",
+        "category": "cover-artwork",
+        "filename": "kid-cudi-insano.png"
+      },
+      {
+        "id": "tobi-lou-non-perishable-cover",
+        "title": "tobi lou - Non-Perishable Album Cover",
+        "artist": "tobi lou",
+        "category": "cover-artwork",
+        "filename": "tobi-lou-non-perishable-cover.png"
+      },
+      {
+        "id": "kid-cudi-porsche",
+        "title": "Kid Cudi - Porsche Topless",
+        "artist": "Kid Cudi",
+        "category": "cover-artwork",
+        "filename": "kid-cudi-porsche.png"
+      },
+      {
+        "id": "kid-cudi-at-the-party",
+        "title": "Kid Cudi ft. Pharrell & Travis Scott - At The Party",
+        "artist": "Kid Cudi",
+        "category": "cover-artwork",
+        "filename": "kid-cudi-at-the-party.png"
+      },
+      {
+        "id": "lauryn-hill-rebel",
+        "title": "Ms. Lauryn Hill - Rebel Cover Artwork",
+        "artist": "Ms. Lauryn Hill",
+        "category": "cover-artwork",
+        "filename": "lauryn-hill-rebel.jpg"
+      }
+    ]
+  },
+  "trulyMissing": [
+    {
+      "id": "impermanent-digital",
+      "title": "Impermanent Digital",
+      "artist": "",
+      "category": "web3"
+    },
+    {
+      "id": "i-was-sad-last-night-i-m-ok-now",
+      "title": "I Was Sad Last Night I'm OK Now - tobi lou",
+      "artist": "",
+      "category": "music-video"
+    },
+    {
+      "id": "looped-up",
+      "title": "Looped Up - tobi lou ft. Vernon",
+      "artist": "",
+      "category": "music-video"
+    },
+    {
+      "id": "uncle-iroh",
+      "title": "Uncle Iroh - tobi lou",
+      "artist": "",
+      "category": "music-video"
+    },
+    {
+      "id": "100-thoughts",
+      "title": "100 Thoughts - SL",
+      "artist": "",
+      "category": "music-video"
+    },
+    {
+      "id": "music-glassface-spiral",
+      "title": "Spiral",
+      "artist": "Glassface",
+      "category": "music-production"
+    },
+    {
+      "id": "music-glassface-crash-747",
+      "title": "Crash 747",
+      "artist": "Glassface",
+      "category": "music-production"
+    },
+    {
+      "id": "music-glassface-vivid-color-dreams",
+      "title": "Vivid Color Dreams",
+      "artist": "Glassface",
+      "category": "music-production"
+    },
+    {
+      "id": "music-sango-mindreader-remix",
+      "title": "Mindreader (Remix)",
+      "artist": "Sango",
+      "category": "music-production"
+    },
+    {
+      "id": "music-blvk-h3ro-up",
+      "title": "Up",
+      "artist": "Blvk H3ro",
+      "category": "music-production"
+    }
+  ],
+  "needsClarification": [
+    {
+      "id": "prhyme",
+      "reason": "Archive entry - no video or thumbnail available"
+    },
+    {
+      "id": "fifth-harmony",
+      "reason": "Archive entry - only Vimeo link, no direct thumbnail"
+    },
+    {
+      "id": "impermanent-digital",
+      "reason": "Web3 entry - no artwork source available"
+    },
+    {
+      "id": "i-was-sad-last-night-i-m-ok-now",
+      "reason": "Music video entry - no videoId or thumbnail (has separate music production entry with cover)"
+    },
+    {
+      "id": "looped-up",
+      "reason": "Music video entry - no videoId or thumbnail (has separate music production entry with cover)"
+    },
+    {
+      "id": "uncle-iroh",
+      "reason": "Music video entry - no videoId or thumbnail (has separate music production entry with cover)"
+    },
+    {
+      "id": "100-thoughts",
+      "reason": "Music video entry - no videoId or thumbnail (has separate music production entry with cover)"
+    },
+    {
+      "id": "music-glassface-crash-747",
+      "reason": "Music production - no album artwork available"
+    },
+    {
+      "id": "music-glassface-vivid-color-dreams",
+      "reason": "Music production - no album artwork available"
+    },
+    {
+      "id": "music-sango-mindreader-remix",
+      "reason": "Music production - no album artwork available"
+    },
+    {
+      "id": "music-blvk-h3ro-up",
+      "reason": "Music production - no album artwork available"
+    }
+  ],
+  "newCovers": [
+    "prhyme-prhyme.jpg",
+    "forever-young.jpg",
+    "lounar.jpg",
+    "solange.jpg",
+    "mama-don-t-worry-still-ain-t-dirty-.jpg",
+    "dram-ill-nana.jpg",
+    "why-don-t-you.jpg",
+    "smokepurpp-bless-yo-trap.jpg",
+    "migos-motorsport.jpg",
+    "target-lil-yachty-carly.jpg",
+    "finish-line-nike.jpg",
+    "bhad-bhabie-hacked.jpg",
+    "a-ap-twelvyy-glock-rivers.jpg",
+    "adidas-kylie-jenner.jpg",
+    "lil-yachty-66.jpg",
+    "young-thug-dirty-shoes.jpg",
+    "complex-networks-reel.jpg",
+    "cousin-stizz-perfect.jpg",
+    "hulu-free-machine.jpg",
+    "swizz-dmx-ross.jpg",
+    "bea-miller-feel-something.jpg",
+    "elley-duhe.jpg",
+    "amine-campfire.jpg",
+    "shy-glizzy-volcano.jpg",
+    "vic-mensa-metaphysical.jpg",
+    "madeon-all-my-friends.jpg",
+    "swizz-beats-dmx-rick-ross.jpg",
+    "google-ultradreamer.jpg",
+    "tobi-lou-game-ova.jpg",
+    "2hrs.jpg",
+    "tobi-lou-hot-tub.jpg",
+    "tobi-lou-lingo-starr.jpg",
+    "jhene-aiko-summer-2020.jpg",
+    "piaget-michael-b-jordan.jpg",
+    "adidas-jd-sports.jpg",
+    "puma-jd-sports.jpg",
+    "snapple-elements-nft.jpg",
+    "tobi-lou-non-perishable.jpg",
+    "reel.jpg",
+    "sochi-olympics.jpg",
+    "archive-early-works.jpg",
+    "fifth-harmony-visuals.jpg",
+    "rome-fortune.jpg",
+    "disto-fine-art.jpg",
+    "google-creator-labs.jpg",
+    "jd-sports-ar.jpg",
+    "jd-sports-infinite-objects.jpg",
+    "kid-cudi-members-of-the-rage-s1.png",
+    "lauryn-hill-merch.jpg",
+    "kid-cudi-insano.png",
+    "tobi-lou-non-perishable-cover.png",
+    "kid-cudi-porsche.png",
+    "kid-cudi-at-the-party.png",
+    "lauryn-hill-rebel.jpg",
+    "kid-cudi-members-of-the-rage-s2.png",
+    "tunji-ige-war.jpg",
+    "lil-yachty-boom.jpg",
+    "tokyos-revenge.jpg",
+    "lil-yachty-1-night.jpg",
+    "act-up.jpg",
+    "lil-yachty-one-night.jpg",
+    "one-night.jpg",
+    "dua-lipa-genesis.jpg",
+    "target-lil-yachty-carly-rae-jepsen.jpg",
+    "sango-khlorine.jpg",
+    "cheap-vacations.jpg",
+    "jhene-aiko-love.jpg",
+    "jhene-aiko-surrender.jpg"
+  ]
+}
