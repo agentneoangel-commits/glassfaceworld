@@ -1250,15 +1250,27 @@
             });
         }
 
+        // Store base transforms for each row
+        const rowBaseTransforms = new Map();
+        
         function updateRowParallax(progress) {
-            const velocity = ScrollTrigger.getAll()[0]?.getVelocity() || 0;
-            const skewAmount = Math.max(-3, Math.min(3, velocity / 500));
+            const st = ScrollTrigger.getAll()[0];
+            const velocity = st?.getVelocity() || 0;
             
+            // Only apply subtle parallax, no skew
             document.querySelectorAll('.row').forEach((row, i) => {
+                // Store base transform on first run
+                if (!rowBaseTransforms.has(row)) {
+                    const computed = window.getComputedStyle(row).transform;
+                    rowBaseTransforms.set(row, computed === 'none' ? '' : computed);
+                }
+                
+                const baseTransform = rowBaseTransforms.get(row);
                 const direction = i % 2 === 0 ? 1 : -1;
-                const offset = progress * 30 * direction;
-                row.style.transform = row.style.transform.replace(/translateX\([^)]+\)/, '') + ` translateX(${offset}px)`;
-                row.style.transform += ` skewX(${skewAmount}deg)`;
+                const offset = progress * 20 * direction; // Reduced from 30 to 20
+                
+                // Apply subtle horizontal shift only, preserving base transform
+                row.style.transform = `${baseTransform} translateX(${offset}px)`;
             });
         }
 
