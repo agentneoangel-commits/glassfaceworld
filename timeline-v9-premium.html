@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLASSFACE — Legacy Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #050505;
+            --bg-elevated: #0a0a0a;
+            --bg-glass: rgba(10, 10, 10, 0.85);
+            --text: #ffffff;
+            --text-muted: #888888;
+            --text-subtle: #444444;
+            --accent: #ff3366;
+            --accent-glow: rgba(255, 51, 102, 0.4);
+            
+            /* Category gradients */
+            --grad-music-video: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            --grad-commercial: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            --grad-music-production: linear-gradient(135deg, #ffe66d 0%, #f4d03f 100%);
+            --grad-design: linear-gradient(135deg, #c7ceea 0%, #a8b1e0 100%);
+            --grad-web3: linear-gradient(135deg, #a8e6cf 0%, #7fcdbb 100%);
+            --grad-archive: linear-gradient(135deg, #999999 0%, #666666 100%);
+            --grad-narrative: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
+            
+            --card-width: 340px;
+            --card-height: 220px;
+            --row-gap: 40px;
+            --transition-smooth: cubic-bezier(0.23, 1, 0.32, 1);
+            --transition-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            cursor: none;
+        }
+
+        /* ========================================
+           CINEMATIC BACKGROUND
+           ======================================== */
+        .bg-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .gradient-mesh {
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(255,51,102,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(78,205,196,0.05) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 50% 100%, rgba(255,230,109,0.03) 0%, transparent 50%);
+            animation: meshShift 20s ease-in-out infinite;
+        }
+
+        @keyframes meshShift {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.1) rotate(2deg); opacity: 0.8; }
+        }
+
+        .film-grain {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.025;
+            mix-blend-mode: overlay;
+        }
+
+        .vignette {
+            background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, rgba(0,0,0,0.6) 100%);
+        }
+
+        /* ========================================
+           LOADING SCREEN
+           ======================================== */
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.8s var(--transition-smooth), visibility 0.8s;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            display: flex;
+            gap: 0.15em;
+            margin-bottom: 3rem;
+        }
+
+        .loading-title span {
+            opacity: 0;
+            transform: translateY(20px);
+            display: inline-block;
+        }
+
+        .loading-title .accent {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+            transition: width 0.3s ease;
+        }
+
+        .loading-text {
+            margin-top: 1.5rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* ========================================
+           CUSTOM CURSOR
+           ======================================== */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10001;
+            transition: transform 0.15s var(--transition-smooth), 
+                        width 0.3s var(--transition-smooth), 
+                        height 0.3s var(--transition-smooth),
+                        border-color 0.3s,
+                        background 0.3s;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+        }
+
+        .cursor.hovering {
+            width: 60px;
+            height: 60px;
+            border-color: var(--accent);
+            background: rgba(255, 51, 102, 0.1);
+        }
+
+        .cursor-dot {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10002;
+            transform: translate(-50%, -50%);
+        }
+
+        /* ========================================
+           HEADER
+           ======================================== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 2rem 4rem;
+            background: linear-gradient(to bottom, var(--bg) 60%, transparent);
+            pointer-events: none;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            display: flex;
+            gap: 0.2em;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .title span {
+            display: inline-block;
+            transition: all 0.4s var(--transition-smooth);
+            cursor: default;
+            position: relative;
+        }
+
+        .title span::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width 0.4s var(--transition-smooth);
+        }
+
+        .title span:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .title span:hover::after {
+            width: 100%;
+        }
+
+        .title .accent {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .title:hover span:not(:hover) {
+            opacity: 0.4;
+        }
+
+        /* ========================================
+           YEAR TRACK
+           ======================================== */
+        .year-track {
+            position: fixed;
+            top: 140px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 5vw;
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        .year-marker {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-subtle);
+            transition: all 0.5s var(--transition-smooth);
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            letter-spacing: 0.1em;
+        }
+
+        .year-marker::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: currentColor;
+            transition: all 0.4s var(--transition-smooth);
+        }
+
+        .year-marker.active {
+            color: var(--accent);
+            font-weight: 600;
+            transform: scale(1.2);
+        }
+
+        .year-marker.active::before {
+            width: 100%;
+            height: 1px;
+            border-radius: 0;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .year-marker:hover:not(.active) {
+            color: var(--text-muted);
+        }
+
+        .year-indicator {
+            position: fixed;
+            top: 185px;
+            left: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        /* ========================================
+           HORIZONTAL SCROLL
+           ======================================== */
+        .horizontal-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            padding-top: 220px;
+            z-index: 1;
+        }
+
+        .horizontal-scroll {
+            display: flex;
+            height: calc(100vh - 220px);
+            width: fit-content;
+            padding: 4vh 8vw;
+            gap: 100px;
+            will-change: transform;
+            align-items: center;
+        }
+
+        /* ========================================
+           YEAR SECTION
+           ======================================== */
+        .year-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--row-gap);
+            flex-shrink: 0;
+            position: relative;
+            padding-top: 20px;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .year-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s var(--transition-smooth);
+        }
+
+        .year-label {
+            position: absolute;
+            left: -60px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-family: 'Playfair Display', serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            color: var(--text-subtle);
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* ========================================
+           ROWS
+           ======================================== */
+        .row {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            transform-style: preserve-3d;
+            perspective: 1200px;
+            position: relative;
+        }
+
+        .row-1 { transform: scale(0.78) translateZ(-100px); opacity: 0.7; filter: blur(0.5px); }
+        .row-2 { transform: scale(0.88) translateZ(-50px); opacity: 0.85; }
+        .row-3 { transform: scale(1.0) translateZ(0px); opacity: 1; }
+        .row-4 { transform: scale(0.88) translateZ(-50px); opacity: 0.85; }
+        .row-5 { transform: scale(0.78) translateZ(-100px); opacity: 0.7; filter: blur(0.5px); }
+
+        /* ========================================
+           PROJECT CARDS
+           ======================================== */
+        .project-card {
+            width: var(--card-width);
+            height: var(--card-height);
+            background: var(--bg-elevated);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: none;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.6s var(--transition-spring);
+            box-shadow: 
+                0 4px 20px rgba(0,0,0,0.4),
+                0 1px 3px rgba(0,0,0,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.05);
+            flex-shrink: 0;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+        }
+
+        .project-card.loaded {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition: all 0.8s var(--transition-spring);
+        }
+
+        /* Category gradient borders */
+        .project-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            padding: 1.5px;
+            background: var(--category-grad, linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05)));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Corner accents */
+        .project-card::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 6px;
+            height: 6px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            border-right: 1px solid rgba(255,255,255,0.3);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .project-card:hover::after {
+            opacity: 1;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Shine effect on hover */
+        .shine {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                105deg,
+                transparent 40%,
+                rgba(255,255,255,0.05) 45%,
+                rgba(255,255,255,0.1) 50%,
+                rgba(255,255,255,0.05) 55%,
+                transparent 60%
+            );
+            transform: translateX(-100%);
+            transition: transform 0.8s ease;
+            pointer-events: none;
+        }
+
+        .project-card:hover .shine {
+            transform: translateX(100%);
+        }
+
+        /* Hovered state */
+        .project-card.hovered {
+            transform: scale(1.35) translateZ(300px) !important;
+            box-shadow: 
+                0 50px 100px rgba(0,0,0,0.8),
+                0 0 60px var(--accent-glow),
+                0 0 120px rgba(255,51,102,0.15);
+            z-index: 1000 !important;
+        }
+
+        /* Glassmorphism on hover */
+        .project-card.hovered .card-content {
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Pushed neighbors */
+        .project-card.pushed {
+            transition: all 0.5s var(--transition-spring);
+        }
+
+        /* Card thumbnail */
+        .card-thumb-container {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .card-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s var(--transition-smooth);
+            filter: saturate(0.9) contrast(1.05);
+        }
+
+        .project-card:hover .card-thumb {
+            transform: scale(1.1);
+            filter: saturate(1) contrast(1.1);
+        }
+
+        .card-thumb-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, 
+                rgba(0,0,0,0.9) 0%, 
+                rgba(0,0,0,0.4) 40%, 
+                transparent 70%);
+            transition: opacity 0.4s ease;
+        }
+
+        .project-card:hover .card-thumb-overlay {
+            opacity: 0.7;
+        }
+
+        /* Music note placeholder */
+        .music-note {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: linear-gradient(135deg, #121212 0%, #0a0a0a 100%);
+            position: relative;
+        }
+
+        .music-note::before {
+            content: '♪';
+            font-size: 3rem;
+            color: var(--text-subtle);
+            opacity: 0.5;
+            animation: pulseNote 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseNote {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .music-note-text {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-subtle);
+        }
+
+        /* Card info */
+        .card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            transition: all 0.5s var(--transition-smooth);
+        }
+
+        .card-category {
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s var(--transition-smooth) 0.1s;
+        }
+
+        .project-card.hovered .card-category {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 0.25rem;
+            transition: all 0.4s var(--transition-smooth);
+        }
+
+        .card-meta {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-count {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--accent);
+        }
+
+        .view-count::before {
+            content: '▶';
+            font-size: 0.5rem;
+        }
+
+        /* Roles tags */
+        .card-roles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.75rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s var(--transition-smooth) 0.2s;
+        }
+
+        .project-card.hovered .card-roles {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .role-tag {
+            font-size: 0.55rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.2rem 0.5rem;
+            background: rgba(255,255,255,0.08);
+            border-radius: 2px;
+            color: var(--text-muted);
+        }
+
+        /* Category color assignments */
+        .cat-music-video { --category-grad: var(--grad-music-video); }
+        .cat-commercial { --category-grad: var(--grad-commercial); }
+        .cat-music-production { --category-grad: var(--grad-music-production); }
+        .cat-cover-artwork { --category-grad: var(--grad-design); }
+        .cat-graphic-design { --category-grad: var(--grad-design); }
+        .cat-product-design { --category-grad: var(--grad-design); }
+        .cat-web3 { --category-grad: var(--grad-web3); }
+        .cat-archive { --category-grad: var(--grad-archive); }
+        .cat-narrative { --category-grad: var(--grad-narrative); }
+
+        /* Focus states */
+        .project-card:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 4px;
+        }
+
+        .year-marker:focus-visible {
+            outline: 1px solid var(--accent);
+            outline-offset: 4px;
+        }
+
+        /* Scroll hint */
+        .scroll-hint {
+            position: fixed;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .scroll-hint.visible {
+            opacity: 0.6;
+        }
+
+        .scroll-hint-text {
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--text-muted), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { transform: scaleY(1); opacity: 1; }
+            50% { transform: scaleY(0.5); opacity: 0.5; }
+        }
+
+        /* Keyboard navigation hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 3rem;
+            right: 3rem;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            color: var(--text-subtle);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .keyboard-hint.visible {
+            opacity: 0.5;
+        }
+
+        /* Stats counter */
+        .stats {
+            position: fixed;
+            top: 2rem;
+            right: 3rem;
+            z-index: 101;
+            text-align: right;
+            pointer-events: none;
+        }
+
+        .stats-count {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .stats-label {
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background layers -->
+    <div class="bg-layer gradient-mesh"></div>
+    <div class="bg-layer film-grain"></div>
+    <div class="bg-layer vignette"></div>
+
+    <!-- Custom cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-title" id="loadingTitle">
+            <span>G</span><span>l</span><span>a</span><span>s</span><span>s</span><span>f</span><span>a</span><span>c</span><span>e</span>
+            <span class="accent">L</span><span class="accent">e</span><span class="accent">g</span><span class="accent">a</span><span class="accent">c</span><span class="accent">y</span>
+            <span>M</span><span>a</span><span>p</span>
+        </div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+        <div class="loading-text" id="loadingText">Initializing</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats" id="stats">
+        <div class="stats-count" id="statsCount">0</div>
+        <div class="stats-label">Projects</div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="title" id="title">
+            <span>G</span><span>l</span><span>a</span><span>s</span><span>s</span><span>f</span><span>a</span><span>c</span><span>e</span>
+            <span class="accent">L</span><span class="accent">e</span><span class="accent">g</span><span class="accent">a</span><span class="accent">c</span><span class="accent">y</span>
+            <span>M</span><span>a</span><span>p</span>
+        </div>
+    </header>
+
+    <!-- Year track -->
+    <div class="year-track" id="yearTrack"></div>
+    <div class="year-indicator" id="yearIndicator"></div>
+
+    <!-- Main content -->
+    <div class="horizontal-wrapper">
+        <div class="horizontal-scroll" id="scrollContainer">
+            <!-- Content loaded dynamically -->
+        </div>
+    </div>
+
+    <!-- UI hints -->
+    <div class="scroll-hint" id="scrollHint">
+        <div class="scroll-hint-text">Scroll to explore</div>
+        <div class="scroll-line"></div>
+    </div>
+
+    <div class="keyboard-hint" id="keyboardHint">
+        ← → to navigate • SPACE to pause
+    </div>
+
+    <script>
+        // ========================================
+        // COVER ART MAPPING
+        // ========================================
+        const COVER_ART = {
+            "24kgoldn-city-of-angels": "images/covers/24kgoldn-city-of-angels.jpg",
+            "2hrs": "images/covers/2hrs.jpg",
+            "a-ap-twelvyy-glock-rivers": "images/covers/a-ap-twelvyy-glock-rivers.jpg",
+            "act-up": "images/covers/act-up.jpg",
+            "adidas-jd-sports": "images/covers/adidas-jd-sports.jpg",
+            "adidas-kylie-jenner": "images/covers/adidas-kylie-jenner.jpg",
+            "amine-campfire": "images/covers/amine-campfire.jpg",
+            "archive-early-works": "images/covers/archive-early-works.jpg",
+            "bea-miller-feel-something": "images/covers/bea-miller-feel-something.jpg",
+            "bhad-bhabie-hacked": "images/covers/bhad-bhabie-hacked.jpg",
+            "bryson-tiller-inhale": "images/covers/bryson-tiller-inhale.jpg",
+            "cheap-vacations": "images/covers/cheap-vacations.jpg",
+            "complex-networks-reel": "images/covers/complex-networks-reel.jpg",
+            "cousin-stizz-perfect": "images/covers/cousin-stizz-perfect.jpg",
+            "disto-fine-art": "images/covers/disto-fine-art.jpg",
+            "dram-ill-nana": "images/covers/dram-ill-nana.jpg",
+            "dua-lipa-genesis": "images/covers/dua-lipa-genesis.jpg",
+            "elley-duhe": "images/covers/elley-duhe.jpg",
+            "fifth-harmony-visuals": "images/covers/fifth-harmony-visuals.jpg",
+            "finish-line-nike": "images/covers/finish-line-nike.jpg",
+            "forever-young": "images/covers/forever-young.jpg",
+            "google-creator-labs": "images/covers/google-creator-labs.jpg",
+            "google-ultradreamer": "images/covers/google-ultradreamer.jpg",
+            "hulu-free-machine": "images/covers/hulu-free-machine.jpg",
+            "jd-sports-ar": "images/covers/jd-sports-ar.jpg",
+            "jd-sports-infinite-objects": "images/covers/jd-sports-infinite-objects.jpg",
+            "jhene-aiko-love": "images/covers/jhene-aiko-love.jpg",
+            "jhene-aiko-summer-2020": "images/covers/jhene-aiko-summer-2020.jpg",
+            "jhene-aiko-surrender": "images/covers/jhene-aiko-surrender.jpg",
+            "khalid-location": "images/covers/khalid-location.jpg",
+            "kid-cudi-at-the-party": "images/covers/kid-cudi-at-the-party.png",
+            "kid-cudi-insano": "images/covers/kid-cudi-insano.png",
+            "kid-cudi-members-of-the-rage-s1": "images/covers/kid-cudi-members-of-the-rage-s1.png",
+            "kid-cudi-members-of-the-rage-s2": "images/covers/kid-cudi-members-of-the-rage-s2.png",
+            "kid-cudi-porsche": "images/covers/kid-cudi-porsche.png",
+            "lauryn-hill-merch": "images/covers/lauryn-hill-merch.jpg",
+            "lauryn-hill-rebel": "images/covers/lauryn-hill-rebel.jpg",
+            "lil-yachty-1-night": "images/covers/lil-yachty-1-night.jpg",
+            "lil-yachty-66": "images/covers/lil-yachty-66.jpg",
+            "lil-yachty-boom": "images/covers/lil-yachty-boom.jpg",
+            "lil-yachty-forever-young": "images/covers/lil-yachty-forever-young.jpg",
+            "lil-yachty-one-night": "images/covers/lil-yachty-one-night.jpg",
+            "lounar": "images/covers/lounar.jpg",
+            "madeon-all-my-friends": "images/covers/madeon-all-my-friends.jpg",
+            "mama-don-t-worry-still-ain-t-dirty-": "images/covers/mama-don-t-worry-still-ain-t-dirty-.jpg",
+            "migos-motorsport": "images/covers/migos-motorsport.jpg",
+            "music-ayotemi-no-time": "images/covers/music-ayotemi-no-time.jpg",
+            "music-ayotemi-quality-time": "images/covers/music-ayotemi-quality-time.jpg",
+            "music-ayotemi-senior-man": "images/covers/music-ayotemi-senior-man.jpg",
+            "music-blvk-h3ro-active": "images/covers/music-blvk-h3ro-active.jpg",
+            "music-blvk-h3ro-arguments": "images/covers/music-blvk-h3ro-arguments.jpg",
+            "music-blvk-h3ro-brick": "images/covers/music-blvk-h3ro-brick.jpg",
+            "music-blvk-h3ro-motion": "images/covers/music-blvk-h3ro-motion.jpg",
+            "music-boy-amor-space-me-out": "images/covers/music-boy-amor-space-me-out.jpg",
+            "music-chief-keef-forecast": "images/covers/music-chief-keef-forecast.jpg",
+            "music-facer-spiral": "images/covers/music-facer-spiral.jpg",
+            "music-facer-wavelength": "images/covers/music-facer-wavelength.jpg",
+            "music-glassface-already": "images/covers/music-glassface-already.jpg",
+            "music-glassface-endless-color": "images/covers/music-glassface-endless-color.jpg",
+            "music-glassface-foundation": "images/covers/music-glassface-foundation.jpg",
+            "music-glassface-hall-of-echoes": "images/covers/music-glassface-hall-of-echoes.jpg",
+            "music-glassface-mindreader": "images/covers/music-glassface-mindreader.jpg",
+            "music-glassface-no-other-one": "images/covers/music-glassface-no-other-one.jpg",
+            "music-glassface-oblivion": "images/covers/music-glassface-oblivion.jpg",
+            "music-glassface-press": "images/covers/music-glassface-press.jpg",
+            "music-glassface-say-it": "images/covers/music-glassface-say-it.jpg",
+            "music-glassface-summers-over": "images/covers/music-glassface-summers-over.jpg",
+            "music-glassface-theres-no-other-one": "images/covers/music-glassface-theres-no-other-one.jpg",
+            "music-glassface-wavelength": "images/covers/music-glassface-wavelength.jpg",
+            "music-glassface-whatever": "images/covers/music-glassface-whatever.jpg",
+            "music-leather-park-at-the-party": "images/covers/music-leather-park-at-the-party.jpg",
+            "music-parris-goebel-dummy": "images/covers/music-parris-goebel-dummy.jpg",
+            "music-parris-goebel-intro": "images/covers/music-parris-goebel-intro.jpg",
+            "music-rigo-kamp-marathon": "images/covers/music-rigo-kamp-marathon.jpg",
+            "music-rigo-kamp-miss-you": "images/covers/music-rigo-kamp-miss-you.jpg",
+            "music-sl-100-thoughts": "images/covers/music-sl-100-thoughts.jpg",
+            "music-tobi-lou-all-my-girls": "images/covers/music-tobi-lou-all-my-girls.jpg",
+            "music-tobi-lou-babycakes": "images/covers/music-tobi-lou-babycakes.jpg",
+            "music-tobi-lou-berlin-westside": "images/covers/music-tobi-lou-berlin-westside.jpg",
+            "music-tobi-lou-break": "images/covers/music-tobi-lou-break.jpg",
+            "music-tobi-lou-busy": "images/covers/music-tobi-lou-busy.jpg",
+            "music-tobi-lou-cheap-vacations": "images/covers/music-tobi-lou-cheap-vacations.jpg",
+            "music-tobi-lou-cobra": "images/covers/music-tobi-lou-cobra.jpg",
+            "music-tobi-lou-cult-classic": "images/covers/music-tobi-lou-cult-classic.jpg",
+            "music-tobi-lou-deserve-it": "images/covers/music-tobi-lou-deserve-it.jpg",
+            "music-tobi-lou-forecast": "images/covers/music-tobi-lou-forecast.jpg",
+            "music-tobi-lou-hold-me-close": "images/covers/music-tobi-lou-hold-me-close.jpg",
+            "music-tobi-lou-hot-tub": "images/covers/music-tobi-lou-hot-tub.jpg",
+            "music-tobi-lou-live-on-ice": "images/covers/music-tobi-lou-live-on-ice.jpg",
+            "music-tobi-lou-looped-up": "images/covers/music-tobi-lou-looped-up.jpg",
+            "music-tobi-lou-lounar": "images/covers/music-tobi-lou-lounar.jpg",
+            "music-tobi-lou-meaningless": "images/covers/music-tobi-lou-meaningless.jpg",
+            "music-tobi-lou-new-bish": "images/covers/music-tobi-lou-new-bish.jpg",
+            "music-tobi-lou-numbers": "images/covers/music-tobi-lou-numbers.jpg",
+            "music-tobi-lou-sad-last-night": "images/covers/music-tobi-lou-sad-last-night.jpg",
+            "music-tobi-lou-say-it-rmx": "images/covers/music-tobi-lou-say-it-rmx.jpg",
+            "music-tobi-lou-solange": "images/covers/music-tobi-lou-solange.jpg",
+            "music-tobi-lou-sotw": "images/covers/music-tobi-lou-sotw.jpg",
+            "music-tobi-lou-the-fun": "images/covers/music-tobi-lou-the-fun.jpg",
+            "music-tobi-lou-theme-music": "images/covers/music-tobi-lou-theme-music.jpg",
+            "music-tobi-lou-toblerone": "images/covers/music-tobi-lou-toblerone.jpg",
+            "music-tobi-lou-uncle-iroh": "images/covers/music-tobi-lou-uncle-iroh.jpg",
+            "music-tobi-lou-verizon-man": "images/covers/music-tobi-lou-verizon-man.jpg",
+            "music-young-thug-cobra": "images/covers/music-young-thug-cobra.jpg",
+            "og-maco-u-guessed-it": "images/covers/og-maco-u-guessed-it.jpg",
+            "one-night": "images/covers/one-night.jpg",
+            "piaget-michael-b-jordan": "images/covers/piaget-michael-b-jordan.jpg",
+            "prhyme-prhyme": "images/covers/prhyme-prhyme.jpg",
+            "puma-jd-sports": "images/covers/puma-jd-sports.jpg",
+            "reel": "images/covers/reel.jpg",
+            "rome-fortune": "images/covers/rome-fortune.jpg",
+            "sango-khlorine": "images/covers/sango-khlorine.jpg",
+            "shy-glizzy-volcano": "images/covers/shy-glizzy-volcano.jpg",
+            "smokepurpp-bless-yo-trap": "images/covers/smokepurpp-bless-yo-trap.jpg",
+            "snapple-elements-nft": "images/covers/snapple-elements-nft.jpg",
+            "sochi-olympics": "images/covers/sochi-olympics.jpg",
+            "solange": "images/covers/solange.jpg",
+            "swizz-beats-dmx-rick-ross": "images/covers/swizz-beats-dmx-rick-ross.jpg",
+            "swizz-dmx-ross": "images/covers/swizz-dmx-ross.jpg",
+            "target-lil-yachty-carly-rae-jepsen": "images/covers/target-lil-yachty-carly-rae-jepsen.jpg",
+            "target-lil-yachty-carly": "images/covers/target-lil-yachty-carly.jpg",
+            "tobi-lou-game-ova": "images/covers/tobi-lou-game-ova.jpg",
+            "tobi-lou-hot-tub": "images/covers/tobi-lou-hot-tub.jpg",
+            "tobi-lou-lingo-starr": "images/covers/tobi-lou-lingo-starr.jpg",
+            "tobi-lou-non-perishable-cover": "images/covers/tobi-lou-non-perishable-cover.png",
+            "tobi-lou-non-perishable": "images/covers/tobi-lou-non-perishable.jpg",
+            "tobi-lou-troop": "images/covers/tobi-lou-troop.jpg",
+            "tokyos-revenge": "images/covers/tokyos-revenge.jpg",
+            "tove-lo-jacques": "images/covers/tove-lo-jacques.jpg",
+            "tunji-ige-war": "images/covers/tunji-ige-war.jpg",
+            "vic-mensa-metaphysical": "images/covers/vic-mensa-metaphysical.jpg",
+            "why-don-t-you": "images/covers/why-don-t-you.jpg",
+            "wiz-khalifa-alright": "images/covers/wiz-khalifa-alright.jpg",
+            "young-thug-dirty-shoes": "images/covers/young-thug-dirty-shoes.jpg"
+        };
+
+        // ========================================
+        // STATE
+        // ========================================
+        let projects = [];
+        let scrollTween = null;
+        let isHovering = false;
+
+        // ========================================
+        // UTILS
+        // ========================================
+        function formatNumber(num) {
+            if (!num) return '';
+            const n = parseInt(num.replace(/[^0-9]/g, ''));
+            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+            if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+            return num;
+        }
+
+        function randomRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // ========================================
+        // LOADING SEQUENCE
+        // ========================================
+        async function runLoadingSequence() {
+            const title = document.getElementById('loadingTitle');
+            const progress = document.getElementById('loadingProgress');
+            const text = document.getElementById('loadingText');
+            const letters = title.querySelectorAll('span');
+
+            // Animate letters
+            letters.forEach((letter, i) => {
+                setTimeout(() => {
+                    letter.style.opacity = '1';
+                    letter.style.transform = 'translateY(0)';
+                }, 100 + i * 50);
+            });
+
+            await new Promise(r => setTimeout(r, 800));
+            text.textContent = 'Loading Projects';
+
+            // Simulate progress
+            for (let i = 0; i <= 100; i += 2) {
+                progress.style.width = i + '%';
+                await new Promise(r => setTimeout(r, 20));
+            }
+
+            text.textContent = 'Ready';
+            await new Promise(r => setTimeout(r, 400));
+
+            // Hide loading screen
+            document.getElementById('loadingScreen').classList.add('hidden');
+        }
+
+        // ========================================
+        // CUSTOM CURSOR
+        // ========================================
+        function initCursor() {
+            const cursor = document.getElementById('cursor');
+            const cursorDot = document.getElementById('cursorDot');
+            let mouseX = 0, mouseY = 0;
+            let cursorX = 0, cursorY = 0;
+            let dotX = 0, dotY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function animateCursor() {
+                cursorX += (mouseX - cursorX) * 0.15;
+                cursorY += (mouseY - cursorY) * 0.15;
+                dotX += (mouseX - dotX) * 0.5;
+                dotY += (mouseY - dotY) * 0.5;
+
+                cursor.style.left = cursorX + 'px';
+                cursor.style.top = cursorY + 'px';
+                cursorDot.style.left = dotX + 'px';
+                cursorDot.style.top = dotY + 'px';
+
+                requestAnimationFrame(animateCursor);
+            }
+            animateCursor();
+
+            // Hover states
+            document.addEventListener('mouseover', (e) => {
+                if (e.target.closest('.project-card') || e.target.closest('.year-marker')) {
+                    cursor.classList.add('hovering');
+                }
+            });
+
+            document.addEventListener('mouseout', (e) => {
+                if (e.target.closest('.project-card') || e.target.closest('.year-marker')) {
+                    cursor.classList.remove('hovering');
+                }
+            });
+        }
+
+        // ========================================
+        // TIMELINE RENDERING
+        // ========================================
+        async function loadTimeline() {
+            const response = await fetch('career-database-enriched.json');
+            projects = await response.json();
+            
+            document.getElementById('statsCount').textContent = projects.length;
+            
+            renderTimeline(projects);
+            renderYearTrack();
+            initHorizontalScroll();
+            initCardInteractions();
+            initKeyboardNav();
+            
+            // Show scroll hint
+            setTimeout(() => {
+                document.getElementById('scrollHint').classList.add('visible');
+                document.getElementById('keyboardHint').classList.add('visible');
+            }, 2000);
+
+            // Hide scroll hint on scroll
+            setTimeout(() => {
+                ScrollTrigger.create({
+                    trigger: '.horizontal-wrapper',
+                    start: 'top top',
+                    onUpdate: () => {
+                        document.getElementById('scrollHint').classList.remove('visible');
+                    }
+                });
+            }, 100);
+        }
+
+        function renderYearTrack() {
+            const track = document.getElementById('yearTrack');
+            const years = [...new Set(projects.map(p => p.publishedAt.substring(0, 4)))].sort();
+            
+            years.forEach(year => {
+                const marker = document.createElement('div');
+                marker.className = 'year-marker';
+                marker.dataset.year = year;
+                marker.textContent = year;
+                marker.tabIndex = 0;
+                marker.addEventListener('click', () => scrollToYear(year));
+                marker.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') scrollToYear(year);
+                });
+                track.appendChild(marker);
+            });
+        }
+
+        function renderTimeline(projects) {
+            const container = document.getElementById('scrollContainer');
+
+            // Group by year
+            const byYear = {};
+            projects.forEach(p => {
+                const year = p.publishedAt.substring(0, 4);
+                if (!byYear[year]) byYear[year] = [];
+                byYear[year].push(p);
+            });
+
+            const years = Object.keys(byYear).sort();
+
+            years.forEach((year, yearIndex) => {
+                const yearProjects = byYear[year];
+                const section = document.createElement('div');
+                section.className = 'year-section';
+                section.dataset.year = year;
+
+                // Year label on side
+                const label = document.createElement('div');
+                label.className = 'year-label';
+                label.textContent = year;
+                section.appendChild(label);
+
+                // Create 5 rows
+                for (let row = 1; row <= 5; row++) {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = `row row-${row}`;
+                    
+                    const rowProjects = yearProjects.filter((_, i) => i % 5 === row - 1);
+                    
+                    rowProjects.forEach((project, projIndex) => {
+                        const card = createCard(project, yearIndex * 5 + projIndex);
+                        rowDiv.appendChild(card);
+                    });
+
+                    section.appendChild(rowDiv);
+                }
+
+                container.appendChild(section);
+            });
+
+            // Staggered entrance
+            setTimeout(() => {
+                document.querySelectorAll('.year-section').forEach((section, i) => {
+                    setTimeout(() => {
+                        section.classList.add('visible');
+                        
+                        const cards = section.querySelectorAll('.project-card');
+                        cards.forEach((card, j) => {
+                            setTimeout(() => {
+                                card.classList.add('loaded');
+                            }, j * 80);
+                        });
+                    }, i * 200);
+                });
+            }, 500);
+        }
+
+        function createCard(project, index) {
+            const card = document.createElement('div');
+            card.className = `project-card cat-${project.category}`;
+            card.dataset.id = project._id;
+            card.tabIndex = 0;
+            
+            const thumb = COVER_ART[project._id] || 
+                (project.videoId ? `https://img.youtube.com/vi/${project.videoId}/mqdefault.jpg` : null);
+
+            const viewCount = project.viewCount ? formatNumber(project.viewCount) : '';
+            const roles = project.roles ? project.roles.slice(0, 3) : [];
+
+            card.innerHTML = `
+                <div class="shine"></div>
+                ${thumb ? `
+                    <div class="card-thumb-container">
+                        <img class="card-thumb" src="${thumb}" alt="" loading="lazy">
+                        <div class="card-thumb-overlay"></div>
+                    </div>
+                ` : `
+                    <div class="music-note">
+                        <div class="music-note-text">Audio</div>
+                    </div>
+                `}
+                <div class="card-content">
+                    <div class="card-category">${project.category.replace(/-/g, ' ')}</div>
+                    <div class="card-title">${project.title}</div>
+                    <div class="card-meta">
+                        <span>${project.publishedAt.substring(0, 4)}</span>
+                        ${viewCount ? `<span class="view-count">${viewCount}</span>` : ''}
+                    </div>
+                    ${roles.length ? `
+                        <div class="card-roles">
+                            ${roles.map(r => `<span class="role-tag">${r}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            return card;
+        }
+
+        // ========================================
+        // HORIZONTAL SCROLL
+        // ========================================
+        function initHorizontalScroll() {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            const container = document.getElementById('scrollContainer');
+            
+            scrollTween = gsap.to(container, {
+                x: () => -(container.scrollWidth - window.innerWidth + 200),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: ".horizontal-wrapper",
+                    start: "top top",
+                    end: () => `+=${container.scrollWidth - window.innerWidth + 400}`,
+                    pin: true,
+                    scrub: 1.2,
+                    anticipatePin: 1,
+                    invalidateOnRefresh: true,
+                    onUpdate: (self) => {
+                        updateActiveYear(self.progress);
+                        updateRowParallax(self.progress);
+                    }
+                }
+            });
+        }
+
+        function updateActiveYear(progress) {
+            const markers = document.querySelectorAll('.year-marker');
+            const totalYears = markers.length;
+            const activeIndex = Math.min(Math.floor(progress * totalYears), totalYears - 1);
+            
+            markers.forEach((marker, i) => {
+                marker.classList.toggle('active', i === activeIndex);
+            });
+        }
+
+        function updateRowParallax(progress) {
+            const velocity = ScrollTrigger.getAll()[0]?.getVelocity() || 0;
+            const skewAmount = Math.max(-3, Math.min(3, velocity / 500));
+            
+            document.querySelectorAll('.row').forEach((row, i) => {
+                const direction = i % 2 === 0 ? 1 : -1;
+                const offset = progress * 30 * direction;
+                row.style.transform = row.style.transform.replace(/translateX\([^)]+\)/, '') + ` translateX(${offset}px)`;
+                row.style.transform += ` skewX(${skewAmount}deg)`;
+            });
+        }
+
+        function scrollToYear(targetYear) {
+            const container = document.getElementById('scrollContainer');
+            const yearSections = [...document.querySelectorAll('.year-section')];
+            const targetSection = yearSections.find(s => s.dataset.year === String(targetYear));
+            
+            if (targetSection && scrollTween) {
+                const st = scrollTween.scrollTrigger;
+                const totalWidth = container.scrollWidth - window.innerWidth + 200;
+                const sectionLeft = targetSection.offsetLeft;
+                const targetScroll = (sectionLeft / totalWidth) * (st.end - st.start);
+                
+                window.scrollTo({
+                    top: st.start + targetScroll,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // ========================================
+        // CARD INTERACTIONS
+        // ========================================
+        function initCardInteractions() {
+            const container = document.getElementById('scrollContainer');
+            
+            container.addEventListener('mouseenter', () => {
+                isHovering = true;
+                gsap.globalTimeline.timeScale(0.2);
+            }, true);
+
+            container.addEventListener('mouseleave', () => {
+                isHovering = false;
+                gsap.globalTimeline.timeScale(1);
+                resetAllCards();
+            }, true);
+
+            container.addEventListener('mouseover', (e) => {
+                const card = e.target.closest('.project-card');
+                if (!card) return;
+                
+                handleCardHover(card);
+            });
+
+            container.addEventListener('mouseout', (e) => {
+                const card = e.target.closest('.project-card');
+                if (!card) return;
+                
+                if (!e.relatedTarget?.closest('.project-card')) {
+                    resetAllCards();
+                }
+            });
+        }
+
+        function handleCardHover(hoveredCard) {
+            const allCards = [...document.querySelectorAll('.project-card')];
+            const hoveredRect = hoveredCard.getBoundingClientRect();
+            const hoveredCenter = {
+                x: hoveredRect.left + hoveredRect.width / 2,
+                y: hoveredRect.top + hoveredRect.height / 2
+            };
+
+            allCards.forEach(card => {
+                card.classList.remove('hovered', 'pushed');
+                card.style.transform = '';
+                card.style.opacity = '';
+
+                if (card === hoveredCard) {
+                    card.classList.add('hovered');
+                    return;
+                }
+
+                const cardRect = card.getBoundingClientRect();
+                const cardCenter = {
+                    x: cardRect.left + cardRect.width / 2,
+                    y: cardRect.top + cardRect.height / 2
+                };
+
+                const dx = cardCenter.x - hoveredCenter.x;
+                const dy = cardCenter.y - hoveredCenter.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 600 && distance > 0) {
+                    const pushStrength = 1 - (distance / 600);
+                    const pushX = (dx / distance) * pushStrength * 180;
+                    const pushY = (dy / distance) * pushStrength * 120;
+                    const angle = Math.atan2(dy, dx);
+                    const rotation = angle * (180 / Math.PI) * 0.12;
+                    const scale = 0.88 - (pushStrength * 0.18);
+
+                    card.classList.add('pushed');
+                    card.style.transform = `translate(${pushX}px, ${pushY}px) rotate(${rotation}deg) scale(${scale})`;
+                    card.style.opacity = 0.45 + (pushStrength * 0.35);
+                }
+            });
+        }
+
+        function resetAllCards() {
+            document.querySelectorAll('.project-card').forEach(card => {
+                card.classList.remove('hovered', 'pushed');
+                card.style.transform = '';
+                card.style.opacity = '';
+            });
+        }
+
+        // ========================================
+        // KEYBOARD NAVIGATION
+        // ========================================
+        function initKeyboardNav() {
+            let currentCardIndex = 0;
+            const cards = () => [...document.querySelectorAll('.project-card')];
+
+            document.addEventListener('keydown', (e) => {
+                const allCards = cards();
+                
+                switch(e.key) {
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        currentCardIndex = Math.min(currentCardIndex + 1, allCards.length - 1);
+                        allCards[currentCardIndex]?.focus();
+                        allCards[currentCardIndex]?.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        currentCardIndex = Math.max(currentCardIndex - 1, 0);
+                        allCards[currentCardIndex]?.focus();
+                        allCards[currentCardIndex]?.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+                        break;
+                    case 'Home':
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        break;
+                    case 'End':
+                        e.preventDefault();
+                        const st = scrollTween?.scrollTrigger;
+                        if (st) window.scrollTo({ top: st.end, behavior: 'smooth' });
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        if (scrollTween) {
+                            scrollTween.paused(!scrollTween.paused());
+                        }
+                        break;
+                }
+            });
+
+            // Track focused card
+            document.addEventListener('focusin', (e) => {
+                if (e.target.classList.contains('project-card')) {
+                    const allCards = cards();
+                    currentCardIndex = allCards.indexOf(e.target);
+                    handleCardHover(e.target);
+                }
+            });
+        }
+
+        // ========================================
+        // INITIALIZE
+        // ========================================
+        async function init() {
+            initCursor();
+            
+            const loadPromise = loadTimeline();
+            const minLoadTime = new Promise(r => setTimeout(r, 2500));
+            
+            await Promise.all([loadPromise, runLoadingSequence(), minLoadTime]);
+        }
+
+        init();
+    </script>
+</body>
+</html>
